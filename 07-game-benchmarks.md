@@ -66,6 +66,11 @@
 
 **Tips:** Enable FSR Quality for a significant boost. DLSS/FSR Frame Generation works well. (elektricM docs)
 
+**Sep 2026 benchmarks (40 CU, 8 cores):**
+- Default High, 40 CU, 8 cores @ 2000 MHz (Bazzite) — baseline before tweaks (dbkretro, 06/09/2026) [confirmed: @dbkretro, 06/09/2026]
+- Default High, 36 CU @ 2 GHz, 8 cores @ 3.85 GHz (Bazzite) — comparable (capt.cat_13, 06/09/2026)
+- **1080p High (RT off) + FSR3 Native AA + FG 3.1:** **90–110 FPS** on 40 CU @ 2000 MHz (peak 1850 due to governor), 3.7 GHz CPU, 6 cores, stock pads/paste, 2x front +1 back P12 Pro — without case (halil_iboo, 06/09/2026). With `mitigations=off` + unlocked frame cap: **85 FPS** rock-solid 60 with cap re-enabled, no frame drops (dbkretro, 07/09/2026) [confirmed: @dbkretro, 07/09/2026].
+
 ---
 
 ### Black Myth: Wukong
@@ -77,6 +82,8 @@
 | RX 7600 (reference) | 71 avg | Same test conditions for comparison |
 
 **Source:** Old Lamer YouTube benchmark (40CU BC-250 vs RX6700 & RX7600). The BC-250 at 40 CU slightly edges the RX 6700 in this title. See [11-community-and-resources](11-community-and-resources.md) for link.
+
+**Sep 2026 FSR4 evaluation (hojnikb, 08–10/09/2026, CachyOS mastaG 7.2 kernel + Mesa, FSR3 V3 patch, 40 CU @ 2100 MHz 8c @ 3.8 GHz):** purpose was to evaluate FSR4 in this title — **FSR4 360p→1440p matches FSR3 908p→1440p, not worth it**; V4 patch adds ~13% uplift at 1440p (hojnikb, 08–09/09/2026); retest with Proton + FSR4 4.1.1b no real difference (hojnikb, 10/09/2026) [confirmed: @hojnikb, 08/09/2026].
 
 ---
 
@@ -108,6 +115,8 @@
 **8-core 40CU RDR2 (dbkretro, Jul 30 2026):** 1080p, decent quality settings — near 60 FPS with main dip during snow scenes. GPU bound in most scenarios but less stutter in city areas with extra cores.
 
 **8-core 38CU RDR2 benchmark (sho.ta, Aug 13 2026):** ~65 FPS in benchmark, 55–85 real FPS, High-Ultra 1080p on Bazzite with **0.5/15.5 memory split** (38 CU @ 1900 MHz 900 mV, 8 cores @ 3.85 GHz 1150 mV). "Timegraph is smooth most of the time" — FPS drops significantly in Saint Denis (~40–45 FPS) with spiky timegraph due to poor CPU performance.
+
+**Sep 2026 update (38 CU, 8 cores, 2000 MHz, 3.9 GHz):** 1080p Ultra **70–80 FPS** at 67–70 °C after 1h without crash, MangoHud overlay ~70 FPS average; benchmark peak ~70–80 FPS under 70 °C (shibly_91236, 04/09/2026 and 07/09/2026, Proton GE) [confirmed: @shibly_91236, 04/09/2026].
 
 ---
 
@@ -321,6 +330,10 @@ Expected: Technical challenges — anti-cheat may have issues on Linux (elektric
 | Baldur's Gate 3 | Playable at 1080p | Lower settings in cities |
 | Detroit: Become Human | 60 FPS capped, 1080p Medium | elektricM docs |
 | Devil May Cry 5 | 100 FPS, 1080p High | elektricM docs |
+| Where Winds Meet | 20–60 FPS | 4K: CPU-bound drops to 20s at 50% GPU util (40 CU @2 GHz, 8c 4 GHz — dejan_994, 07/09/2026); 4K balanced FSR 45% quality 50–60 FPS with occasional stutter (cubehacker8107, 08/09/2026) [confirmed: @dejan_994, 07/09/2026] |
+| The Blood of the Dawnwalker (1.0.4–1.0.5) | 60 FPS locked | 1080p High FSR Quality, 40 CU 8c 1500/3500 MHz, dynamic UMA 512 MB, CachyOS RC + Proton 11, zswap active — 60 locked with dips (lovelifetrustfaith, 10/09/2026); 1750/3700 MHz + undervolt smoother but stutter in towns persists; GPU throttling 80 °C, barely 75 °C (12/09/2026) [confirmed: @lovelifetrustfaith, 10/09/2026] |
+| Bodycam | 40–55 FPS | With ini tweaks (settings + 2 .ini edits): consistent 40 FPS, 50–55 at 60 cap, 60+ some instances — smooth after tweaks; without: 25–30 FPS with stuttering (zerosumpr, 06/09/2026) [confirmed: @zerosumpr, 06/09/2026] |
+| Dead Space Remastered | Stutters 5–10s | Runs but significant stutters/freezes 5–10s while moving, all resolutions 1080p–4K; shadows/post/global illumination to low helps (cubehacker8107, 03/09/2026); ~65–70 °C (05/09/2026) [confirmed: @cubehacker8107, 03/09/2026] |
 
 ### S.T.A.L.K.E.R. 2 (May 2026)
 
@@ -457,6 +470,8 @@ Community-tested by big_trov and essdee4336 (May 2026). All runs with P12 Pro fa
 
 pijuli. tested a 38/40 CU board (2 harvested in SE1 SH0). At 1900 MHz with 38 CUs: 130 FPS, 84C, 336W from wall. Same board at 24 CU/2130 MHz: 95 FPS, 84C, 320W. **35% FPS increase** at equivalent temps with only 16W more from wall. Cooling: P12 Max, middle fins removed, PTM7950, new thermal pads, no cage/no back fan.
 
+**Sep 2026 Furmark updates:** 40 CU @ 2300 MHz on AIO 280 mm MSI MEG CoreLiquid S280 (adixd90, 02–03/09/2026); 38 CU @ 2100 MHz 930 mV PTM7950 single Foxconn 120 mm @100% — "Hell loud at 100%, I usually run fan at 67% while gaming" (shibly_91236, 04/09/2026); 2230 MHz @ 960 mV P12 Pro 100% PTM7950 (antmagl, 03/09/2026); 40 CU 8c @ 2000 MHz 960 mV Bazzite stock pads single P12 centre fins open (dbkretro, 06/09/2026); **score 8300 @ 38 CU 2100 MHz temp 82 °C** (shibly_91236, 06/09/2026) [confirmed: @shibly_91236, 06/09/2026]; 40 CU @ 2000 MHz 8c @ 3500 MHz "good silicon" (alchemy07011976, 06/09/2026); 2230 MHz @ 1050 mV / 4000 MHz @ 1275 mV (meme_meme, 07/09/2026); 3.9 GHz @ 1150 mV (940 mV stable) 75 °C OCCT, <70 °C gaming (shibly_91236, 07/09/2026); **8500+ @ 38 CU 2200 MHz** (shibly_91236, 09/09/2026); power cable 95 °C warning on second board 38 CU only (expand, 10/09/2026).
+
 ### Superposition (40 CU @ 2200 MHz)
 
 | Preset | Score | GPU Clock | CPU Clock | Notes | User |
@@ -506,6 +521,8 @@ nexgen3d runs liquid cooling (MSI AIO), CachyOS, SMU governor. 24 CU community t
 40 CU Extreme already surpasses the 24 CU record (4713) by 22%+ at lower clocks (2300 vs 2530 MHz). Theoretically should reach ~6500+ at equivalent clocks. More scores expected as community adopts the unlock. Post your results in the Discord `#benchmarks` channel.
 
 **Aug 2026 updates:** big_trov confirmed the current record is "5800 or so" (Aug 12 2026). pm_me_kitsunemimi hit 5320 @ 2250 MHz GPU / 4 GHz CPU on Bazzite with 8 cores unlocked — "Not sure what the average score is but 5320 is good" (rocksalt_, Aug 12 2026), max temps "76 max iirc". mitchthepreacher reached 5150 after a CachyOS update with no unlock/OC changes, in a Redux case, "Temps are 75 but its a jet engine" (Aug 13 2026).
+
+**Sep 2026 updates:** vvaaron averaging ~4900 at 2300 MHz GPU / 4.0 GHz CPU on full 40 CU + 8 cores, Bazzite (08/09/2026); expected score at 2300 MHz is ~5700 — "plenty of people cant get much past 2200 MHz" and VRMs shut off with reset button dead (big_trov, 08/09/2026) [confirmed: @vvaaron, 08/09/2026]. dbkretro 40 CU 8c @ 2000 MHz 960 mV Bazzite stock clocks/paste (06/09/2026); .lordantares 2230 MHz @ 1030 mV on Mesa 26.2 / CachyOS 7.2.2 (06–07/09/2026), noting 2300 MHz artifacts unless fans 100% and >70 °C triggers black screen [confirmed: @.lordantares, 07/09/2026]. nhoj0176 record **2350 MHz @ 1000 mV** (2500 MHz CPU @ 800 mV) — temps 66 °C at 2100 MHz, 60 °C at 1900 MHz in Superposition; Bykski Icedragon fan, PTM7950 die + thermal putty front, 2.0 mm pads on VRAM (12–13/09/2026) [confirmed: @nhoj0176, 12/09/2026].
 
 **38 CU = 36 CU (Aug 12 2026):** a "38 CU" config is effectively 36 CU — the Shader Engines (SE0/SE1) must have symmetric WGP counts. fforduck: "You have 36 unlocked 😉 SE0 and SE01 need the same amount. If you have disabled one in SE0 it will automatically disable one in SE1" — and per hashtagoctothorp, disabling another WGP in SE1 gives the *same* score. The only meaningful CU counts are 24/28/32/36/40 (counting full pairs); the dznuts "38 CU" runs above are the same silicon configuration as 36 CU.
 
@@ -563,4 +580,4 @@ Games with verified community mentions but limited sample size — use with caut
 | Stardew Valley | Runs fine at 4K 60 FPS | |
 | Hollow Knight | 4K playable (lighter game) | |
 | Star Wars Battlefront II | 80-85 → 120-130 FPS after SMU governor + kernel patch (juancarlos24691, Aug 2025) | |
-**Last verified: 2026-09-03**
+**Last verified: 2026-09-14**

@@ -79,6 +79,21 @@ amdgpu.gttsize=14750 ttm.pages_limit=3959290 ttm.page_pool_size=3959290
 
 Sets CMOS BIOS memory configuration from Linux without rebooting into BIOS. The most useful parameter is `UMA_SIZE` (VRAM allocation), but it can also adjust memory timings. Pre-built binary available in the GitHub releases page (fanoush, Jul 2026).
 
+### GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3) (Sep 2026)
+
+**Project:** [pan-Rijovich/bc250-memory-temperature](https://github.com/pan-Rijovich/bc250-memory-temperature)
+**Status:** Working on **P3.00 BIOS** — reports all 8 GDDR6 chips plus average and hotspot via JEDEC MR3 DRAM Info interface. Based on SMU/UMC firmware reverse engineering; not fully verified yet.
+
+- Reads per-chip temperature via JEDEC **MR3 op = 10** (MR3 Read Info, case 5) through `umc_read_temp_per_chip(int qid)` — implementation based on dumping and reusing Navi10 UMC code paths (pan_rijovich, 12/09/2026) [confirmed: @pan_rijovich, 12/09/2026].
+- VRAM manufacturer is **Micron** on most boards; another vendor may exist (pan_rijovich, 12/09/2026).
+- Early field data: GPU at 88 °C while most RAM chips run lower; heatsink on back helps; chip #3 ~10 °C above others even at idle (dmooney65, 12/09/2026; _fanoush_, 13/09/2026) — no chip-position map yet, variable per board.
+- **Caveat:** the read uses the GDDR6 **DQ bus** — incorrect SMU/UMC configuration, DQ mapping, timing, or firmware addresses could interfere with memory traffic and cause corruption, instability, or crashes. Use at own risk (pan_rijovich, 12/09/2026).
+- **Integration:** [onlinermm/BC250-Telemetry](../03-power-supply-guide.md#vrm-telemetry-via-i2c-pmbus--web-dashboard) v0.3 adds this as an opt-in: `sudo ./install.sh --memory-temp` — patches SMU firmware at boot to unlock temp registers, then exposes per-chip + hotspot/average in both dashboards, MangoHud, and CoolerControl file sensors. Only on P3.00 BIOS — if not on P3.00, do not enable it (punsh1734, 13/09/2026) [confirmed: @punsh1734, 13/09/2026]. GDDR6 has no I2C interface — the temp does not come from the I2C/PMBus path (perubb/pan_rijovich, 14/09/2026).
+- Voltage note: voltage rails are managed by the SMU directly, not by the memory controller over SVI2 to ISL95712 — method cannot change GDDR6 voltage for undervolting (pan_rijovich, 13/09/2026; _fanoush_ question 13/09/2026).
+- Discussion: holde notes normal Navi10 uses the standard MR3 method; Anga helped write that code — BC-250 reused a legacy dummy P-state switch path instead (holde, 13/09/2026).
+
+> **Pointer:** for cooling implications, see [04-Cooling Guide → VRAM Cooling](../04-cooling-guide.md#vram-cooling---dont-forget-the-back); for diagnosis of hangs/artifacts, see [10-Troubleshooting → GPU Hang After 1-2h](../10-troubleshooting.md#gpu-hang-after-1-2h-of-gaming-vram-overheating).
+
 ---
 
 ## Flashing Methods
@@ -585,6 +600,14 @@ duggasco (research, repo), filippor (independent testing, ignore_cu_harvest), sc
 - mergeconflicted (01/09/2026): investigating CVE-2023-31316 against the BC-250 PSP type-13 save/restore path. Experimentally confirmed: during restore, attacker-controlled data is copied into the PSP-protected GPU firmware region before HMAC validation — a verified protected-memory write primitive. However, the PSP's `saved_len` variable is never properly initialized (contains garbage instead of `0x62940`), so restore faults before reaching firmware-release/activation. Updated to P5 BIOS and PSP reload files were accepted, but the clamp still did not release.
 - mergeconflicted (02/09/2026): the random values in the CVE were related to a fix in P5 — using P5 BIOS allowed PSP reload files to be accepted, but the clamp persists. Current investigation: how to correct or bypass `saved_len` so the restore can complete after planting the Navi VCN firmware.
 
+**Progress (Sep 2–14 2026):**
+- **Cold reset probe in HW (rxl8819516, 03/09/2026):** writing `1` to cold reset register `SMN 0x0900c004` via standard PCI config SMN reads `0xffffffff` (blocked), but via SMU fw-window `smn_write32` works `0↔1`. Full sequence `assert 0 → stage fw → release 1` toggles the bit, but **VCN MMIO stays `0xffffffff`**. Replayed 5-entry table at `0x00E188D8` (`0x0902F914=0x1FFF` etc.) — all writes landed, no MMIO change. Notes: TMR 4 MB at `0xf41f800000` drops host writes (only descriptor header at `tmr-0x1008` writable); wedges to avoid: msg `0x60`, feature bit 17 via `0x3C`, read `0x0001F8A4`, write `0x06900900` (all hard-wedge SMU). Conclusion: SMU side satisfied (clocks programmed, power sequencer happy, reset toggled) but **hardware isolation gate still slammed shut** — needs PS5 Linux register/TMR baseline diff (rxl8819516, 03/09/2026) [confirmed: @rxl8819516, 03/09/2026].
+- **Gate analysis (rukkusireland, 03–06/09/2026):** converted t02/t28 PSP firmware to C for model analysis; VCN load/clamp release is in `AUTOLOAD` not `LOAD_IP_FW`, follows TOC loading pattern. TOC blob hidden in SOS blob per Linux driver headers (pan_rijovich, 04/09/2026) — likely in `t44`. Gate table is `t02 fw-table @0x286000 magic 0x5244 31 entries` — producer `FUN_000115b6→FUN_0000fc50` issues `svc #0xf2` per entry; walker `0x12B08` drives registration chain that populates op arrays — **op-id-8 element is the only thing that emits `t28 tag 0x1024 → 0xc096 → loader 0xce90 → clamp release 1 → 0x0900c004`**. If type-13/VCN entry absent from `0x5244` table, no op-id-8 registered → silent BIOS disable; 31 entries (odd) suggests originally power-of-two/full set (rukkusireland, 05/09 18:16) [confirmed: @rukkusireland, 05/09/2026].
+- **2-byte BIOS patch proposal (thelamer, 04/09/2026):** error `0x80000203` is not signature failure but **feature-disabled gate check** — gate byte lives in PSP-private SRAM at `0xe18b70` (unreachable from host via SMN/GPCOM), t28 is unsigned at `$PS1` container (16 zeros at signature field). Patch: at file offset `0x9970F4` change `B4 B1` (`CBZ r4`) → `00 BF` (`NOP`) to permanently bypass gate check (thelamer, 04/09 15:22). After patch, `LOAD_IP_FW type 13` would proceed to real validation — Status `0` would write release sequence (`0x0900c004 + 0x1f8a4 + enable banks`) and open MMIO, `0xFFFF00xx` would reveal TEE check failure (thelamer, 04/09 15:22–15:24). Tested by benpeterson401185 (`05/09 00:03` — *that did not work. haven't gotten any AI bios to actually work*) [confirmed: @benpeterson401185, 05/09/2026] — AI-generated BIOSes fail to boot, but automated setup proficiently cold-boots wedged BC-250.
+- **PSP privileged CE via APCB→ABL→SVC hijack (mergeconflicted, 04/09 17:33):** goal privileged code execution on PSP via APCB parser overflow forging ABL object. **Proven:** overflow reaches forged object, attacker instructions execute inside ABL and return safely, PSP services can R/W CCP registers and submit real CCP descriptor with completion and copy between ABL-local addresses. **Not yet proven:** privileged PSP memory access — latest attempt to read exception-vector area failed and required external recovery. Once that boundary solved, install minimal privileged handler via SVC exception, demonstrate, restore, and boot normally — intended for VCN gate flip (mergeconflicted, 04/09 17:33) [confirmed: @mergeconflicted, 04/09/2026]. Parallel approach: PSP function-call injection similar to SMU primitive (rukkusireland, 05/09 05:43) — mostly dead ends that day (05/09 16:17).
+- **Kernel module + simulator (benpeterson401185, 06/09 07:30–07:51):** `bc250sim.tar.gz` BIOS simulator + patches `0001-ungate (registers VCN2.0+JPEG2.0 for UVD 2.0.3 → navi10_vcn)` + `0002-direct-load (amdgpu_vcn_fw_load_via_psp() returns false → direct-MMIO ucode path)` + `amdgpu.ko.new` 30 MB for `linux-7.1.5` (vermage `7.1.5-0-stable`). Proven load: `modprobe drm_display_helper ttm amdxcp ... && insmod /root/amdgpu.ko.new` — SMU message surface now enumerated from two directions (static call graph + live table dump) and exhausted; clamp is at PSP root (`gate byte 0xe18b70 + 0x09-frame window release`) and `escalation.bin (APCB→ABL→SVC-hijack → flip gate byte)` remains the one live lever (benpeterson401185, 06/09 07:17). Also `vcn_arm_fire.py (0x13ED8=1 + msg 0x1d)` + `vcn_engage.py (ENABLE=1 + ctrl gate release)` shared for testing (06/09 07:30).
+- **Insider context (holde, 05/09 17:43–18:59):** ex-AMD Angablade + holde previously powered VCN up and got garbage frames via one malformed ffmpeg frame, but stopped for time/legal reasons before fw load. Sony customizations are SW-only — VCN itself is bog standard VCN (not VCN 3.x with AV1); strategy is stealing Steam Deck (Vana) VCN fw/headers for cross-reference (Deck is VCN 3 / Navi, BC-250 is VCN 2.0.3 but close enough). hele confirms VCN 2.0.3 is just rename without AV1 bump (05/09 18:20).
+
 ### GPU Unlock Research (40 CU)
 
 The 40 CU unlock went through multiple research phases before reaching the current stable state:
@@ -631,4 +654,35 @@ Community field reports and research history, moved here from the unlock procedu
 - Note: mrfrakes claims to have booted 4700S C08 BIOS on BC-250 with external GPU — may require specific BIOS version and external GPU like the original 4700S setup (Jul 11, 2026)
 
 **VCN unlock discussion (Jul 30 2026):** thelamer proposed using the same register exploit for VCN (video codec) hardware decode — `VCN feature version: 0, firmware version: 0x00000000` suggests the hardware is present but disabled. yrouel86 notes this would still need the firmware blob, and it would most likely need to be signed. VCN unlock remains an open research question.
-**Last verified: 2026-09-03**
+
+### Additional VRAM — Flex PCB Interposer (Sep 2026)
+
+**Status (Sep 2026):** no working mod yet — design phase. Theory is straightforward; application is hard — easy to brick the board.
+
+- Theory: SMBUS device on the bus exposed via TPMS header can change memory topology (snodrat, 12/09/2026) — FW roadblock already addressed; now it's "just" exposing all lines and connecting an interposer for topside VRAM (snodrat, 12/09/2026) [confirmed: @snodrat, 12/09/2026].
+- Interposer offer: .opper offered to design and send interposer for testing; big_trov has flex PCB in works — "if I fail horribly then sure we can try yours" (big_trov, 12/09/2026). Every spot is slightly different due to decoupling capacitor placement (big_trov, 12/09/2026).
+- Design details (big_trov, 13/09/2026): mirroring all decoupling caps on existing chip side + extra for vmemp; **0402** instead of 0201 so mere mortals can assemble (0603 possible but TBD); wants to test `memtestx86` with I2C chamshell mode enabled but no chips added first.
+- Power: 8 stock chips idle ~15 W total (b_rob1, 13/09/2026).
+- Sourcing: broken PS5s as VRAM source (snodrat, 14/09/2026); JLCPCB 0.4 mm thick may work but length matching/skew TBD (snodrat, 14/09/2026); PS5 repair cheatsheet https://forterfix.com/gddr_cheatsheet (.opper, 14/09/2026).
+- Roadblock: sourcing chips + producing interposer — "not worth it" for many (meme_meme, 12/09/2026) [confirmed: @meme_meme, 12/09/2026].
+
+### Voltage & EMFI Injection Testing (Sep 2026)
+
+**Project (Sep 2026):** new thread for voltage and EMFI glitching — no successful glitch yet, hardware setup phase (benpeterson401185, 10/09/2026) [confirmed: @benpeterson401185, 10/09/2026].
+
+- Refs: [PSPReverse/amd-sp-glitch](https://github.com/PSPReverse/amd-sp-glitch/blob/main/attack-code/README.md) (benpeterson401185, 10/09/2026); already done before per Habr https://habr.com/ru/companies/pt/articles/979470/ (porocyon., 10/09/2026).
+- Hardware: Teensy 4.0, Pico, BeagleBone Black, SLogic16U3 in discussion; porocyon.: "pico works much better as a glitch controller than a teensy 4" (10/09/2026).
+- Status: "Went as far as I could with making changes to later stages of the bios" (benpeterson401185, 11/09/2026). 75% of AI repost is bad advice per porocyon. (11/09/2026).
+
+### SMU Governor — Injectable DXE Driver (Sep 2026)
+
+**Status:** in development — no functional governor yet (rescuemei, Sep 2026).
+
+- Probe tool: UEFI SMU probing tool to poke SMU without OS interference; unused SMU firmware region targeted for injected governor patch (rescuemei, 08/09/2026) [confirmed: @rescuemei, 08/09/2026].
+- Goal: SMU-internal GPU governor, injectable via DXE driver — SMU firmware is verified on initial load, so DXE is the injection path; currently trying to find/calculate GPU usage from inside the SMU itself (rescuemei, 13/09/2026).
+- Background: PS5 is supposed to have DPM features, BC-250 firmware left at 1500 MHz for miners (lordantares, 08/09/2026). Firmware is not encrypted — PSP only verifies signature on initial load (rescuemei, 13/09/2026).
+- Issue fixed: forgot to disable watchdog timer which killed probe after a while; now MCP works with Deepseek help, echoes actions to local UI + UEFI screen (rescuemei, 13/09/2026).
+- Other note: P3 internal BIOS has SMU/ABL unencrypted and more open to deal with SMU (jwagnervaz., 13/09/2026); Subor Z+ BIOS VBIOS (hex FF15) similar to BC-250 and may help map it (jwagnervaz., 14/09/2026).
+- Blocker: telemetry patch hangs on this board only — difference with/without ACPI fix or 6/8 cores makes no difference (_mastag, 02/09/2026).
+
+**Last verified: 2026-09-14**

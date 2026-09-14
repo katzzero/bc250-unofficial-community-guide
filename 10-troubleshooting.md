@@ -38,6 +38,26 @@
 
 ---
 
+## Intermittent No POST — Aging GDDR6 at 1750 MHz (1650 MHz Fix) (Sep 2026)
+
+**Symptoms (brain_cylinder, 13/09/2026):** board only boots sometimes — fans spin, LEDs cycle red/green/red, no DisplayPort signal, keyboard never initializes. Intermittent — swapping PSUs, SSDs, BIOS versions, and USB devices makes no difference.
+
+**Root cause:** board tries to start its GDDR6 at **1750 MHz**; on many used boards that's past what aging/marginal memory can still do. It fails the memory startup check and stalls before anything visible is involved (brain_cylinder, 13/09/2026).
+
+**Fix:** lower to **1650 MHz** — boot into Linux once, run one command, power off, done. Sticks after that (brain_cylinder, 13/09/2026) [confirmed: @brain_cylinder, 13/09/2026].
+
+- **Project:** [Dream-Cypher/bc250-memory-timing-boot-fix](https://github.com/Dream-Cypher/bc250-memory-timing-boot-fix) — script that adjusts boot-time memory timings from CMOS.
+- **Cost:** ~5% memory bandwidth.
+- **Persistence:** survives reboots and BIOS flashes, but a **CMOS clear or dead coin cell resets it**.
+- **Requirements:** Linux + root + kernel lockdown off.
+- **Field result:** one reporter 6/6 clean boots after months of random failures; two others tried it (brain_cylinder, 13/09/2026). Reddit thread: https://www.reddit.com/r/BC250Gaming/comments/1wb2izn/
+- **Pico U2F capture:** modified Pico U2F firmware that tracks CMOS activity and reads LPC bus via Pico is available in the repo; `capture.py` was written for macOS but can be ported (brain_cylinder/psycho_squid, 13/09/2026).
+- **Disclosure:** fix/script and post draft written with Claude Code; author is not a programmer (brain_cylinder, 13/09/2026).
+
+> Useful before assuming trash: "Likely lots of boards, that folks assumed were trash, can be salvaged with this" (alphavdp2, 13/09/2026) [confirmed: @alphavdp2, 13/09/2026]; thanks from psycho_squid (13/09/2026).
+
+---
+
 ## Power On For 1 Second Then Off (No POST)
 
 **Symptoms:** Board powers on for about 1 second, red and blue LEDs blink, then immediately shuts off with a distinctive click from the PSU. No display, no USB power.
@@ -643,4 +663,4 @@ glxinfo | grep "OpenGL renderer"
 - Always disable IOMMU in BIOS (source: boot.md, display.md, stability.md, quick-reference.md)
 - Always use passive DP-to-HDMI for audio (source: display.md)
 - Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03): CachyOS 7.1.x current, 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
-**Last verified: 2026-09-03**
+**Last verified: 2026-09-14**

@@ -143,6 +143,17 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 
 ## What's New
 
+**September 2026 (Sep 2–14, 140 channels):**
+- GDDR6 per-chip temps via SMU/UMC MR3 (pan_rijovich) — 8 chips + hotspot, P3.00 only; integrated in BC250-Telemetry v0.3 (`--memory-temp`)
+- Intermittent no-POST fix 1750→1650 MHz (Dream-Cypher) — CMOS script for aging VRAM, ~5% bandwidth cost
+- VRM Telemetry v0.2.0 (FAULT/WARN, CoolerControl/MangoHud, v2 dashboard) and v0.3 (GDDR6 temps); 120 °C Furmark within spec
+- DSC investigation — 4K@120Hz 4:4:4 DSC over HBR3 + HDMI 2.1 FRL PCON first time on Cyan Skillfish (_tayne_); PSVR2 DRM lease still blocked
+- Heatsink variant C beats B by 8–9 °C (serverror)
+- Additional VRAM flex PCB interposer (big_trov 0402) + EMFI injection testing + SMU governor injectable DXE (rescuemei)
+- **VCN Sep 2–14:** cold reset `0x0900c004` via SMU toggles but MMIO still `0xffffffff` (rxl8819516); 31-entry `0x5244` gate table drives clamp release (rukkusireland); 2-byte patch `0x9970F4` NOP (thelamer); PSP APCB→ABL→SVC hijack CCP proven, privileged PSP not yet (mergeconflicted); `bc250sim.tar.gz` + kernel patches `vcn_arm_fire/engage` (benpeterson)
+- New benchmarks: Where Winds Meet, Blood of Dawnwalker, Bodycam, Dead Space Remastered; RDR2 70–80 FPS, Cyberpunk 90–110 FSR3+FG, Superposition 2350@1000 record
+- 3 cases: Minimalist Sep update (slide grills), BeamCase Dupe (MakerBeam XL), Yet Another (SGI/Memphis, Qidi 245³)
+
 **August 2026:**
 - VCN research advances — register map + PSP decode (daveconde), CVE-2023-31316 protected-memory write primitive (mergeconflicted), cold-reset register identified (SMN 0x0900c004)
 - Optimized FSR 4 RADV build (dmoraza/rescuemei) — ~82–85 FPS vs ~70–75 in Cyberpunk high-FPS test
@@ -197,4 +208,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-09-03**
+**Last verified: 2026-09-14**

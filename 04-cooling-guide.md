@@ -27,6 +27,8 @@ Source: elektricM cooling.md (Stock Configuration, Active Cooling Required)
 
 Quick ID from elektricM: QR code next to the PCIe 8-pin connector indicates the 9-row variant.
 
+**Field comparison (serverror, 13/09/2026):** two otherwise identical setups (one with extra VRAM heatsink, which wouldn't account for the delta) — the **C heatsink solidly outperforms the B heatsink by 8–9 °C in Furmark**, even after repasting the B with MX-4. **Idle delta ~4 °C** with Furmark GUI open but not benching (serverror, 13/09/2026) [confirmed: @serverror, 13/09/2026]. See also [bc250-resources → BC-250 Heatsink Variant Comparison](https://github.com/elektricM/amd-bc250-docs).
+
 Source: elektricM cooling.md (Stock Configuration - Variants)
 
 ### Heatsink Revisions
@@ -321,4 +323,9 @@ iamdarkyoshi (17 Mar 2026) tested adding thermal pads between the heatsink and P
 **Key takeaway:** Front cooling alone isn't enough. Pay attention to the back.
 
 Sources: elektricM cooling.md (Backplate VRAM Cooling Solutions), iamdarkyoshi (17 Mar 2026)
-**Last verified: 2026-09-03**
+
+### GDDR6 Per-Chip Temperature Monitoring (Pointer)
+
+Per-chip GDDR6 temperature monitoring is now available via SMU/UMC MR3 reading (8 chips + hotspot/average, P3.00 BIOS only) — see canonical details in [02-BIOS & Firmware → GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3)](02-bios-and-firmware.md#gddr6-per-chip-temperature-reading-via-smuumc-mr3-sep-2026) (pan_rijovich, 12/09/2026). The reading is integrated as opt-in in [BC250-Telemetry v0.3](../03-power-supply-guide.md#vrm-telemetry-via-i2c-pmbus--web-dashboard) (`--memory-temp`; punsh1734, 13/09/2026). Use it to validate backplate cooling — e.g., chip #3 can run ~10 °C above others at idle (_fanoush_, 13/09/2026); GPU at 88 °C while most RAM chips run lower is expected (dmooney65, 12/09/2026).
+
+**Last verified: 2026-09-14**

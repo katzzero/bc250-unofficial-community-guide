@@ -1,3 +1,45 @@
+## September 14, 2026 — Sep 2–14 export cycle: GDDR6 per-chip temps, 1650 MHz boot fix, VRM v0.2.0/v0.3, DSC 4K120, new cases, new benchmarks (02, 03, 04, 07, 08, 10, 11, 13, README)
+
+Full-scan update against fresh exports (Sep 2–14, 2026): 140 channels, 772 help-thread files. Cursor 2026-09-03 → 2026-09-14. All claims cited to after-2026-09-02 exports.
+
+### 1. GDDR6 per-chip temperature — new diagnostic (02, 04, 03, 11)
+- Canonical in **02-bios-and-firmware.md** new section "GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3)": per-chip JEDEC MR3 via `umc_read_temp_per_chip`, 8 chips + hotspot/average, P3.00 BIOS only, Micron VRAM, chip #3 ~10 °C hot (pan_rijovich, 12/09/2026; _fanoush_, 13/09/2026; dmooney65, 12/09/2026; holde, 13/09/2026). Caveat DQ-bus corruption risk. Integration in BC250-Telemetry v0.3 as opt-in `--memory-temp` (punsh1734, 13/09/2026). Mention pointer added in **04-cooling-guide.md** VRAM Cooling, and **03-power-supply-guide.md** telemetry section. Repos: pan-Rijovich/bc250-memory-temperature, onlinermm/BC250-Telemetry dev.
+
+### 2. Intermittent no-POST — aging GDDR6 at 1750 MHz → 1650 MHz fix (10, 02, 11)
+- New section in **10-troubleshooting.md**: root cause 1750 MHz past aging VRAM capability, fails memory startup check before display (brain_cylinder, 13/09/2026). Fix lowers to 1650 MHz via CMOS script, ~5% bandwidth cost, survives BIOS flash not CMOS clear, needs Linux+root+lockdown off. Field 6/6 clean boots. Project [Dream-Cypher/bc250-memory-timing-boot-fix](https://github.com/Dream-Cypher/bc250-memory-timing-boot-fix) + Reddit r/BC250Gaming, Pico U2F LPC capture, Claude Code disclosure. Repo added to **11-community-and-resources.md** BIOS table.
+
+### 3. VRM telemetry v0.2.0 and v0.3 (03, 11)
+- **v0.2.0 (06/09/2026):** FAULT/WARN badges on PMIC latch, CoolerControl file sensors + MangoHud per-rail VRM temps/power, v2 dashboard selectable chart window 30s/1m/2m, board illustration redrawn (punsh1734, 06/09/2026; @DemolQ, @tri3gubki-ops). **v0.3 (13/09/2026):** GDDR6 per-chip temp opt-in integrated from pan_rijovich, shows in dashboards/MangoHud/CoolerControl. VRM ~120 °C in Furmark (seb.gauge, 02/09/2026; hojnikb: 100–120 °C within spec). Dev branch onlinermm/dev, mirror primus192. Updated **03-power-supply-guide.md** telemetry section, **Last verified: 2026-09-14**.
+
+### 4. DSC — 4K120 and PCVR (08)
+- **DSC investigation (13/09/2026):** DCN201 subset missing DSC engine/power-domain/bitfield blocked PSVR2 and 4K120 4:4:4 via DP→HDMI (alexxxor_, 13/09/2026). **Breakthrough _tayne_ 13/09/2026:** DSC functional via Claude Sonnet 4.6 — 3840×2160 @120Hz over HBR3 32.4 Gbps + HDMI 2.1 FRL PCON, first time on Cyan Skillfish Linux; VRR works with CableMatters 102101; PCON functional, MST unknown; PSVR2 DRM lease still hangs ~5s in SteamVR. Patch _mastag_ `0011-gud-bound-tv-mode-count.patch`, package `DSC_PCON_SteamOS_3.9.zip`. New section in **08-display-and-audio.md**.
+
+### 5. Heatsink variant comparison (04)
+- **C vs B heatsink:** C outperforms B by **8–9 °C in Furmark**, 4 °C idle delta even after repasting B with MX-4 (serverror, 13/09/2026). Added to **04-cooling-guide.md** variants table.
+
+### 6. Research & active projects — new threads (02, 11)
+- **Additional VRAM flex PCB interposer (Sep 2026):** SMBUS on TPMS header can change memory topology (snodrat, 12/09/2026); big_trov flex PCB in works (0402 assembly, mirroring decoupling caps + vmemp, JLCPCB 0.4 mm, deco cap placement variance, memtest chamshell mode test); 8 chips idle ~15 W (b_rob1); broken PS5 VRAM source, cheatsheet forterfix.com. No working mod yet.
+- **Voltage & EMFI injection testing (Sep 2026):** new thread benpeterson401185; refs PSPReverse/amd-sp-glitch, Habr pt article; Teensy 4 vs Pico controllers; no successful glitch yet.
+- **SMU governor injectable DXE (Sep 2026):** rescuemei UEFI SMU probing tool targeting unused SMU region for DXE-injected GPU governor; watchdog timer fix, MCP + Deepseek; firmware not encrypted; P3 internal BIOS SMU/ABL unencrypted (rescuemei, lordantares, jwagnervaz., _mastag, 08–13/09/2026). Documented in **02-bios-and-firmware.md** Research section.
+
+### 7. Benchmarks — new games + updates (07)
+- **New games:** Where Winds Meet (dejan_994 20s drops, cubehacker8107 4K 50–60), The Blood of the Dawnwalker (lovelifetrustfaith 60 locked High FSR Quality, 1750/3700 stutter towns), Bodycam (zerosumpr 40–55 with ini tweaks), Dead Space Remastered (cubehacker8107 stutters 5–10s) — added to Single-Player table.
+- **RDR2:** 38 CU 8c 2000 MHz 70–80 FPS 67–70 °C (shibly_91236, 04 & 07/09/2026).
+- **Cyberpunk:** 40 CU 8c High FSR3 NativeAA+FG3.1 90–110 FPS (halil_iboo, 06/09/2026), 85 FPS mitigations=off (dbkretro, 07/09/2026).
+- **Black Myth Wukong:** FSR4 360p→1440p matches FSR3 908p→1440p not worth, V4 +13% uplift, 4.1.1b no diff (hojnikb, 08–10/09/2026).
+- **Superposition:** vvaaron ~4900 2300/4.0 Bazzite, big_trov expected ~5700, .lordantares 2230@1030 Mesa 26.2, nhoj0176 record 2350@1000 (2500 CPU) 66 °C@2100 60 °C@1900 (Sep 2026).
+- **Furmark:** 40CU/2300 AIO S280, 38CU 2100/930, 8300@38CU2100, 8500+@38CU2200, etc. (adixd90, antmagl, shibly_91236 Sep 2026).
+
+### 8. Cases — 3 new designs (13)
+- **Minimalist update:** side grills slide, walls thickened, no visible screws, 2 grills blank, tabs (seb.gauge, 08/09/2026); front hole removed intentionally (11/09/2026); HP PD28/PL28 adaptation (capt.cat_13, 11–12/09/2026).
+- **BC250 BeamCase Dupe:** MakerBeam XL 300×15×15 extrusions, ~110×220×340, not friction-fit, card-mounted fan compatible (chu, 13/09/2026).
+- **Yet Another BC-250 Case:** SGI/Memphis 90s aesthetic, Qidi Q1 Pro 245³, prototype latches fitment WIP (keroppl_wizard, 11–13/09/2026). Updated **13-case-mods.md**, Last verified 2026-09-14.
+
+### 9. VCN research — Sep 2–14 evolution (02)
+- **Cold reset probe (rxl8819516, 03/09/2026):** SMN `0x0900c004` via SMU fw-window toggles `0↔1` but VCN MMIO stays `0xffffffff`; 5-entry table `0x00E188D8` replayed without effect; TMR 4 MB carveout notes; conclusion isolation gate still shut — needs PS5 baseline diff. **Gate table analysis (rukkusireland, 03–05/09/2026):** `t02 fw-table @0x286000 magic 0x5244 31 entries` drives `svc #0xf2 autoload`; op-id-8 is sole emitter of `t28 tag 0x1024 → clamp release 1 → 0x0900c004`; missing type-13 entry = silent BIOS disable. **2-byte BIOS patch (thelamer, 04/09/2026):** file offset `0x9970F4 B4 B1→00 BF` NOP bypasses gate byte at PSP-private SRAM `0xe18b70`; tested `benpeterson401185 05/09` AI BIOSes fail to boot. **PSP privileged CE (mergeconflicted, 04/09/2026):** APCB parser overflow → forged ABL → CCP R/W proven, privileged PSP memory not yet proven. **Kernel+simulator (benpeterson401185, 06/09/2026):** `bc250sim.tar.gz` + `0001-ungate + 0002-direct-load` + `amdgpu.ko.new` 30 MB for 7.1.5 + `vcn_arm_fire.py / vcn_engage.py`. Updated **02-bios-and-firmware.md** Research section, **Last verified: 2026-09-14**.
+
+---
+
 ## September 3, 2026 — Memory configuration (zswap vs zram) moved to OS doc, credited
 
 zswap/zram content relocated from 10-troubleshooting.md to a new optional "Memory Configuration (zswap vs zram)" section in 05-os-installation.md (it is an optional OS configuration choice, not a troubleshooting fix). Single source of truth per DOC_STANDARDS §1.

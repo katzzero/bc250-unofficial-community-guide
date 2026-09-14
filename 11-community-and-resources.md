@@ -37,6 +37,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [RescueMei/BC250-DXEv2-BIOSMOD](https://github.com/RescueMei/BC250-DXEv2-BIOSMOD) | MeiMeiDXE V2.1 BIOS mod — 8-core unlock toggle + ACPI options in BIOS menu, themed boot images, auto cold boot via RTC (compatible boards with standby power) (Aug 2026) |
 | [Forbidden-Darkness/AMD-BC-250-UEFI-v2.2-Firmware-Menu-Script](https://github.com/Forbidden-Darkness/AMD-BC-250-UEFI-v2.2-Firmware-Menu-Script) | Interactive UEFI flashing script — automated BIOS backup + modded P3.00 (incl. 8-core unlock BIOS) flash with themed menus. **Release v0.5.0** (Aug 2026) — prerequisite: "Deploy only on AMD BC-250 platforms verified 100% stable with all 8 CPU silicon cores active under legacy validation methods" |
 | [TuxThePenguin0/bc250-bios](https://gitlab.com/TuxThePenguin0/bc250-bios) | Modded BIOS files [confirmed: @dznuts, 13/01/2026] |
+| [Dream-Cypher/bc250-memory-timing-boot-fix](https://github.com/Dream-Cypher/bc250-memory-timing-boot-fix) | Boot-time memory timing fix — lowers GDDR6 1750→1650 MHz via CMOS to fix intermittent no-POST on aging VRAM; ~5% bandwidth cost, survives BIOS flash but not CMOS clear (Sep 2026) [confirmed: @brain_cylinder, 13/09/2026] |
 | [tmghd272/bc250-custom-bios-logo](https://github.com/tmghd272/bc250-custom-bios-logo) | BC250 BIOS boot logo theme — AMI OEM "ChangeLogo.exe" for DIY mods |
 | [tmghd272/bc250-custom-overlays](https://github.com/tmghd272/bc250-custom-overlays) | Custom overlays/logos (Turzx, MangoHud presets, BIOS) |
 
@@ -83,7 +84,8 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [katzzero/250mon](https://github.com/katzzero/250mon) | Lightweight hardware monitor for BC-250 — temperature, frequency, power stats |
 | [Magnap/cyan-skillfish-governor](https://github.com/Magnap/cyan-skillfish-governor) | SMU governor Debian/Ubuntu package — upstream for Debian builds |
 | [mix3d/bc250-perf-profile-switcher](https://github.com/mix3d/bc250-perf-profile-switcher) | Decky Loader plugin — GPU clock slider + telemetry overlay in Quick Access Menu |
-| [onlinermm/BC250-Telemetry](https://github.com/onlinermm/BC250-Telemetry) | VRM telemetry daemon + web dashboard — PMBus over I2C (per-rail voltage/current/power/temp), 2-wire hardware mod (Aug 2026) |
+| [onlinermm/BC250-Telemetry](https://github.com/onlinermm/BC250-Telemetry) | VRM telemetry daemon + web dashboard — PMBus over I2C (per-rail voltage/current/power/temp), 2-wire hardware mod (Aug 2026); v0.2.0 adds FAULT/WARN + CoolerControl/MangoHud + v2 dashboard, v0.3 adds per-chip GDDR6 temps (Sep 2026) [confirmed: @punsh1734, 13/09/2026] |
+| [pan-Rijovich/bc250-memory-temperature](https://github.com/pan-Rijovich/bc250-memory-temperature) | GDDR6 per-chip temperature via SMU/UMC MR3 — 8 chips + hotspot/average, P3.00 BIOS only, DQ-bus read (Sep 2026) [confirmed: @pan_rijovich, 12/09/2026] |
 | [Umio-Yasuno/amdgpu_top](https://github.com/Umio-Yasuno/amdgpu_top) | AMD GPU top — live GPU monitoring tool |
 | [ZEROAESQUERDA/PS5GPU-BC250](https://github.com/ZEROAESQUERDA/PS5GPU-BC250) | GUI GPU controller [confirmed: @tom97br, 07/03/2026] |
 
@@ -286,4 +288,4 @@ Found a solution to a problem? Help others by adding it to the documentation.
 
 *This revised documentation was compiled from the original resume files, 9,716 Discord messages (elektricM docs), the elektricM/amd-bc250-docs repository (commit/star counts not re-verified — community report), and verified against current internet sources (March 2026). All errors from the original documents have been corrected.*
 
-**Last verified: 2026-09-03**
+**Last verified: 2026-09-14**

@@ -25,8 +25,10 @@ Sources: nexgen3d, 14 Nov 2025 (V1 launch); 11 Feb 2026 (Liquid Cooled Pro); 22 
 | **ASRock Shell Case** | onemorecap | [Printables](https://www.printables.com/model/1228207-asrock-amd-bc-250-shell-case) / [MakerWorld](https://makerworld.com/en/models/1206445-asrock-amd-bc-250-shell-case) | Snap-on shell. Fits Mean Well LOP-300-12 inside. Friction-fit. Heated inserts + fasteners |
 | **MK-ULTRA Uno** | morph91 | [MakerWorld](https://makerworld.com/en/models/2749412-bc-250-gaming-pc-case-mk-ultra-uno) | Tool-less assembly. Single 120mm fan. Flex ATX (tested with Metalfish 300W). PETG recommended |
 | **MK-ULTRA Duo** | morph91 | MakerWorld (same page) | Dual-fan push-pull variant |
-| **Minimalist Case** | seb.gauge | [Printables](https://www.printables.com/model/1581724-minimalist-bc-250-case) | No supports. 2-3 parts. Flex ATX (Metalfish 300W). 120mm fans. No brass inserts |
+| **Minimalist Case** | seb.gauge | [Printables](https://www.printables.com/model/1581724-minimalist-bc-250-case) | No supports. 2-3 parts. Flex ATX (Metalfish 300W). 120mm fans. No brass inserts. **Sep 2026 update:** side grills now slide into place, walls slightly thickened, no visible screws, 2 grills (blank for custom) + 2 tabs (seb.gauge, 08/09/2026) [confirmed: @seb.gauge, 08/09/2026]. Front top bracket hole removed intentionally (seb.gauge, 11/09/2026; zonnashi, 10/09/2026). HP PD28/PL28 server PSU adaptation requires widening rear (capt.cat_13, 11–12/09/2026). |
 | **Black Box** | juliuuscaesar | Thread only (project-forums) | ~5L. Flex PSU. 120mm main fan + optional 90mm rear. PETG |
+| **BC250 BeamCase Dupe** | chu | Thread only (project-forums, Sep 2026) | MakerBeam XL 300×15×15 extrusions, heavily BeamCase-inspired, not friction-fit, ~110×220×340 mm; compatible with card-mounted bracket fans; second fan better on back for VRAM (chu, 13/09/2026) [confirmed: @chu, 13/09/2026] |
+| **Yet Another BC-250 Case** | keroppl_wizard | Thread only (project-forums, Sep 2026) | SGI/Memphis-inspired 90s aesthetic, Qidi Q1 Pro 245³ build volume, prototype — latches/fitment still WIP, first tray print layout good but connectors unaesthetic (keroppl_wizard, 11–13/09/2026) [confirmed: @keroppl_wizard, 11/09/2026] |
 | **Toolless Compact** | chriszf | Onshape (public project) | Flex ATX. Hex mesh design. Assembly guide in thread |
 | **Easily Printable Case** | jayrule | Thread only (project-forums) | 0 screws (except fans). No bridges/overhangs. Superglue assembly |
 | **Generic/Simple Case** | emiliano_1590 | [STEP files in thread](https://discord.com/channels/1315924807128449065/1437311862172815362) | SolidWorks. 140mm Thermalright fan. Basic design |
@@ -100,4 +102,6 @@ This addendum only covers the most notable / heavily-discussed designs from the 
 
 ## Credits
 
-All case designs listed here were created by community members and shared freely or commercially. Links were verified against Discord exports (project-forums channel, 2025-11-01 to 2026-06-12). If your design is missing or a link is outdated, please open an issue or PR on the [guide repository](https://github.com/katzzero/bc250-unofficial-community-guide).
+All case designs listed here were created by community members and shared freely or commercially. Links were verified against Discord exports (project-forums channel, 2025-11-01 to 2026-09-14). If your design is missing or a link is outdated, please open an issue or PR on the [guide repository](https://github.com/katzzero/bc250-unofficial-community-guide).
+
+**Last verified: 2026-09-14**

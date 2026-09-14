@@ -71,6 +71,20 @@ VRR is now achievable through multiple paths:
 - **Cheap Aliexpress 4K 60Hz adapters**: Support VRR on kernel 6.19+ and do NOT have audio desync issues -- best current option (fforduck, Apr 2026). Note: earlier community reports (essdee4336, Apr 2026) said cheap adapters do NOT support VRR; resolved by kernel 6.19+ patches.
 - **Expensive DP>HDMI adapters**: VRR not supported, audio desync on custom Bazzite builds.
 
+### DSC (Display Stream Compression) — 4K120 and PCVR (Sep 2026)
+
+**Problem (alexxxor_, 13/09/2026):** DisplayPort DSC was not enabled in the kernel DCN 2.0.1 driver — DCN201 is a 98.6% compatible subset of DCN2.0/2.1, but DSC engine, power domain, and bitfields were missing. This blocked **PSVR2 headset** connection and **4K120Hz 4:4:4 via DP→HDMI** adapters (alexxxor_, 13/09/2026) [confirmed: @alexxxor_, 13/09/2026].
+
+**Investigation (Sep 2026):** alexxxor_ started investigating for PSVR2 (DRM lease / Handoff doc in gist); _tayne_ in parallel for 4K120Hz 4:4:4 via DP→HDMI (13/09/2026). Prevailing theory: Sony did not intentionally disable it — likely neglect, like VCN ( _tayne_, 13/09/2026).
+
+**Breakthrough (_tayne_, 13/09/2026):** `DSC is functional, thank you Claude Sonnet 4.6` — full operational log:
+`DP-1 (active — your LG CX): dsc_clock_en: 1 ... dsc_pic_width: 3840, dsc_pic_height: 2160 ... dsc_bits_per_pixel: 224 ... Link: 4 lanes × 0x1e (HBR3 = 8.1 Gbps) = 32.4 Gbps raw ... You're running 4K@120Hz with DSC over HBR3 + HDMI 2.1 FRL PCON on AMD Cyan Skillfish — something the driver shipped as explicitly disabled. This is the first time this hardware has done this on Linux.` [confirmed: @_tayne, 13/09/2026]
+
+- **VRR** also works with the CableMatters 102101 adapter ( _tayne_, 13/09/2026).
+- **PCON** fully functional; MST use-case unknown ( _tayne_, 14/09/2026).
+- **Kernel patch (upstream WIP):** _mastag_ `0011-gud-bound-tv-mode-count.patch` in [MastaG/linux-cachyos-bc250](https://github.com/MastaG/linux-cachyos-bc250/blob/main/patches/linux-cachyos/0011-gud-bound-tv-mode-count.patch) (13/09/2026); anonymized SteamOS 3.9 package: `DSC_PCON_SteamOS_3.9.zip` ( _tayne_, 13/09/2026).
+- **PSVR2 — not yet functional (as of 14/09/2026):** DSC unblocked the display path, but SteamVR fails to grab the DRM lease for the headset; system hangs ~5s after load in SteamVR. Next step is DRM lease handling (alexxxor_, 13/09/2026; 14/09 03:39).
+
 ---
 
 ## Multi-Monitor Setup
@@ -121,3 +135,5 @@ Steam launch option: `ENABLE_VK_NULLVRS_1=1 %command%`
 ## Streaming (Sunshine + Moonlight)
 
 **Black screen after Bazzite 44 update (Aug 2026):** multiple users report Sunshine + Moonlight streams show a black screen in game mode after updating to Bazzite deck 44. Issue persists across SteamOS and CachyOS as well. Cause unknown — may be related to hardware encoder/decoder initialization. Workaround: pyrowave (Vulkan-based encoder) is an alternative that bypasses the hardware encoder entirely (autistic_neckbeard, 24/08/2026).
+
+**Last verified: 2026-09-14**
