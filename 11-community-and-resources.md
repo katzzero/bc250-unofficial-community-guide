@@ -198,6 +198,28 @@ When searching for help, try these identifiers:
 
 ---
 
+## Repository Activity (as of 2026-09-14 pull)
+
+> Auto-generated snapshot via `git fetch` across `export/repos/` (65 clones) on **2026-09-14**. `core.fileMode false` is set locally for the exFAT `SSD_1TB` volume to avoid spurious mode diffs, and `._` AppleDouble files are cleaned before each pull. No repo had commits with author date `>=2026-09-02` — Sep has been quiet upstream; this pull just fast-forwarded local clones that were behind on Jul–Aug commits. **Snapshot único — substituído a cada pull (drop anterior); histórico completo permanece em `changelog.md`.** Re-generate with `python3 ai/repo_activity.py` (planned) or `for d in export/repos/*/; do git -C "$d" log -1 --format="%h %ad %s" --date=short; done`.
+
+| Repository | Last commit (upstream HEAD) | Pulled 2026-09-14 | Notes |
+|------------|-----------------------------|-------------------|-------|
+| **250mon** | `3072f1d 2026-09-06` | 5 commits `84d8aa9..3072f1d` | `250mon_usage.py` + `install.sh` — auto-elevate SMU |
+| **bc250-steamos** | `3791d5f 2026-08-26` | 5 commits | **`dcn201-dsc-enable` — `drm/amd/display: enable DSC and HDMI 2.1 PCON on DCN201 for 4K@120Hz` (TeleBooth) — matches DSC breakthrough in `08` |
+| **bc250-steamos-real-toolkit** | `43304ea 2026-09-04` | 7 commits `d693c9e..43304ea` | `v1.9.1` — credits DCN/DSC, patch replacement, FSR4 SLR Proton variant |
+| **bc250-40cu-unlock** | `ae7c30c 2026-06-24` | 2 commits | Fedora 44 refactor (no Sep) |
+| **bc250-cu-live-manager** | `a929085 2026-07-30` | 6 commits | cpu unlock logic |
+| **bc250-efi-core-unlock** | `d2c115a 2026-08-01` | 2 commits | remove `mask == 0x77` check |
+| **bc250_memcfg** | `829e8d6 2026-05-22` | 1 commit | `LICENSE` |
+| **cyan-skillfish-governor** | `0c9c8d8 2026-05-26` | 23 commits pending | governor — no Sep |
+| **project-ariel / arieltune** | `7c28374 2026-08-??` | 43 commits pending | liberation suite — no Sep |
+| **colibri** | `f028d26 2026-08-04` | 2225 commits pending | large MoE repo — not BC-250-specific |
+| *53 others* | — | 0 since 2026-09-02 | No Sep commits; local clones now at upstream HEAD after this pull |
+
+BIOS repos: `BC250-DXE-SMU-Core-Unlock` last `f2eb226 2026-07-30`, `bc250-bios` `f00670c 2025-12-25`, `RescueMei/BC250-DXEv3-BIOSMOD` not cloned (tracked via Discord) — last release V3 23/08/2026 remains latest. New Sep repos `Dream-Cypher/bc250-memory-timing-boot-fix` and `pan-Rijovich/bc250-memory-temperature` not yet cloned — listed in `02`/`11` via Discord exports.
+
+---
+
 ## Timeline -- Key Milestones
 
 | Date | Event |
