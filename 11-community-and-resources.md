@@ -70,6 +70,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [higorprado/bc250-8core-telemetry-report](https://github.com/higorprado/bc250-8core-telemetry-report) | 8-core SMU metrics layout — maps the per-core arrays that displace GPU clock reporting (Aug 2026) |
 | [mendesrr/bc250-acpi-fix-updated-8c](https://github.com/mendesrr/bc250-acpi-fix-updated-8c) | 8-core ACPI tables (SSDT C-states extended to 16 threads) — required after CPU core unlock (Aug 2026) |
 | [rw-r-r-0644/bc250-smu-unlock](https://github.com/rw-r-r-0644/bc250-smu-unlock) | Fully arbitrary read/write and code execution on the BC-250 SMU — RPC-style patches from Python (Aug 2026); foundation of current VCN power-on research |
+| [Shalasere/bc250-vcn-research](https://github.com/Shalasere/bc250-vcn-research) | VCN research run log/notebook — PSP route toward powering VCN on (Sep 2026) |
 | [thelamer/bc250-lab-image](https://github.com/thelamer/bc250-lab-image) | Dedicated experiment image — v0.3.0 ships the SMU unlock plus rw_r_r_0644's power-on method as helpers for VCN research (Aug 2026) |
 
 ### Governor, Monitoring & Control
@@ -132,15 +133,18 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [Redemp/Interlaced-Linux-amdgpu-Driver](https://github.com/Redemp/Interlaced-Linux-amdgpu-Driver) | Interlaced display support for amdgpu — supports GC 10.1.3 / Cyan Skillfish (Aug 2026) |
 | [rpf16rj/steamos-led-wled](https://github.com/rpf16rj/steamos-led-wled) | DIY LED bar replica for BC-250 controlled from SteamOS Game Mode via WLED (Aug 2026) |
 | [SamSkjord/ubazzite600](https://github.com/SamSkjord/ubazzite600) | TP-Link UB600 (RTL8761BU) Bluetooth fix for Bazzite / atomic Fedora via out-of-tree btusb rebuild |
+| [simpmix/bc250-encoding-decoding-fix](https://github.com/simpmix/bc250-encoding-decoding-fix) | Experimental VA-API driver doing H.264/HEVC encode via Vulkan RDNA 2 compute shaders — **does not enable the VCN block**; stopgap only, modest gain over CPU encode, bundled `bc250-audio-fix` DKMS can conflict with the kernel audio driver (v0.4.0–0.4.2, Sep 2026) [confirmed: @_mastag, 25/09/2026] |
 | [tdakhran/wl-ambilight](https://github.com/tdakhran/wl-ambilight) | Wayland Ambilight project |
 
 ### Graphics & Performance Fixes
 
 | Repository | Description |
 |------------|-------------|
+| [daniel-h-0/bc250-fsr4-fork](https://github.com/daniel-h-0/bc250-fsr4-fork) | Community FSR 4 fork, branch `v4` (Sep 2026) |
 | [dmorazasanchez/bc250-fsr4](https://github.com/dmorazasanchez/bc250-fsr4) | Experimental FSR 4 optimization for GFX1013 — Mesa/RADV INT8 dot-product fallback via i24 instead of broken native DP4A; FSR 4.1.1 shader dropped 64k→37k instructions, ~306k→104k throughput; "huge performance improvement" in Cyberpunk 2077 (Aug 2026) |
 | [DryhoppedIPA/bc250-gfx1013-fix](https://github.com/DryhoppedIPA/bc250-gfx1013-fix) | Async compute queue (ACE) fix for GFX1013 — kernel + Mesa/RADV patches, +25% FPS (Aug 2026) |
 | [lonewolf0622/BC250-Native-Mesh-Shaders-](https://github.com/lonewolf0622/BC250-Native-Mesh-Shaders-) | Native Mesh Shader support — V1 works for mesh-only games; V2 complete but unshipped pending Task Shader implementation ("on the verge of being complete", Aug 2026) |
+| [luckiskind/bc250-radv-r2](https://github.com/luckiskind/bc250-radv-r2) | Experimental BC250/GFX1013 RADV R2 per-game package with patched vkd3d queue workaround; useful only for native mesh/task/hybrid-shader games — ~84 FPS vs ~94 FPS for the FSR3 fallback in a scene test (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026] |
 | [MastaG/linux-cachyos-bc250](https://github.com/MastaG/linux-cachyos-bc250) | CachyOS BC-250 kernel + Mesa repo — kernel-7.1 patches (audio, compute queue fix), updated Mesa, telemetry fixed at source in-kernel (`gpu_metrics`, `gpu_busy_percent`, real `freq1_input`). On this kernel, governor `fix-freq`/`fix-metrics` are redundant bind mounts (Aug 2026). |
 
 ### AI Inference
@@ -153,6 +157,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [LaurentZuijdwijk/llama.cpp](https://github.com/LaurentZuijdwijk/llama.cpp) | llama.cpp with adaptive speculative decoding (`--spec-draft-adaptive`) + Vulkan backend tuned for AMD Strix Halo — 4.7x on structured output, 1.9x mainline prefill on MoE (Aug 2026) |
 | [TechMakesArt/llama.cpp-bc250](https://github.com/TechMakesArt/llama.cpp-bc250) | llama.cpp fork tuned for the BC-250 (Aug 2026) |
 | [thelamer/bc250-ollama-openwebui](https://github.com/thelamer/bc250-ollama-openwebui) | Ollama + OpenWebUI setup guide |
+| [wdonega/bc250-llm-setup](https://github.com/wdonega/bc250-llm-setup) | Host setup scripts for a 2× BC-250 llama.cpp node (Sep 2026) |
 
 ### Cases & Physical Mods
 
@@ -305,9 +310,10 @@ Found a solution to a problem? Help others by adding it to the documentation.
 | 11 | [Community & Resources](11-community-and-resources.md) | Links, Discord, timeline, credits |
 | 12 | [AI Inference & LLMs](12-ai-inference.md) | llama.cpp, Ollama, Stable Diffusion, ROCm status |
 | 13 | [Case Mods & Custom Enclosures](13-case-mods.md) | Community case designs, commercial sources, 3D-printable files |
+| 14 | [Reddit Community (r/BC250Gaming)](14-reddit.md) | Subreddit roundup: builds, findings, prices |
 
 ---
 
 *This revised documentation was compiled from the original resume files, 9,716 Discord messages (elektricM docs), the elektricM/amd-bc250-docs repository (commit/star counts not re-verified — community report), and verified against current internet sources (March 2026). All errors from the original documents have been corrected.*
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

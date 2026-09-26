@@ -64,6 +64,8 @@
 
 **FSR4 vs XeSS vs FSR2/3 RT comparison (Aug 2026):** in RT Low tests (game unspecified), native = 56 FPS, FSR2/3 Quality = 75 FPS, FSR4 = 73 FPS, XeSS Balanced = 78 FPS. XeSS balanced outperforms both FSR2 and FSR4 in RT but image quality is worse. FSR4 balanced/performance is preferred for solid 60 FPS with frame generation, though input latency equals base FPS (e.g. FG from 30→60 has 30 FPS latency). Async compute patch alone gave ~10 FPS uplift (70→80 native) (dmoraza, community, Aug 2026).
 
+**FSR 4 forks and the mesh driver (Sep 2026):** [daniel-h-0/bc250-fsr4-fork](https://github.com/daniel-h-0/bc250-fsr4-fork) (branch `v4`) is a community FSR 4 fork (capt.cat_13, 16/09/2026) [confirmed: @capt.cat_13, 16/09/2026]. For games that require native mesh/task shaders, [luckiskind/bc250-radv-r2](https://github.com/luckiskind/bc250-radv-r2) packages an experimental RADV R2 path (baseline credit: lonewolf0622) — in a scene-by-scene test it landed ~84 FPS versus ~94 FPS for the standard FSR3 fallback, so it is only worth it for the few games that need true mesh shaders (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026].
+
 **Tips:** Enable FSR Quality for a significant boost. DLSS/FSR Frame Generation works well. (elektricM docs)
 
 **Sep 2026 benchmarks (40 CU, 8 cores):**
@@ -334,6 +336,8 @@ Expected: Technical challenges — anti-cheat may have issues on Linux (elektric
 | The Blood of the Dawnwalker (1.0.4–1.0.5) | 60 FPS locked | 1080p High FSR Quality, 40 CU 8c 1500/3500 MHz, dynamic UMA 512 MB, CachyOS RC + Proton 11, zswap active — 60 locked with dips (lovelifetrustfaith, 10/09/2026); 1750/3700 MHz + undervolt smoother but stutter in towns persists; GPU throttling 80 °C, barely 75 °C (12/09/2026) [confirmed: @lovelifetrustfaith, 10/09/2026] |
 | Bodycam | 40–55 FPS | With ini tweaks (settings + 2 .ini edits): consistent 40 FPS, 50–55 at 60 cap, 60+ some instances — smooth after tweaks; without: 25–30 FPS with stuttering (zerosumpr, 06/09/2026) [confirmed: @zerosumpr, 06/09/2026] |
 | Dead Space Remastered | Stutters 5–10s | Runs but significant stutters/freezes 5–10s while moving, all resolutions 1080p–4K; shadows/post/global illumination to low helps (cubehacker8107, 03/09/2026); ~65–70 °C (05/09/2026) [confirmed: @cubehacker8107, 03/09/2026] |
+| Control Resonant (Remedy) | 1080p FSR Quality, runs well | 40 CU, 8c @ 3.5 GHz, GPU 2000 MHz; scene comparison: fallback FSR3 ~94 FPS vs experimental mesh driver ~84 FPS — mesh path only helps games requiring native mesh/task shaders (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026]; another user runs it out of the box at 1080p FSR Quality (mahmudnaqi, 25/09/2026); one report of crash right after the Remedy logo on a fresh CachyOS 8c/40CU install (methisfaction, 25/09/2026) |
+| A Plague Tale: Requiem | ~75 FPS FSR4 Quality | dmooney65, 13/09/2026 [confirmed: @dmooney65, 13/09/2026] |
 
 ### S.T.A.L.K.E.R. 2 (May 2026)
 
@@ -580,4 +584,4 @@ Games with verified community mentions but limited sample size — use with caut
 | Stardew Valley | Runs fine at 4K 60 FPS | |
 | Hollow Knight | 4K playable (lighter game) | |
 | Star Wars Battlefront II | 80-85 → 120-130 FPS after SMU governor + kernel patch (juancarlos24691, Aug 2025) | |
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

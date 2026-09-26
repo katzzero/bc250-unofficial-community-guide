@@ -76,6 +76,7 @@ Sources: seb.gauge, 13 Mar 2026 (DeepCool); 15 Feb 2026 (Lanboy). Arthrimus thre
 | **ATX PSU Control Adapter** | mosfetparty (anton) | [GitHub](https://github.com/mosfetparty/bc250-psu-adapter) | Wiring diagrams + 3D models. Auto PS_ON |
 | **Remote PSU Controller** | PetteriLah | [GitHub](https://github.com/PetteriLah/BC-250-PC-Remote-Control) | ESP32-based wireless PSU control |
 | **AIO Mount for BC-250** | NexGen-3D | [Printables](https://www.printables.com/model/1554003-nexgen3d-aio-mount-for-the-bc-250) | 240mm AIO support |
+| **BC-250 "Complete-ish" CAD Model** | jackjt8 | [Printables](https://www.printables.com/model/1828755-asrock-bc250-complete-ish-cad-model) | Detailed ASRock BC-250 reference model for designing your own case or mod (15/09/2026) |
 
 ---
 
@@ -104,4 +105,4 @@ This addendum only covers the most notable / heavily-discussed designs from the 
 
 All case designs listed here were created by community members and shared freely or commercially. Links were verified against Discord exports (project-forums channel, 2025-11-01 to 2026-09-14). If your design is missing or a link is outdated, please open an issue or PR on the [guide repository](https://github.com/katzzero/bc250-unofficial-community-guide).
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

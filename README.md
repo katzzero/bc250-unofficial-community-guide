@@ -43,6 +43,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 | 11 | [Community & Resources](11-community-and-resources.md) | Discord, repos, timeline, YouTube coverage |
 | 12 | [AI Inference & LLMs](12-ai-inference.md) | llama.cpp, Ollama, Stable Diffusion, ROCm |
 | 13 | [Case Mods & Custom Enclosures](13-case-mods.md) | 3D-printable cases, commercial sources |
+| 14 | [Reddit Community (r/BC250Gaming)](14-reddit.md) | Subreddit roundup: builds, technical leads, price signals |
 
 ---
 
@@ -86,7 +87,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 1. **Linux only** — no Windows GPU drivers exist
 2. **Always clear CMOS** after BIOS flash — settings won't stick otherwise
 3. **Disable IOMMU** in BIOS — broken, causes display failures
-4. **Use kernel 7.1.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; roll back via boot menu if an update breaks display (Aug 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03)
+4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26)
 5. **Governor voltage: minimum 700 mV** — below that GPU locks to 1500 MHz
 6. **Never use 6-pin to 8-pin PCIe adapters** — fire hazard
 7. **Never use Smokeless_UMAF** — can permanently damage the board
@@ -142,6 +143,15 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 ---
 
 ## What's New
+
+**September 2026 (Sep 15–26, 135 channels):**
+- CachyOS standard kernel now **7.2.x** (7.2.4/7.2.6); 8-core boards need the MastaG `0001` telemetry patch (stock kernel assumes a 6-core SMU layout); `bc250_hdmi21` enabled by default; 7.3-rc4 in testing (_mastag, 15–20/09/2026)
+- **Vulkan-compute encode stopgap** — simpmix/bc250-encoding-decoding-fix v0.4.0–0.4.2: H.264/HEVC via RDNA 2 compute shaders, does **not** enable VCN; falls back to software in Sunshine, modest CPU gain, bundled `bc250-audio-fix` DKMS can break audio (_mastag, mix2.6, 13–25/09/2026)
+- VCN: Shalasere/bc250-vcn-research — PSP route "make the vcn power on and start talking" (shalasere, 15–16/09/2026)
+- FSR 4 community fork (daniel-h-0/bc250-fsr4-fork) and experimental RADV R2 mesh package (luckiskind/bc250-radv-r2) (16–24/09/2026)
+- SteamOS toolkit v1.9.6: 4K120 over DP→HDMI 2.1 cold-boot fix, DSC debugfs override sticks (rpf16rj, 20/09/2026)
+- New benchmarks: Control Resonant (1080p FSR Quality; FSR3 fallback ~94 FPS vs mesh ~84) and A Plague Tale: Requiem (~75 FPS FSR4 Quality)
+- New case resource: complete-ish ASRock BC-250 CAD model on Printables (jackjt8, 15/09/2026)
 
 **September 2026 (Sep 2–14, 140 channels):**
 - GDDR6 per-chip temps via SMU/UMC MR3 (pan_rijovich) — 8 chips + hotspot, P3.00 only; integrated in BC250-Telemetry v0.3 (`--memory-temp`)
@@ -208,4 +218,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

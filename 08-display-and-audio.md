@@ -84,6 +84,8 @@ VRR is now achievable through multiple paths:
 - **PCON** fully functional; MST use-case unknown ( _tayne_, 14/09/2026).
 - **Kernel patch (upstream WIP):** _mastag_ `0011-gud-bound-tv-mode-count.patch` in [MastaG/linux-cachyos-bc250](https://github.com/MastaG/linux-cachyos-bc250/blob/main/patches/linux-cachyos/0011-gud-bound-tv-mode-count.patch) (13/09/2026); anonymized SteamOS 3.9 package: `DSC_PCON_SteamOS_3.9.zip` ( _tayne_, 13/09/2026).
 - **PSVR2 — not yet functional (as of 14/09/2026):** DSC unblocked the display path, but SteamVR fails to grab the DRM lease for the headset; system hangs ~5s after load in SteamVR. Next step is DRM lease handling (alexxxor_, 13/09/2026; 14/09 03:39).
+- **Toolkit v1.9.6 (rpf16rj, 20/09/2026):** 4K120 over DP→HDMI 2.1 adapters fixed — no more black screen or artifacts at cold boot or when booting straight into Game Mode; the toolkit now auto-limits color depth to what the TV/adapter can carry. The debugfs `dsc_bits_per_pixel` override now sticks even with the display off or mid-transition [confirmed: @rpf16rj, 20/09/2026].
+- **Caution — DSC patch vs governor race (Sep 2026):** the DSC patch introduces a race window with the GPU governor on reboot; the DP→HDMI PCON can fail link training and the display stays unstable until the PCON is reconnected (at either end). Seen on CachyOS and SteamOS 3.9; no root cause yet, reverting the DSC patch was suggested (_tayne, 18/09/2026) [confirmed: @_tayne, 18/09/2026].
 
 ---
 
@@ -136,4 +138,4 @@ Steam launch option: `ENABLE_VK_NULLVRS_1=1 %command%`
 
 **Black screen after Bazzite 44 update (Aug 2026):** multiple users report Sunshine + Moonlight streams show a black screen in game mode after updating to Bazzite deck 44. Issue persists across SteamOS and CachyOS as well. Cause unknown — may be related to hardware encoder/decoder initialization. Workaround: pyrowave (Vulkan-based encoder) is an alternative that bypasses the hardware encoder entirely (autistic_neckbeard, 24/08/2026).
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

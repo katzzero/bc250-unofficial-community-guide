@@ -1,3 +1,38 @@
+## September 26, 2026 — Sep 15–26 export cycle: kernel 7.2.x, Vulkan-compute encode stopgap, VCN PSP route, FSR4/mesh forks, DSC/governor race, new benchmarks (02, 05, 07, 08, 10, 11, 13, 00, README)
+
+Full-scan update against fresh exports (Sep 15–26, 2026): 135 channels, ~9.4k messages in `bc250-chat` alone. Cursor 2026-09-14 → 2026-09-26 (fixed manually after the exporter cursor bug). All claims cited to after-2026-09-13 exports.
+
+### 1. Kernel matrix — CachyOS now 7.2.x (05, 00, 10, README)
+- Canonical **[Kernel Support Matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26)** moved from 7.1.x to **7.2.x** (7.2.4/7.2.6-1); 7.3-rc4 in testing. On 8-core boards the CachyOS kernel needs the `0001` telemetry patch — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. `bc250_hdmi21` is now default (_mastag, 20/09/2026). Updated heading anchor + all 5 dependent references (00 §distro/§kernel, 10 §wrong-kernel/§checklist, README warning).
+
+### 2. Vulkan-compute encode stopgap — verified, not VCN (02, 11, 10, README)
+- `simpmix/bc250-encoding-decoding-fix` v0.4.0–v0.4.2 (H.264/HEVC via Vulkan RDNA 2 compute shaders). **Verification (user-requested):** reported working for `ffmpeg` VA-API (dmooney65, 13/09/2026) and integrated as a SteamOS toolkit option (rpf16rj, 20/09/2026), but **falls back to software encode in Sunshine/Moonlight**, is "slower than software" in one test, its own test suite failed (`EncodeBitstreamTest` aborted), gain over CPU encode is ~2% at best (holde, shalasere, 13/09/2026), streaming "eats half your fps or more even at h.264" (thelamer, 21/09/2026), and the bundled `bc250-audio-fix` DKMS module races the in-tree audio driver (_mastag, 25/09/2026). Documented as stopgap-only in 02 VCN research + 11 repo table + new 10 troubleshooting entry.
+
+### 3. VCN — PSP route (02, 11)
+- shalasere publishes run results at `Shalasere/bc250-vcn-research` and reports "leveraging a 'bug' mentioned in the vcn channel to write some psp stuff… to make the vcn power on and start talking" (16/09/2026) [confirmed: @shalasere, 16/09/2026]. This is a lead, not a confirmed VCN enablement.
+
+### 4. FSR 4 fork + mesh/R2 package (07, 11)
+- `daniel-h-0/bc250-fsr4-fork` (branch `v4`) community FSR 4 fork (capt.cat_13, 16/09/2026). `luckiskind/bc250-radv-r2` experimental RADV R2 mesh package (baseline: lonewolf0622) — scene test ~84 FPS vs ~94 FPS for the standard FSR3 fallback, so useful only for native mesh/task/hybrid games (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026]. Added to 11 repo tables and 07 FSR section.
+
+### 5. DSC / display + audio troubleshooting (08, 10)
+- Toolkit v1.9.6: 4K120 over DP→HDMI 2.1 cold-boot fix + DSC debugfs override sticks (rpf16rj, 20/09/2026) [confirmed: @rpf16rj, 20/09/2026]. New caution: DSC patch races the GPU governor on reboot — PCON link training fails, display unstable until reconnect (tayne, 18/09/2026) [confirmed: @_tayne, 18/09/2026].
+
+### 6. New benchmarks (07)
+- **Control Resonant:** 1080p FSR Quality at 40 CU/8c; initial "mesh > fallback" claim corrected in-thread — FSR3 fallback ~94 FPS vs mesh ~84 FPS (nonu0038, 24/09/2026); one crash-after-logo report (methisfaction, 25/09/2026). **A Plague Tale: Requiem:** ~75 FPS FSR4 Quality (dmooney65, 13/09/2026).
+
+### 7. Repos & case resources (11, 13)
+- Added: `Shalasere/bc250-vcn-research`, `daniel-h-0/bc250-fsr4-fork`, `luckiskind/bc250-radv-r2`, `simpmix/bc250-encoding-decoding-fix`, `wdonega/bc250-llm-setup`. 13: ASRock BC-250 "complete-ish" CAD model on Printables (jackjt8, 15/09/2026).
+
+## September 26, 2026 — r/BC250Gaming Reddit archive + new doc 14 (14, 11, README)
+
+New Reddit source ingested via the community-run Arctic Shift API (no Reddit OAuth): `ai/export_reddit.py` writes one file per post to `export/reddit/posts/<id>.txt` plus `index.txt`/`index.json`; resumable via an append-only JSONL cache + checkpoints. Snapshot **2026-09-26: 2,439 posts, 31,779 comments**. Subreddit r/BC250Gaming created 2025-07-02, public, Spanish sidebar description, ~8.1k members (redlib). Web-tier source — scores/comment counts are frozen at archive time, not live.
+
+- New **14-reddit.md**: community-pulse roundup (overview, technical leads, tools surfaced, price signals, builds, help topics, open questions). Not a second catalog — cross-references canonical files.
+- Technical leads: BIOS recovery pinout **MX25L12872F** / **25Q128JVSQ** with CH341/CH347 (u/v6moto, 04/09/2026); video encode "stopgap" does not enable VCN, maintained fork recommended (u/Kasio-the-Queer / u/IAmJacksSemiColon, 25/09/2026); **Control Center CPU OC brick** 4000 MHz @ 1275 mV on 8-core BIOS (u/Wonderful-Clothes-25, 25/09/2026); governor hard-coded to card0, simpledrm did not fix (u/kwd114, 25/09/2026); **single vs dual fan: no thermal benefit from dual** (u/HTWingNut, 05/07/2026); AliExpress **FSP500-30AS bridges wrong pins** (u/david30121, 09/09/2026); **Metalfish 600 W twitchy overcurrent protection** shuts the board down under load regardless of cable count — 500 W works (u/User5281 / u/LeastOutcome7842, 25/09/2026).
+- New repos surfaced (leads for doc 11): `Shalasere/bc250-vulkan-encode-stopgap`, `Expired-Pasta/AMD_BC250_BIOS_Reprogramming_MX25L12872F`, `evdokim/bazzite-bc-250-governor`, `redbeard1083/bc250-performanceprofiles`.
+- Price signals Aug–Sep 2026: S&C/LTT coverage pushed listings to ~$200, then coupons/cashback brought boards back toward ~$100–130 (u/ChuuBaka, u/ilkap2005, 02–17/09/2026).
+- Registered doc 14 in README index and 11 "Complete Index of Revised Files".
+
 ## September 14, 2026 — Sep 2–14 export cycle: GDDR6 per-chip temps, 1650 MHz boot fix, VRM v0.2.0/v0.3, DSC 4K120, new cases, new benchmarks (02, 03, 04, 07, 08, 10, 11, 13, README)
 
 Full-scan update against fresh exports (Sep 2–14, 2026): 140 channels, 772 help-thread files. Cursor 2026-09-03 → 2026-09-14. All claims cited to after-2026-09-02 exports.

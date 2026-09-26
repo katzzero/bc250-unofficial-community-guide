@@ -265,7 +265,7 @@ Boot → Boot Mode:
 
 | Distro | Difficulty | Verdict |
 |--------|-----------|---------|
-| **CachyOS** | Intermediate | Community default — best stability + performance, current kernel out of box (7.1.x as of Sep 2026 — see the [kernel matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03)) |
+| **CachyOS** | Intermediate | Community default — best stability + performance, current kernel out of box (7.2.x as of Sep 2026 — see the [kernel matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26)) |
 | **Bazzite** | Easy | Needs testing branch (stable is kernel 6.17.7 — too old for 40 CU). See rebase instructions below. |
 | **Fedora 43+** | Easy | Most documented, Mesa 25.1+ native |
 | **Nobara** | Intermediate | Fedora-based, non-immutable, easy governor setup |
@@ -277,7 +277,7 @@ Boot → Boot Mode:
 
 ### Broken kernels (AVOID)
 
-**6.15.0-6.15.6** and **6.17.8-6.17.10** cause GPU failure. Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03) before installing: as of Sep 2026, CachyOS ships 7.1.x; 6.19.x remains the recommended stable line, 6.18 LTS the fallback.
+**6.15.0-6.15.6** and **6.17.8-6.17.10** cause GPU failure. Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26) before installing: as of Sep 2026, CachyOS ships 7.2.x (8-core boards need the `0001` telemetry patch); 6.19.x remains the recommended stable line, 6.18 LTS the fallback.
 
 **Bazzite stable ships 6.17.7** — too old for 40 CU stability. Rebase to the testing branch immediately after install (instructions in section 9 below).
 
@@ -685,4 +685,4 @@ Your BC-250 is running. Now you can:
 ---
 
 *Guide generated from Revised/01-13 documents, export/elektricM-docs, and BC-250 Discord community data.*
-*Last updated: August 2026. Last verified: 2026-09-03.*
+*Last updated: September 2026. Last verified: 2026-09-26.*

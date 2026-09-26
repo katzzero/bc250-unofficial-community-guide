@@ -608,6 +608,10 @@ duggasco (research, repo), filippor (independent testing, ignore_cu_harvest), sc
 - **Kernel module + simulator (benpeterson401185, 06/09 07:30–07:51):** `bc250sim.tar.gz` BIOS simulator + patches `0001-ungate (registers VCN2.0+JPEG2.0 for UVD 2.0.3 → navi10_vcn)` + `0002-direct-load (amdgpu_vcn_fw_load_via_psp() returns false → direct-MMIO ucode path)` + `amdgpu.ko.new` 30 MB for `linux-7.1.5` (vermage `7.1.5-0-stable`). Proven load: `modprobe drm_display_helper ttm amdxcp ... && insmod /root/amdgpu.ko.new` — SMU message surface now enumerated from two directions (static call graph + live table dump) and exhausted; clamp is at PSP root (`gate byte 0xe18b70 + 0x09-frame window release`) and `escalation.bin (APCB→ABL→SVC-hijack → flip gate byte)` remains the one live lever (benpeterson401185, 06/09 07:17). Also `vcn_arm_fire.py (0x13ED8=1 + msg 0x1d)` + `vcn_engage.py (ENABLE=1 + ctrl gate release)` shared for testing (06/09 07:30).
 - **Insider context (holde, 05/09 17:43–18:59):** ex-AMD Angablade + holde previously powered VCN up and got garbage frames via one malformed ffmpeg frame, but stopped for time/legal reasons before fw load. Sony customizations are SW-only — VCN itself is bog standard VCN (not VCN 3.x with AV1); strategy is stealing Steam Deck (Vana) VCN fw/headers for cross-reference (Deck is VCN 3 / Navi, BC-250 is VCN 2.0.3 but close enough). hele confirms VCN 2.0.3 is just rename without AV1 bump (05/09 18:20).
 
+**Progress (Sep 14–26 2026):**
+- **Vulkan-compute encode stopgap (simpmix, 16–17/09/2026):** `simpmix/bc250-encoding-decoding-fix` (v0.4.0–v0.4.2) is a VA-API driver that encodes H.264/HEVC with **Vulkan RDNA 2 compute shaders — it does not turn on the VCN block**. It is reported working for `ffmpeg` VA-API and was added as an option in the SteamOS toolkit, but it falls back to software encode under Sunshine/Moonlight, the CPU saving over a plain software encode is only ~2% (holde), and its bundled `bc250-audio-fix` DKMS module can race the in-tree audio driver (see [10](10-troubleshooting.md)). The driver's own author calls it a stopgap (mix2.6, 16–17/09/2026; dmooney65, 13/09/2026; shalasere/holde, 13/09/2026; _mastag, 25/09/2026) [confirmed: @_mastag, 25/09/2026].
+- **PSP route to VCN power-on (shalasere, 15–16/09/2026):** shalasere is publishing run results at [Shalasere/bc250-vcn-research](https://github.com/Shalasere/bc250-vcn-research) and reports "leveraging a 'bug' mentioned in the vcn channel to write some psp stuff… to make the vcn power on and start talking" (16/09/2026) [confirmed: @shalasere, 16/09/2026].
+
 ### GPU Unlock Research (40 CU)
 
 The 40 CU unlock went through multiple research phases before reaching the current stable state:
@@ -685,4 +689,4 @@ Community field reports and research history, moved here from the unlock procedu
 - Other note: P3 internal BIOS has SMU/ABL unencrypted and more open to deal with SMU (jwagnervaz., 13/09/2026); Subor Z+ BIOS VBIOS (hex FF15) similar to BC-250 and may help map it (jwagnervaz., 14/09/2026).
 - Blocker: telemetry patch hangs on this board only — difference with/without ACPI fix or 6/8 cores makes no difference (_mastag, 02/09/2026).
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-09-26**

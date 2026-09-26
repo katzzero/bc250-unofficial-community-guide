@@ -127,7 +127,7 @@ Pass: `failed` = 0 on every core and spread within ~1% of the median. **Fail:** 
 
 | Cause | Fix |
 |-------|------|
-| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.1.x is current, 6.19.x recommended stable, 6.18 LTS fallback |
+| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.2.x is current (`0001` telemetry patch needed on 8-core), 6.19.x recommended stable, 6.18 LTS fallback |
 | Bad GPU frequency | Boot with `nomodeset`, install governor, remove nomodeset (source: boot.md) |
 | IOMMU enabled | Disable IOMMU in BIOS (source: boot.md, display.md, stability.md) |
 | Green screen (CPU instability) | Try better PSU, different SSD, proper DP cable -- (community report — cause not confirmed; green screen only documented in the ACPI context in stability.md) |
@@ -261,6 +261,24 @@ Also try restoring the default config file: reinstall the governor package or co
 **Status:** Benign. Does NOT indicate hardware damage. -- (community report — benign)
 
 **Fix:** None needed. GPU works normally despite this message.
+
+---
+
+## Audio Breaks After Kernel Update — `bc250-audio-fix` DKMS Conflict (Sep 2026)
+
+**Symptom:** Audio stops working after a kernel update; the log mentions `bc250_audio_fix`.
+
+**Cause:** The `bc250-audio-fix` DKMS module shipped by the experimental `simpmix/bc250-encoding-decoding-fix` package races the in-tree audio driver. This is **not** a kernel regression.
+
+**Fix:** Remove the out-of-tree module and reboot — `sudo dkms remove bc250-audio-fix/0.4.0 --all` (or run `uninstall_dkms.sh` from that repo) (_mastag, 25/09/2026) [confirmed: @_mastag, 25/09/2026].
+
+---
+
+## Display Instability After Reboot — DSC Patch / Governor Race (Sep 2026)
+
+**Symptom:** After a reboot the DisplayPort→HDMI PCON fails link training and the display is unstable until the PCON is reconnected (at either the DP or the HDMI end).
+
+**Cause:** The DSC patch introduces a race window with the GPU governor on reboot. Seen on both the CachyOS kernel repo and SteamOS 3.9; no root cause established yet, and reverting the DSC patch was suggested (_tayne, 18/09/2026) [confirmed: @_tayne, 18/09/2026].
 
 ---
 
@@ -662,5 +680,5 @@ glxinfo | grep "OpenGL renderer"
 - Always clear CMOS after BIOS flash (source: boot.md, display.md, quick-reference.md)
 - Always disable IOMMU in BIOS (source: boot.md, display.md, stability.md, quick-reference.md)
 - Always use passive DP-to-HDMI for audio (source: display.md)
-- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-03): CachyOS 7.1.x current, 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
-**Last verified: 2026-09-14**
+- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26): CachyOS 7.2.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
+**Last verified: 2026-09-26**

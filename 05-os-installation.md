@@ -4,15 +4,15 @@
 > **BIOS must be flashed first** - see [02-BIOS](02-bios-and-firmware.md).
 > 40 CU unlock no longer requires a kernel patch — use `bc250-cu-live-manager` on stock kernel. **Mesa 26** is current with significant RT and performance improvements.
 
-## Kernel Support Matrix (canonical — as of 2026-09-03)
+## Kernel Support Matrix (canonical — as of 2026-09-26)
 
 This table is the **single source of truth** for kernel recommendations. Other files link here instead of restating it.
 
 | Kernel line | Status | Notes |
 |-------------|--------|-------|
-| **CachyOS standard (7.1.x)** | ✅ Current default | e.g. 7.1.8-1. DP audio spread-spectrum disable landed in the 7.1 stable line (big_trov, 20/08/2026). |
-| **7.2 (CachyOS)** | Upcoming | Expected to carry the latest DP audio patch, which also fixes some display issues (essdee4338, 16/08/2026). |
-| **7.3 rc1** | Upcoming | Expected ~30 Aug 2026; _mastag preparing a CachyOS-flavored 7.3 rc with async compute shaders + extended GPU frequency patches (~1–2 weeks after rc1) (_mastag, 25–26/08/2026). |
+| **CachyOS standard (7.2.x)** | ✅ Current default | e.g. 7.2.4 / 7.2.6-1. On 8-core boards the CachyOS kernel needs the `0001` telemetry patch from the MastaG repo — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. `bc250_hdmi21` is now enabled by default (no kernel parameter needed) (_mastag, 20/09/2026). |
+| **7.1.x (CachyOS)** | ✅ Previous default | e.g. 7.1.8-1. DP audio spread-spectrum disable landed in the 7.1 stable line (big_trov, 20/08/2026). |
+| **7.3-rc (CachyOS)** | ⚠️ Testing | 7.3-rc4 in use; reported to fix an audio-on-DP→HDMI-adapter regression seen on the 7.2 standard kernel for at least one user (dmooney65, 25/09/2026). |
 | **6.19.x** | ✅ Recommended stable | VRR + DP audio fixes (TheFloW patch, 6.19.10+). |
 | **6.18 LTS** (6.18.42-1-cachyos-lts) | ✅ Stable fallback | |
 | **6.15.0–6.15.6 and 6.17.8–6.17.10** | ❌ Broken — avoid | GPU initialization failures / kernel panics. |
@@ -597,4 +597,4 @@ uname -r
 | **Fedora Media Writer** | All | Fedora's recommended tool |
 | **Rufus** | Windows | Use UEFI / FAT32 mode |
 | **dd** | Linux CLI | `sudo dd if=image.iso of=/dev/sdX status=progress && sync` |
-**Last verified: 2026-09-03**
+**Last verified: 2026-09-26**
