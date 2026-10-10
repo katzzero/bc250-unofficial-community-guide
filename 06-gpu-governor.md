@@ -14,6 +14,8 @@
 | **cyan-skillfish-governor-tt** | Multi-step | Yes (pre-included in Bazzite) | Good alternative | Thermal throttling aware |
 | **oberon-governor** | Two-state | Yes | Legacy / No longer recommended | Simple but limited to 1000/2000 MHz |
 
+> **Watch this space:** an **in-SMU (firmware) GPU governor** — no userland daemon, standard amdgpu sysfs — is functional in development builds as of 04/10/2026 and is planned for the next community BIOS bundle. See 02 → Research: "SMU Governor — Injectable DXE Driver". Until that ships, `cyan-skillfish-governor-smu` remains the recommendation.
+
 ---
 
 ## Installation: cyan-skillfish-governor-smu (Recommended)
@@ -291,6 +293,8 @@ Changing the SMU performance profile index can reduce idle power:
 
 Note: perfprofileindex works on BIOS v3 but NOT on BIOS v5. This is an advanced tuning step — test stability carefully.
 
+**Memory P-state idle savings (Oct 2026):** dropping the memory P-state from the default **3 to 0** took one board "from about 60 watts to about 30 watts" idle at 8c/38cu with CPU+GPU undervolts (dan2wik, 06/10/2026) [confirmed: @dan2wik, 06/10/2026] — but it downclocks fabric, memory controller and GDDR6 together, i.e. it costs memory bandwidth. ⚠️ Writing P-states from the SMU table on this board is risky: "it sets maybe 95% of the time and then occasionally, setting a p state, the APU will fabric fault and lockup" (dan2wik, 05/10/2026). GDDR6 has no dynamic clock switching at stock — it draws ~25–35 W regardless of load (dan2wik, 06/10/2026) — this is the idle-power floor, see [03](03-power-supply-guide.md).
+
 ## Known Stable Frequency / Voltage Points
 
 | Frequency | Voltage | Cooling Needed | Stability |
@@ -308,6 +312,12 @@ Note: perfprofileindex works on BIOS v3 but NOT on BIOS v5. This is an advanced 
 - Even 1800 MHz at 40 CU is faster than 24 CU at 2400 MHz, with much better thermals (essdee4336).
 - Silicon lottery varies: one user needed 2000@960, another needed 2000@1060 (paul_lionking).
 - At ~2200 MHz at 40 CU, a secondary power limit is tripped by high voltage — raising voltage above a certain point causes hard lock (big_trov).
+
+**Voltage floor and startup-clock caveat (Sep–Oct 2026):**
+- Never set the **minimum voltage below 700 mV**: "Just dont change min voltage lower than 700" — below it the board crashes at startup instead of falling back (froginasock., 25/09/2026) [confirmed: @froginasock., 25/09/2026]. Minimum *clock* can go to 500 MHz on most boards (older default config) — "it will use the clocks at startup unlike higher values - but reduces idle temps/noise a lot" (froginasock., 25/09/2026). One board was green-screening at idle until its 350 MHz floor was raised to 760 mV (dominic61, 04/10/2026); another user could not stabilize 500 MHz @ 700 mV and left the floor at 700 MHz (yrouel86, 06/10/2026) — the low end is board-dependent.
+- A commonly reported 40 CU pairing: 500 MHz @ 700 mV floor → 2000 MHz @ 950 mV ceiling (yrouel86, 06/10/2026); low-stable reported elsewhere as 500 @ 700 (vvaaron, 06/10/2026). Voltage steps are **6.25 mV granularity** — values are indexed, not raw mV (dan2wik, 07/10/2026).
+- The in-SMU governor's proposed defaults are 350–2000 MHz, with 1500 MHz @ 1000 mV suggested as a safe baseline for all boards — see 02 Research (rescuemei, 05/10/2026).
+- Field crash data (Oct 2026): one board hung Resident Evil Requiem repeatedly at the stock governor default of 1850 MHz; capping at 1500 MHz ran 1 h 29 m crash-free at 65 °C / 117 W GPU (demoxtm, 05/10/2026); the same user fixed remaining Requiem crashes with 2000 MHz @ 1045 mV (06/10/2026) while noting "Most ppl can do 2000mhz @ 1.000mV" — silicon variance, not a universal number.
 
 (source: governor.md:577-583)
 
@@ -344,6 +354,8 @@ sudo bc250-detect -f 3900 -v 1280 -k -c /etc/bc250-overclock.conf
 sudo bc250-apply -a -i /etc/bc250-overclock.conf
 sudo systemctl enable bc250-smu-oc
 ```
+
+> ⚠️ **Never exceed 1.325 V CPU core voltage ("Vid")** under any circumstances — stress-test after every change (yrouel86, 07/10/2026; mirrored in README warnings). A Control Center CPU OC at 4000 MHz @ 1275 mV reportedly bricked an 8-core board (reddit, 25/09/2026). The tool auto-tunes toward a target frequency: "you aim for a frequency and the script sees if that frequency is reachable scaling the curve to fit that voltage… simply dial down the frequency a bit" (yrouel86, 07/10/2026).
 
 ### Verified Results (Fedora 43, Kernel 6.19.8)
 
@@ -385,6 +397,8 @@ A visual Qt-based GPU controller like MSI Afterburner for Windows:
 - Works on KDE and GNOME
 - Must disable any other governor before using (source: governor.md:117-119)
 
+**BC250 GPU Governor Manager (Bazzite, Oct 2026):** [RobertoTorino/bc250-governor-manager](https://github.com/RobertoTorino/bc250-governor-manager) — "PyQt6 front-end for cyan-skillfish-governor-smu, the GPU governor of an AMD BC-250 board running Bazzite" (game_play267_84989, 06/10/2026). Being folded into the [bc250-bazzite-suite](https://github.com/RobertoTorino/bc250-bazzite-suite) (announced 09/10/2026).
+
 ---
 
 ## ACPI Fix (CPU Power States)
@@ -395,6 +409,11 @@ The [bc250-acpi-fix](https://github.com/bc250-collective/bc250-acpi-fix) enables
 - **SSDT-PST:** Enables CPU frequency scaling (800 MHz - 3200 MHz) via standard Linux cpufreq governors (schedutil, powersave, etc.). Note: the repo README says "P-states doesn't work" but this is outdated per community testing (dantistnfs, Jan 2026) -- confirmed working as of kernel 6.19.8.
 
 Confirmed working on kernel 6.19.8. Both tables loaded via initrd override. See the bc250-acpi-fix repo for full installation instructions. (source: governor.md:640-706)
+
+**Oct 2026 tooling around the ACPI fix:**
+- **Persistent, no-BIOS-flash variant:** [RobertoTorino/bc250-persistent-acpi](https://github.com/RobertoTorino/bc250-persistent-acpi) — "a **persistent** ACPI fix … that gives the board CPU C-states (idle) and frequency scaling (800 MHz – 3.2 GHz, 8 steps) on Linux — without a modded BIOS", only tested on Bazzite so far (game_play267_84989, 06/10/2026) [confirmed: @game_play267_84989, 06/10/2026]. Acknowledges [e-tho/bc250-acpi-fix](https://github.com/e-tho/bc250-acpi-fix) (maintained tables), shinf1x/bc250-collective (original tables), rw-r-r-0644 (idle-table diagnosis), mendesrr (8-core extension).
+- **e-tho/bc250-acpi-fix v1.1.1:** fixes C3 idle-state freezes (e_tho, 05/10/2026). Performance impact is within noise — Superposition 1080p high 10312 vs 10182 stock; 1080p medium 12465 vs 12251 (big_trov, 05/10/2026).
+- **Governor config conflict:** mixing BC250 Control Center and a hand-edited governor `config.toml` produced a duplicate-key TOML error ("Cannot overwrite a value at line 9, column 18") — keep one writer of the file (brian_aniki, 27/09/2026).
 
 ---
 
@@ -530,4 +549,4 @@ interval_ms = 100  # Increase from 50
 ---
 
 **Source of truth:** elektricM docs/system/governor.md, docs/system/power.md, docs/bios/overclocking.md
-**Last updated:** 2026-06-14
+**Last verified: 2026-10-09**

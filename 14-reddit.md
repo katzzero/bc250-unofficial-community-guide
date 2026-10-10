@@ -59,6 +59,12 @@ These are practical findings and warnings from the subreddit — worth reading b
 
 See also: [02 — BIOS & Firmware](02-bios-and-firmware.md), [04 — Cooling Guide](04-cooling-guide.md), [10 — Troubleshooting](10-troubleshooting.md).
 
+**New this window (Sep 26 – Oct 9):**
+- **"38 CUs" is really 36 — the Shader Engines run symmetrically.** Explained in a buying-advice thread: "The GPU has 2x Shader Engines (SEs) each with 20CUs and they only run symmetrically" — with 18 healthy in one SE you get 18+18, not 38 (u/rufiohProbably, 09/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1x0t34p/thinking_of_buying_a_bc250/)). Merged into [02](02-bios-and-firmware.md#performance).
+- **6-board local-AI cluster:** "6 board local ai setup using llama Vulcan and RPC over 1gb Ethernet" — best speed/intelligence balance "4 40cu boards running qwen flash next 3.8 Iq_XS at 26 tok/s" with 100k context; networking via USB 3.0 + 2.5 GbE adapter; cluster adds VRAM, not per-token speed (u/Ok-Breadfruit-3523, 03/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wwdwy4/6_board_local_ai_setup_using_llama_vulcan_and_rpc/)). Merged into [12](12-ai-inference.md).
+- **"Should I buy / will perf improve?" consensus:** the board is roughly RX 6600-class with real Linux-only caveats; commenters suggest Xeon X99 builds instead if you need more CPU — "The lower core count on Xeon usually means it will have a higher single core and all core clock" (u/NaddaNadda2, 03/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wwbks0/will_the_performance_get_better_in_the_future_and/)).
+- **Idle-power win from memory P-states** was reposted from Discord: dropping mem P-state 3→0 halves wall idle (~60→30 W) at a bandwidth cost (u/Ok-Breadfruit-3523 relaying, 25/09/2026) — canonical in [06](06-gpu-governor.md#smu-performance-profile-tuning-power-savings).
+
 ## 4. Community tools & projects
 
 Projects that came up on the subreddit and are worth checking out:
@@ -84,6 +90,8 @@ The subreddit is a live deal-tracking channel, and 2026 saw real price swings. A
 | Sep 2026 | Back in stock at $204, "can still get it down to ~$101 with codes + Rakuten" (u/ChuuBaka, [thread](https://www.reddit.com/r/BC250Gaming/comments/1w7ovnn/update_bc250_is_back_in_stock_204_can_still_get/)) |
 | Sep 2026 | "You can still get a BC250 for $130ish" (u/ChuuBaka, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wig0ml/you_can_still_get_a_bc250_for_130ish/)) |
 | Sep 2026 | UK: "For sale: BC250, £125 + shipping" (private sale) (u/LectureFew3851, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wkwbb0/for_sale_bc250_125_shipping/)) |
+| Oct 2026 | Full price-stack guide: $281.10 AliExpress listing → $40 code (COM40E) → **$47.85 "assuming you purchase a power supply and get the full $200 Cash Back"** via Rakuten; "$47.85 + $55 = $102.85" with PSU (u/Tama47_, 09/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1x1idxr/get_bc250_for_under_50_200_rakuten_cash_back/)) — cashback tiers vary, treat the floor price as best-case |
+| Oct 2026 | eBay listings "£175+" noted under a private £125 sale (u/LectureFew3851 thread comments). Discord-side asking prices this window are tracked in [11 → Price History](11-community-and-resources.md#price-history-bc-250-board) |
 
 Prices move week to week — always check current listings before buying. For parts, people also flagged the Arctic P12 Pro 5-pack for **$18** (u/Rys4k, 21/07/2026), a UK source for Micro-Fit power cables for **£6** (u/ProEntomologist, 08/09/2026), and the **£4.69** VRAM backplate heatsink (u/SpungeMonk, 23/09/2026). See the [README price history](README.md) and [03 — Power Supply Guide](03-power-supply-guide.md) for more.
 
@@ -99,7 +107,7 @@ If you hit one of these, you are not alone — each has a fix elsewhere in this 
 
 ## 7. Still being figured out
 
-- **Video encoding/decoding** — the "stopgap" improves streaming without enabling the hardware VCN block. Whether it matures or gets replaced by the Discord's VCN work is still open — see [02](02-bios-and-firmware.md) and [10](10-troubleshooting.md).
+- **Video encoding/decoding** — the "stopgap" improves streaming without enabling the hardware VCN block. Since this doc's snapshot, Discord's holde reported H.264 running on the actual VCN block via a self-signed driver + tweaked BIOS (04/10/2026) — unpublished, janky, H.265 still broken; see [02 → VCN Progress (Oct)](02-bios-and-firmware.md#vcn-hardware-video-decode) and [10](10-troubleshooting.md).
 - **BIOS chip variants** — recovery guides cover the MX25L12872F and 25Q128JVSQ; other chip revisions seen on boards are not documented yet.
 - **Overclock persistence** — one owner's "temporary" CPU overclock appeared to persist into a brick. Why is not fully understood (u/Wonderful-Clothes-25, 25/09/2026).
 
@@ -107,4 +115,4 @@ If you hit one of these, you are not alone — each has a fix elsewhere in this 
 
 *Community roundup compiled from public r/BC250Gaming posts. Credits name the original Reddit users; always follow the linked threads for full context.*
 
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

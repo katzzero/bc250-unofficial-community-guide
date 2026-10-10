@@ -27,6 +27,9 @@
 | **TP-Link Archer AC1300** | Works with driver | Requires `rtl88x2bu` driver — manual install |
 | **TP-Link Archer TX35U Plus** | Has issues | Requires `rtw89` driver |
 | **Comfast / Brostrend AX1800** | Not recommended | Latency and disconnection problems |
+| **Any "AX900" with AIC8800 chipset** | ❌ Avoid — not in-kernel | "I'd recommend one with an external antenna and a chipset supported out of the box on linux so for instance no AIC8800" (de_w23, 30/09/2026, chat:12101); "AFAIK AIC8800 hasn't been mainlained yet and that's on some also marked 'AX900'" (chat:12111); one user "never got it to work" (chat:12127). Out-of-tree community driver exists: [ronnyf/AIC8800-Linux-Driver](https://github.com/ronnyf/AIC8800-Linux-Driver) (berazu, 30/09/2026, chat:12197) — quality unverified. |
+
+> **SteamOS 3.8.28 note:** Valve moved the 6.18 series to 6.18.50, after which "a lot of wifi dongles will work out of the box" (yrouel86, 25/09/2026) — relevant if you're on SteamOS rather than CachyOS/Bazzite (see [05 → SteamOS Versions](05-os-installation.md#steamos-versions-on-bc-250)).
 
 > **Note from elektricM:** Some custom kernel builds (e.g., Bazzite "performance mode") may not include your WiFi adapter's driver. Choose adapters with in-kernel drivers (like RTL8822BU) for best compatibility. If WiFi stops working after a kernel change, connect via Ethernet and reinstall the driver.
 
@@ -78,6 +81,8 @@ Source: [elektricM specifications](https://elektricm.github.io/amd-bc250-docs/ha
 | **Dell ACP075EU** | Docking station | Works | Has DisplayLink + USB DAC |
 | **2.5 GbE Adapter** | Generic | Finicky | May need manual Linux driver |
 
+> **Tip — music while gaming without eating VRAM/RAM:** run **`spotifyd`** (headless Spotify Connect daemon, "one background daemon idling at ~20M of ram") from a terminal or systemd service instead of the desktop client; requires Spotify Premium (oldbog, 25/09/2026, bc250-resources/Do YOU want to listen to MUSIC:8) [confirmed: @oldbog, 25/09/2026].
+
 ---
 
 ## Network — Ethernet
@@ -113,3 +118,4 @@ The BC-250 ships without a power button header. Source: [elektricM specification
 | Rubber Washers / Standoffs | Any | For vibration dampening |
 
 > For the complete case catalog (145 documented designs as of elektricM docs): [elektricM Case Gallery](https://elektricm.github.io/amd-bc250-docs/community/cases/) — designs with PSU type, dimensions, and build notes. Source: [elektricM cases](https://elektricm.github.io/amd-bc250-docs/community/cases/).
+**Last verified: 2026-10-09**

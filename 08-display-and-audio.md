@@ -36,7 +36,11 @@ If you can't see the BIOS screen but the OS boots fine:
 
 Audio is transmitted natively through DisplayPort. If your monitor has speakers or you use a DP-to-HDMI passive adapter, audio should work automatically.
 
-**DP audio fix:** Fixed in **Linux 6.19.10+** (included in CachyOS, available in Bazzite desktop testing branch). Fix contributed by TheFloW (PS5 Linux developer), relayed by _fanoush_. The spread-spectrum audio disable has also landed in the **7.1 stable** kernel line (big_trov, 20/08/2026); kernel 7.2 is expected to carry the latest DP audio patch, which also fixes some display issues (essdee4338, 16/08/2026).
+**DP audio fix:** Fixed in **Linux 6.19.10+** (included in CachyOS, available in Bazzite desktop testing branch). Fix contributed by TheFloW (PS5 Linux developer), relayed by _fanoush_. The spread-spectrum audio disable landed in the **7.1 stable** kernel line (big_trov, 20/08/2026). **Resolved in 7.2:** the audio-clock fix was merged for 7.2 (patch submitted by Trov, per _mastag, 25/09/2026).
+
+**DP→DP audio desync — root cause found and upstreamed (Oct 2026):** the remaining desync on DP-to-DP links was a driver bug: a bad order of hw-revision checks meant the **DCN3 clock table (700 kHz refclk) was loaded instead of the correct DCN2 one (600 kHz)** for gfx1013; plus the driver assumed spread-spectrum downspread while the board's clock doesn't use it — "the fix there was to assume no spread spectrum on dcn201" (big_trov, 04/10/2026, discussing the upstream `dcn201_clk_mgr` vs `dcn30_clk_mgr` values) [confirmed: @big_trov, 04/10/2026]. Fix is upstream in Linux; DP→HDMI adapters were never affected by the downspread half of the bug.
+
+**HDMI CEC:** supported via the MastaG `bc250-cec` kernel package (auto-installed with `linux-cachyos-bc250`; needs a CEC-capable HDMI link) (_mastag, 25/09/2026, CachyOS repo thread:391); the UGREEN 8K DP→HDMI adapter is confirmed CEC-capable (keroppl_wizard reply, 09/10/2026, chat:25925).
 
 **Dolby Digital 5.1 via HDMI/eARC on SteamOS (rpf16rj, 17/08/2026):** if your BC-250 connects to a receiver/soundbar through the TV, TVs downmix multichannel audio to PCM stereo over eARC. SteamOS never enabled its built-in AC-3 profile because the board identifies as "AMD BC-250" in DMI instead of Valve's "OEM F7F". The toolkit ([rpf16rj/bc250-steamos-real-toolkit](https://github.com/rpf16rj/bc250-steamos-real-toolkit) **v1.3.0**) adds a udev rule + WirePlumber config that activates it: real-time Dolby Digital 5.1 encoding for all system audio (~1–2% CPU, zero latency), automatic stereo upmix, works with any active DP-to-HDMI adapter. Setup: run the toolkit → option 13 inside option 2 (manual) → Install AC-3 Surround Encoding; in KDE audio settings select "HD-Audio Generic Digital Surround 5.1 (HDMI/AC3)". Tested on SteamOS v3.18.25 (kernel 6.18.42-valve2). 
 
@@ -67,8 +71,8 @@ VRR is now achievable through multiple paths:
 3. **Kernel 6.19+**: Built-in VRR fixes (fforduck/Discord).
 
 **Adapter notes for VRR:**
-- **UGREEN 8K DP-to-HDMI 2.1**: Would give 4K 120Hz HDR + VRR if audio gets sorted (currently desyncs on custom Bazzite build).
-- **Cheap Aliexpress 4K 60Hz adapters**: Support VRR on kernel 6.19+ and do NOT have audio desync issues -- best current option (fforduck, Apr 2026). Note: earlier community reports (essdee4336, Apr 2026) said cheap adapters do NOT support VRR; resolved by kernel 6.19+ patches.
+- **UGREEN 8K DP-to-HDMI 2.1**: Would give 4K 120Hz HDR + VRR if audio gets sorted (currently desyncs on custom Bazzite build). The audio-desync root cause has since been identified and upstreamed (see DP audio fix above); on `linux-cachyos-bc250` 7.2 at least one user lost audio on cheap UGREEN DP→HDMI adapters while standard CachyOS 7.2 / 7.3-rc4 kept it (keiser1080, 25/09/2026) — see the [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09).
+- **Cheap Aliexpress 4K 60Hz adapters**: Support VRR on kernel 6.19+ and do NOT have audio desync issues -- best current option (fforduck, Apr 2026). Note: earlier community reports (essdee4336, Apr 2026) said cheap adapters do NOT support VRR; resolved by kernel 6.19+ patches. One user went further: a custom **EDID-override kernel module** makes a cheap adapter report 4K@120 capabilities ("pushes 4k 120hz on it"), and reports finding a kernel bug that was limiting adapters below even their stated capabilities (dropbomb__, 06/10/2026) — not published/reviewed yet (open question).
 - **Expensive DP>HDMI adapters**: VRR not supported, audio desync on custom Bazzite builds.
 
 ### DSC (Display Stream Compression) — 4K120 and PCVR (Sep 2026)
@@ -138,4 +142,4 @@ Steam launch option: `ENABLE_VK_NULLVRS_1=1 %command%`
 
 **Black screen after Bazzite 44 update (Aug 2026):** multiple users report Sunshine + Moonlight streams show a black screen in game mode after updating to Bazzite deck 44. Issue persists across SteamOS and CachyOS as well. Cause unknown — may be related to hardware encoder/decoder initialization. Workaround: pyrowave (Vulkan-based encoder) is an alternative that bypasses the hardware encoder entirely (autistic_neckbeard, 24/08/2026).
 
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

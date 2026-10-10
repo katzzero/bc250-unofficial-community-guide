@@ -4,17 +4,17 @@
 > **BIOS must be flashed first** - see [02-BIOS](02-bios-and-firmware.md).
 > 40 CU unlock no longer requires a kernel patch — use `bc250-cu-live-manager` on stock kernel. **Mesa 26** is current with significant RT and performance improvements.
 
-## Kernel Support Matrix (canonical — as of 2026-09-26)
+## Kernel Support Matrix (canonical — as of 2026-10-09)
 
 This table is the **single source of truth** for kernel recommendations. Other files link here instead of restating it.
 
 | Kernel line | Status | Notes |
 |-------------|--------|-------|
-| **CachyOS standard (7.2.x)** | ✅ Current default | e.g. 7.2.4 / 7.2.6-1. On 8-core boards the CachyOS kernel needs the `0001` telemetry patch from the MastaG repo — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. `bc250_hdmi21` is now enabled by default (no kernel parameter needed) (_mastag, 20/09/2026). |
+| **CachyOS standard (7.2.x)** | ✅ Current default | e.g. 7.2.8-1.219 / 7.2.9 (with Mesa **26.2.4** in the bc250 repo). On 8-core boards the CachyOS kernel needs the `0001` telemetry patch from the MastaG repo — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. Same applies to *any* OS: enabling 8 cores without an SMU firmware patch makes telemetry "read as garbage" (_mastag, 25/09/2026). `bc250_hdmi21` is enabled by default (no kernel parameter needed) (_mastag, 20/09/2026). The DP audio clock fix (wrong DCN refclk) landed in the 7.2 line (patch by Trov, merged per _mastag, 25/09/2026). Known regression: audio over cheap UGREEN DP→HDMI adapters broke on `linux-cachyos-bc250` 7.2 for at least one user (keiser1080, 25/09/2026) — works on standard CachyOS 7.2 and 7.3-rc4. |
 | **7.1.x (CachyOS)** | ✅ Previous default | e.g. 7.1.8-1. DP audio spread-spectrum disable landed in the 7.1 stable line (big_trov, 20/08/2026). |
-| **7.3-rc (CachyOS)** | ⚠️ Testing | 7.3-rc4 in use; reported to fix an audio-on-DP→HDMI-adapter regression seen on the 7.2 standard kernel for at least one user (dmooney65, 25/09/2026). |
+| **7.3-rc (CachyOS)** | ⚠️ Testing | 7.3-rc4 in use; fixes the UGREEN DP→HDMI audio regression seen on the bc250-patched 7.2 (keiser1080, 25/09/2026) and carries the same upstream DP-audio desync root-fix (see [08](08-display-and-audio.md)). |
 | **6.19.x** | ✅ Recommended stable | VRR + DP audio fixes (TheFloW patch, 6.19.10+). |
-| **6.18 LTS** (6.18.42-1-cachyos-lts) | ✅ Stable fallback | |
+| **6.18 LTS** (6.18.42-1-cachyos-lts) | ✅ Stable fallback | Also what SteamOS 3.8.28 ships (6.18.50). |
 | **6.15.0–6.15.6 and 6.17.8–6.17.10** | ❌ Broken — avoid | GPU initialization failures / kernel panics. |
 
 After kernel updates, if you get a blank screen, boot the previous kernel from the boot menu and remove the broken one (rocksalt_, 16/08/2026).
@@ -44,7 +44,7 @@ CachyOS has become the community default as of July 2026 due to Bazzite's stable
 | **Performance** | Behind — stable branch on kernel 6.17.7, old Mesa (fforduck, Jul 2026) | Best — kernel 6.19+, Mesa 26, optimized packages, BORE scheduler (dznuts, gennro) |
 | **Stability** | ⚠ Unstable with 40 CU — green screen on idle/download, random freezes. "A bunch of people here moved from Bazzite to CachyOS because Bazzite Handheld is pretty far out of date" (pops1cl, 10/06/2026). | Rock solid — "5 days no crashes" after switching (evo9899, 04/07/2026). Several users report identical experience. |
 | **Ease of setup** | Easiest — pre-patched kernel, Game Mode included. But outdated kernel causes governor install issues. | Moderate — Arch-based, manual setup. More flexible, fewer surprises. |
-| **Kernel** | ⚠ Stable: **6.17.7** (OLD!). Testing: kernel 7.0+ Mesa 26 — not yet released. **⚠ Kernel 7.1+ causes black screen with governor — dmoraza (Aug 3 2026).** Stay on 6.19.x or 6.18 LTS for governor use. Bazzite deck 44 update reported working fine by early adopters (ntimd8r, dbkretro, 22/08/2026). | Standard kernel now **7.1.x-based**; 7.2 imminent with DP audio + display fixes (essdee4338, 16/08/2026). Some users saw blank screens on 7.x and 6.18 after updates — roll back via boot menu if hit (@bencraft3204, @rocksalt_, 16/08/2026). |
+| **Kernel** | ⚠ Stable: **6.17.7** (OLD!). Testing: kernel 7.0+ Mesa 26 — not yet released. **⚠ Kernel 7.1+ causes black screen with governor — dmoraza (Aug 3 2026).** Stay on 6.19.x or 6.18 LTS for governor use. Bazzite 44 images are now in wide community use with a newer kernel (Sep–Oct 2026 help threads); early adopters reported the deck 44 update working fine (ntimd8r, dbkretro, 22/08/2026). | Standard kernel now **7.2.x** (7.2.8/7.2.9 + Mesa 26.2.4 in the bc250 repo — confirmed, was "7.2 imminent" in Aug). Some users saw blank screens on 7.x and 6.18 after updates — roll back via boot menu if hit (@bencraft3204, @rocksalt_, 16/08/2026). |
 | **40 CU unlock** | CU live manager works. Legacy kernel patch available (ba29 Deck kernel only). OGC desktop kernel packages not yet available. | CU live manager works on stock kernel. Full toolkit support (redbeard1083, gennro). |
 | **Governor install** | `dnf copr` + `rpm-ostree install`. Can be tricky on old kernel. Rebase to `bazzite:testing` or `bazzite:stable` helps (zerosumpr). | `yay -S` or AUR helper. Straightforward. |
 | **Updates** | Immutable — safer rollbacks, but updates are slow. BC-250 needs bleeding-edge kernel which conflicts with Bazzite's philosophy. | Rolling — bleeding edge. May break occasionally but quick fixes. |
@@ -64,7 +64,7 @@ CachyOS has become the community default as of July 2026 due to Bazzite's stable
 
 | Version | Kernel | Mesa | Status | Notes |
 |---------|--------|------|--------|-------|
-| **3.8.x** | 6.18 (valve) | 26.1.x | Stable | Base version. Audio fix + EDID patch required. |
+| **3.8.x** | 6.18 (valve) | 26.1.x | Stable | Base version. Audio fix + EDID patch required. **3.8.28** (image 20260922.1) on kernel 6.18.50: "a lot of wifi dongles will work out of the box" + the ethernet-only-initial-setup block removed (yrouel86, 25/09/2026) [confirmed: @yrouel86, 25/09/2026]. |
 | **3.9 Preview** | 7.2 (valve) | 26.1.99 | Preview channel | Major update — kernel 7.2 fixes display/audio sync. EDID patch no longer needed. |
 | **3.10 Main** | 7.2 (valve) | 26.1.99 | Main channel | Same kernel as 3.9 preview. Toolkit v1.8.0+ required. |
 
@@ -105,6 +105,7 @@ chmod +x install.sh
 - SteamOS boot logo (Steam Graphic Wordmark)
 - Telemetry fix for 8-core metrics reporting
 - All features install to update-proof paths (`/etc`, `/var`, `$HOME`) and self-heal across SteamOS updates
+- **v1.9.x (Sep–Oct 2026):** v1.9.6 adds the 4K120-over-DP→HDMI-2.1 cold-boot fix and makes the DSC debugfs override stick across reboots (rpf16rj, 20/09/2026) — see [08 → DSC](08-display-and-audio.md) and 08's DSC section; the toolkit also integrates the Vulkan-compute encode stopgap as an option (rpf16rj, 20/09/2026) and pwm fan control on real SteamOS (toolkit thread, 29–30/09/2026). ⚠️ DSC debugfs override races the GPU governor on reboot — link-training can fail (tayne, 18/09/2026, see [10](10-troubleshooting.md)).
 
 **Important:** On kernel 7.2 (SteamOS 3.9/3.10), some audio/display patches are already upstream. The toolkit auto-detects kernel version and skips redundant patches ([keroppl_wizard, 29/08/2026, Yet Another SteamOS Toolkit]).
 
@@ -112,7 +113,7 @@ chmod +x install.sh
 
 Developer-focused toolkit with more granular control. ([keroppl_wizard, GitHub](https://github.com/keyboardspecialist/bc250-steamos))
 
-**Features (v0.20.14, Aug 2026):**
+**Features (v0.28.x, Sep–Oct 2026 — "Yet Another SteamOS Toolkit"):**
 - Same core features as rpf16rj toolkit (governor, CU unlock, audio fix, WiFi)
 - Decky plugin for Steam Game Mode integration
 - TUI tray control + desktop control
@@ -120,6 +121,7 @@ Developer-focused toolkit with more granular control. ([keroppl_wizard, GitHub](
 - CEC with independent receiver commands + device mapping
 - GPU load target and ramp-up controls
 - More modular — individual scripts per feature
+- **Version trail:** 0.28.3 (GE-Proton link fix) → 0.28.4 "adds update support. checks automatically and handles the whole installation" (one user hit a missing nct6887 install script on it) → 0.28.6 "Added the encoding/decoding, and fixed those output bugs caused by the update" → 0.28.7 ("had a bad dependency built in. Should be fixed in 0.28.7") (keroppl_wizard, 25/09–30/09/2026, Yet Another SteamOS Toolkit:46-298) [confirmed: @keroppl_wizard, 30/09/2026]. 0.28.x integrates the `luckiskind/bc250-radv-r2` mesh/task alt path (25/09/2026).
 
 **Known issue:** "keyboardspecialist's ui and usability is a bit of a mess though, I'm new to Linux and I struggled with it for a while" ([help-thread user, Jul 2026]).
 
@@ -597,4 +599,4 @@ uname -r
 | **Fedora Media Writer** | All | Fedora's recommended tool |
 | **Rufus** | Windows | Use UEFI / FAT32 mode |
 | **dd** | Linux CLI | `sudo dd if=image.iso of=/dev/sdX status=progress && sync` |
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

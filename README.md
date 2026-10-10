@@ -87,13 +87,14 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 1. **Linux only** — no Windows GPU drivers exist
 2. **Always clear CMOS** after BIOS flash — settings won't stick otherwise
 3. **Disable IOMMU** in BIOS — broken, causes display failures
-4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26)
+4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09)
 5. **Governor voltage: minimum 700 mV** — below that GPU locks to 1500 MHz
 6. **Never use 6-pin to 8-pin PCIe adapters** — fire hazard
 7. **Never use Smokeless_UMAF** — can permanently damage the board
 8. **Don't lose the 4 nylon washers** under heatsink screws — missing = 90–100°C idle
 9. **VRAM has no temperature sensor** — must cool backplate actively
-10. **No hardware video encode/decode** — VCN 2.0.3 present but power-gated; active research (not fused off) — [see troubleshooting](10-troubleshooting.md#vcn-still-not-working)
+10. **No working hardware video encode/decode today** — VCN 2.0.3 present but power-gated; a private H.264 demo exists (Oct 2026, unpublished, reboot-fragile) but nothing usable is public — [02 VCN research](02-bios-and-firmware.md#vcn-hardware-video-decode), [10](10-troubleshooting.md#vcn-still-not-working)
+11. **CPU core voltage ("Vid") must never exceed 1.325 V** — exceeding it can permanently brick the board (yrouel86, 07/10/2026)
 
 ---
 
@@ -143,6 +144,19 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 ---
 
 ## What's New
+
+**October 2026 (Sep 26–Oct 9, 142 channels):**
+- **VCN breakthrough:** holde got the actual VCN block doing H.264 (~4 ms encode at 1080p) with a self-signed driver + tweaked BIOS — janky, not reboot-persistent, H.265 still broken, unpublished; VCPU never fetches under stock firmware because the KDB lacks the usage-6 entry and the harvest latch is firmware-written, **not fused** (04/10/2026, [02 → VCN](02-bios-and-firmware.md#vcn-hardware-video-decode))
+- **In-SMU GPU governor works** in dev BIOS builds: 500 MHz idle without any software governor, AVFS at SMU SRAM `0x18760`, proposed defaults 350–2000 MHz; planned for the next community BIOS patch menu (rescuemei/punsh1734, 04–07/10/2026, [02](02-bios-and-firmware.md#smu-governor--injectable-dxe-driver-sep-2026))
+- **DirectMesh 1.3.1 default-on** in CachyOS Mesa (no `RADV_DIRECTMESH=1`; fixes 4K hang); **HelixSR is now the default upscaler** in the bc250 Proton packages (1.4.1) — "fsr4 got obsoleted with helix" (_mastag/hojnikb, 05–09/10/2026); XeFG/XeMFG frame-gen: CP2077 2× = +48% over no FG, Discord-only, no GitHub (iamastrangeloop)
+- **Kernel matrix updated**: 7.2.8/7.2.9 + Mesa 26.2.4 in the bc250 repo; DP audio clock fix merged in 7.2; UGREEN-DP→HDMI audio regression on the patched 7.2 kernel (fixed in 7.3-rc4); SteamOS 3.8.28 → 6.18.50 with OOTB wifi dongles ([05](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09))
+- **Superposition 40 CU record 5865** @ 2350 MHz (nhoj0176, confirmed big_trov 07/10/2026); new benchmarks: Star Wars Galactic Racer (1440p locked 60), Witcher 3 RT Ultra + FSR4 (60+ 1080p), Clair Obscur (68–75), Control Resonant w/ XeMFG x4 (80 fps), Geekbench Vulkan 93k–95k ([07](07-game-benchmarks.md))
+- **P5 experimental BIOS caveat:** disables EFI-script changes; ReBAR is only a BIOS option on P5 ([02](02-bios-and-firmware.md#recommended-modded-bios)); "official 5.00 BIOS + runtime unlock" claimed for the upcoming Bazzite suite — unconfirmed
+- Troubleshooting added: `radv_enable_unified_heap_on_apu` breaks VRAM reporting (TLOU), Game Mode D3D12 crashes → `-dx11`, encoding-fix perms on Bazzite 44, repaste "dead board" = dislodged CMOS pins, CPU 50→95 °C spike = TIM/pressure failure, VRM no power-limit only thermal (119 °C trip) + overcurrent, 8-pin connector melts past ~250 W ([10](10-troubleshooting.md), [03](03-power-supply-guide.md))
+- New tools: RobertoTorino bisect suite (CU/CPU/GPU-OC) + persistent ACPI fix + Governor Manager + Bazzite Suite; e-tho ACPI v1.1.1; Hexxeh VRM/VRAM DKMS modules; punsh1734 metrics-fix for Bazzite; evilpotato partial-core-unlock (7c/14t); loddio Pico DualSense power bridge; macOS Tahoe with Metal 3 via MetalCyan kext ([11](11-community-and-resources.md))
+- Inference: Moraine (Alpine distro, +1.5–2 GB VRAM, sub-200 MB idle), 2-node rack & 6-board cluster reports ([12](12-ai-inference.md)); Reddit sweep: price $281 list → ~$47.85 with $200 cashback stack (u/Tama47_, 09/10/2026) ([14](14-reddit.md))
+- Staff note (05/10/2026): PS5 compat-layer / RE material discussion paused on the server ([11](11-community-and-resources.md))
+- Safety: **CPU Vid must never exceed 1.325 V** — bricking risk (yrouel86, 07/10/2026)
 
 **September 2026 (Sep 15–26, 135 channels):**
 - CachyOS standard kernel now **7.2.x** (7.2.4/7.2.6); 8-core boards need the MastaG `0001` telemetry patch (stock kernel assumes a 6-core SMU layout); `bc250_hdmi21` enabled by default; 7.3-rc4 in testing (_mastag, 15–20/09/2026)
@@ -218,4 +232,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

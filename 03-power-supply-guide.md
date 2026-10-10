@@ -121,6 +121,19 @@ Any quality ATX PSU works when paired with PCIe 8-pin cable:
 
 ## Wiring and Connectors
 
+### 12V Rail Quality and Connector Loading (Sep–Oct 2026 field measurements)
+
+| Item | Number | Source |
+|------|--------|--------|
+| 12V rail in-spec window | 11.40–12.60 V; "10.9v on 12v rail is too low" — check PSU/cables | (hackerknownascbps, 25/09/2026, chat:970) [confirmed: @hackerknownascbps, 25/09/2026] |
+| Undervolt tolerance | board stayed stable down to ~9 V at the board **under load**; boots and idles down to ~7.6 V — "VRMs just step down everything anyway" | (dan2wik, 03/10/2026, chat:15825-15829) |
+| VRM efficiency sweet spot | ~12.8–13.2 V input — reduces current through the 12V connector | (dan2wik, 03/10/2026, chat:15833) |
+| PCIe 8-pin connector thermal reality | rated 150 W; "safely push up to 200w without seeing much on the thermal camera. Above 250w, it starts to get unmistakably warm" | (dan2wik, 07/10/2026, chat:22558) [confirmed: @dan2wik, 07/10/2026] |
+| Melting risk is real | right-angle 8-pin connector melted after sustained near-300 W ("guess pushing almost 300W for a good while long did the trick" — hojnikb, 03/10/2026, chat:15760); another user found a right-angle 8-pin "won't boot it does not deliver enough power" (aaron6043, 28/09/2026, chat:6621); mitigations: micro-fit supplemental connectors ("don't wanna burn down my house just yet" — chokunplayz, 03/10/2026) or solder directly to the board (_wesk, 03/10/2026) | see [02 → PSU adapters] and the micro-fit thread in 11 |
+| Wall draw — gaming | typically 240–250 W (OC configs); "Furmark is a major outlier, full blast in gaming it's generally only around 250w" (_wesk, 03/10/2026, chat:15910) | |
+| Wall draw — worst case | "When I execute furmark it takes up to 350w (40CU @2000 + 8Cores @1800)" (alchemy07011976, 06/10/2026, chat:19768) | |
+| Idle floor | GDDR6 draws ~25–35 W constantly — no dynamic clock switching on this board (dan2wik, 06/10/2026); memory P-state 3→0 halves idle (~60 W → ~30 W) at a bandwidth cost — see [06 → SMU Performance Profile Tuning](06-gpu-governor.md#smu-performance-profile-tuning-power-savings); 46 W idle achieved via low-end governor config (irium.io, 08/10/2026, Idle Power Draw:8-12) | |
+
 ### J1000 — PCIe 8-pin (6+2 pin) Pinout
 
 ```
@@ -203,6 +216,8 @@ The BC-250 has proprietary onboard Micro-Fit 3.0 power ports (`J2000` and `J2001
 - Connectors held by friction alone — a securing bracket is recommended (astrocast)
 - Wire only the middle two pins on both rows to prevent damage if connectors are swapped (cyrixblack)
 - Use 16 AWG minimum silicone wire for Micro-Fit connections
+- Cable plugs: most community builds use **6 pins per plug**; 4-pin-per-plug cables also exist — likely keyed that way "to prevent accidentally reversing" (jechtzero, 06/10/2026). "More cables means less heat and power centralized" — supplemental micro-fits run alongside the PCIe 8-pin, not instead (jechtzero, 06/10/2026) [confirmed: @jechtzero, 06/10/2026].
+- ⚠️ **MODDIY replacement cables are EPS (4+4, "CPU"), not PCIe 6+2** — "PCIE and EPS are opposite, one had 12v at the top, the other on the bottom"; verify the pin layout before plugging in (hashtagoctothorp, 01/10/2026) [confirmed: @hashtagoctothorp, 01/10/2026].
 - Community PCB adapter: [ded811/BC250-Power-Adapter](https://github.com/ded811/BC250-Power-Adapter) — adapts J2000/J2001 to standard PCIe 8-pin + EPS 8-pin headers (UNTESTED, waiting for fab boards)
 
 essdee4336 tested the Micro-Fit mod: "it did seem to help slightly."
@@ -215,6 +230,8 @@ essdee4336 tested the Micro-Fit mod: "it did seem to help slightly."
 
 **BC250 ATX PSU Control Adapter** (pilimmm / mosfet.party) — Commercial add-on board for FSP500 10-pin that handles PS_ON automatically. No soldering for basic use. Press button to boot, OS shutdown turns PSU off. Optional isolated button output for BC250's internal power button. Also available as 24-pin ATX edition with pre-wired 16mm backlit power button. FSP500 and ATX versions ship with all connection cables.
 *Website: [mosfet.party](https://mosfet.party) | Discord project-forums, March 2026.*
+
+**Keep-alive behavior (Oct 2026):** the button is momentary — the board/PSU needs a held-low PS_ON signal; wired without the keep-alive the PSU "starts but 3-5 seconds later it turns off … it needs a signal to keep the power on" (chubbywubbypr / hashtagoctothorp, 07/10/2026) [confirmed: @hashtagoctothorp, 07/10/2026]. DIY equivalent: PS_ON is pulled to 5V — an ESP32 GPIO driving it directly "will tolerate that for an undefined amount of time before you burn GPIO"; use an opto-coupler or MOSFET with a 3.3 V clamp (serverror, 28/09/2026, bc250-resources/ATX Power Supply Control:43). For remote/console-style power control see [loddio/bc250-pico-power-bridge](https://github.com/loddio/bc250-pico-power-bridge) in [11](11-community-and-resources.md) (DualSense wake via Pi Pico 2 W, 09/10/2026).
 
 ### ESP32 Controller Wake Projects
 
@@ -279,6 +296,7 @@ By punsh1734. Monitor per-rail VRM/PMIC voltage, current, power and temperature 
 - **Update v0.2.0 (06/09/2026):** **FAULt/WARN badges** lit when the PMIC itself latches an over-current or over-temperature bit on CPU/GPU; **CoolerControl file sensors** and **MangoHud** support for VRM temps and per-rail power (thanks to @DemolQ); **v2 dashboard** selectable chart window (30s / 1m / 2m) and board illustration redrawn to real BC-250 dimensions (thanks to @tri3gubki-ops) (punsh1734, 06/09/2026) [confirmed: @punsh1734, 06/09/2026]. VRM temps can reach **120 °C in Furmark** when pushed (seb.gauge, 02/09/2026) — depending on MOSFET spec, 100–120 °C can be within safe spec (hojnikb, 02/09/2026).
 - **Update v0.3 (13–14/09/2026):** adds **GDDR6 per-chip memory temperature** (8 chips + hotspot/average) from [pan-Rijovich/bc250-memory-temperature](../02-bios-and-firmware.md#gddr6-per-chip-temperature-reading-via-smuumc-mr3-sep-2026) — shows in both dashboards, MangoHud, and CoolerControl file sensors for fan curves. Opt-in: `sudo ./install.sh --memory-temp` (only on **P3.00 BIOS**, patched at boot; if not on P3.00, do not enable — nothing else changes). Credit to @pan_Rijovich (punsh1734, 13/09/2026) [confirmed: @punsh1734, 13/09/2026]. GDDR6 temps do **not** come from I2C — GDDR6 has no I2C interface (perubb/pan_rijovich, 14/09/2026). Dev branch: [onlinermm/BC250-Telemetry/tree/dev](https://github.com/onlinermm/BC250-Telemetry/tree/dev) (punsh1734, 05/09/2026); also listed as [primus192/BC250-Telemetry](https://github.com/primus192/BC250-Telemetry) (perubb, 04/09/2026).
 - **CoolerControl tip:** expose VRM fan as optional VRM fan in CoolerControl (perubb, 03/09/2026).
+- **Oct 2026 — lighter alternative: Hexxeh DKMS hwmon modules.** [Hexxeh/bc250-vrm-dkms](https://github.com/Hexxeh/bc250-vrm-dkms) exposes VRM rail temps/power and [Hexxeh/bc250-memory-dkms](https://github.com/Hexxeh/bc250-memory-dkms) exposes GDDR6 temps directly to `sensors` (VRAM Hotspot/Average/Chip 0-7, VIN, CPU/GPU rail voltages, per-VRM temps and power) — auto-updates via DKMS, no web dashboard; the VRAM module requires an SMU-unlocked BIOS (hexxeh, 28/09–02/10/2026) [confirmed: @hexxeh, 01/10/2026]. First field reading: VRAM hotspot +50.0 °C / avg +44.8 °C under light load (filippor, 02/10/2026). Why external wiring is still needed for PMBus telemetry: "the bus the vrms talk on is a separate one from the bus the fch is on (the latter is what is accessible in linux)" (big_trov, 05/10/2026). VRM hardware thermal limits: NTC trip ≈ 119 °C / release ≈ 116.5 °C; over-current limits per rail (4×/2× ISL99360) — full table in [02 → VRM / Power-Limit Constraints](02-bios-and-firmware.md#vrm--power-limit-constraints-oct-2026).
 
 ---
 
@@ -301,4 +319,4 @@ By punsh1734. Monitor per-rail VRM/PMIC voltage, current, power and temperature 
 
 *Sources: elektricM/amd-bc250-docs hardware/power.md (primary), FSP spec sheets (80+ Platinum verified), Mean Well official specs (LOP-400/500/600 datasheets), Discord community (nexgen3d, gennro, essdee4336, big_trov, dznuts, hecto_77113, capt.cat_13, astrocast, cyrixblack, fforduck, .strykur, wisserbasser, .dexik, _nk10, leafjerky, greatapo, pilimmm, victorhu, huzhekun, az4521, djanice1980, awalol, Thunkar, punsh1734, perubb, seb.gauge, hojnikb, pan_rijovich). Discord sources verified from export files Jan-Sep 2026.*
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-10-09**

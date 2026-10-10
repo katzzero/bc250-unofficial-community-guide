@@ -76,6 +76,11 @@ Sources: seb.gauge, 13 Mar 2026 (DeepCool); 15 Feb 2026 (Lanboy). Arthrimus thre
 | **ATX PSU Control Adapter** | mosfetparty (anton) | [GitHub](https://github.com/mosfetparty/bc250-psu-adapter) | Wiring diagrams + 3D models. Auto PS_ON |
 | **Remote PSU Controller** | PetteriLah | [GitHub](https://github.com/PetteriLah/BC-250-PC-Remote-Control) | ESP32-based wireless PSU control |
 | **AIO Mount for BC-250** | NexGen-3D | [Printables](https://www.printables.com/model/1554003-nexgen3d-aio-mount-for-the-bc-250) | 240mm AIO support |
+| **ASRock BC-250 → AM4 heatsink adapter mount** | capt.cat_13 | [Printables](https://www.printables.com/model/1829789-asrock-bc250-to-am4-heatsink-adapter-mount) | Adapter to reuse AM4 coolers; posted 27/09/2026 in the Steam Box 5 thread. The AXP-120-X67 "has exactly the same mounting as my AIO solutions so it's a strait swap" (paul_lionking, 25/09/2026) — see [04](04-cooling-guide.md) |
+| **AM5 CPU cooler mount for the BC-250** | parmyii | [Printables](https://www.printables.com/model/1826539-am5-cpu-cooler-mount-for-the-bc250) | Posted 27/09/2026 |
+| **AMD BC-250 with CPU cooler (Steam Box 5 companion)** | Old Lamer (shared by parmyii) | [Printables](https://www.printables.com/model/1574416-amd-bc-250-with-cpu-cooler) | Steam Box 5 FAT/Slim mounts with cooler cutouts (27/09/2026) |
+| **BC-250 meets DeepCool CH160 Plus** | (community design, shared by seb.gauge) | [Printables](https://www.printables.com/model/1771269-bc250-meets-deepcool-ch160-plus) | Board integration into the CH160+ mATX case — used for front-panel ATX power-button wiring (29/09/2026, bc250-resources/ATX Power Supply Control:63) |
+| **NexGen3D DIY Steam Machine Redux Edition** | NexGen-3D (link by game_play267_84989) | [Printables](https://www.printables.com/model/1649679-nexgen3d-diy-steam-machine-redux-edition) | Recommended as the affordable 1-color print (no text/logos) for budget builds (09/10/2026, help-thread/Affordable 3D print:28) |
 | **BC-250 "Complete-ish" CAD Model** | jackjt8 | [Printables](https://www.printables.com/model/1828755-asrock-bc250-complete-ish-cad-model) | Detailed ASRock BC-250 reference model for designing your own case or mod (15/09/2026) |
 
 ---
@@ -105,4 +110,4 @@ This addendum only covers the most notable / heavily-discussed designs from the 
 
 All case designs listed here were created by community members and shared freely or commercially. Links were verified against Discord exports (project-forums channel, 2025-11-01 to 2026-09-14). If your design is missing or a link is outdated, please open an issue or PR on the [guide repository](https://github.com/katzzero/bc250-unofficial-community-guide).
 
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

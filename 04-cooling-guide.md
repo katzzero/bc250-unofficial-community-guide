@@ -83,6 +83,7 @@ Community testing confirms scissors outperform pry tools for fin opening. snodra
 
 - Dremel or hacksaw for larger openings
 - **WARNING:** Creates metal debris - dangerous near electronics
+- **Hacksaw field notes (Sep–Oct 2026):** "do not try to do this with a dull carbon steel blade - even a cheap bimetal blade (32tpi) will make your life much easier"; wrap the cut zone "tight with tape to keep it from vibrating apart… it will start to come apart if you aren't super careful"; printed **fin holders** keep separated fins together if the cut destabilizes them (mahmudnaqi, 26–27/09/2026) [confirmed: @mahmudnaqi, 26/09/2026]. Result on one board: "VRMs are staying below 85 without the fans needing to ramp up too loudly" (mahmudnaqi, 05/10/2026). Debris warning reinforced in-chat: dremeling/cutting "generate[s] tens of thousands of little metal glitter bits that will get everywhere and short things" — always work off-board (holde, 26/09/2026, chat:3428).
 - Router method possible but "routers do like to chew you up and spit you out, so I chickened out on that approach" (snodrat, 07/12/2025); "routers love to grab your workpiece and chew it up" (snodrat, 04/08/2026)
 - Fin removal is irreversible
 
@@ -187,6 +188,8 @@ Source: elektricM cooling.md (Memory Thermal Pad Replacement: "1.5mm on front of
 
 (community-tested process — not in elektricM; first-boot behavior from community/Discord)
 
+**Oct 2026 field results (PTM7950):** typical drop "around 8-10⁰ C" — replace only if in-game temps trend toward 80 °C (shibly_91236, 29/09/2026); benefits show "after 3 burnin cycles with full cooldown", not immediately (capt.cat_13, 01/10/2026) [confirmed: @capt.cat_13, 01/10/2026]; ⚠️ "Lack of heatsink pressure is main cause of bad results" (capt.cat_13, 01/10/2026); if temps get *worse* after repasting, look for over-thick pads/putty or the lost transparent mounting washers — "Some people either use pads that are too thick/too much putty, or they lose the small transparent washers around the screw mounts, which causes mounting pressure issues" (d0c, 26/09/2026, PTM9750 thread:16; matches the README washer warning). Measured case: idle 48.6 → 44 °C immediately, Superposition +~10%, CPU max 81 °C after PTM + correct torque (dominic61, 04/10/2026, chat:17980).
+
 ### Alternative: Thermal Putty
 
 - **Fehonda LTP81** or similar
@@ -261,6 +264,8 @@ Confirmed working models: Thermalright Aqua Elite 240 V2, V4, V6; MSI MAG CoreLi
 
 The J4003 header connects to the power distribution board and provides PWM/tach pins for up to **five** fans (F1P/F1T through F5P/F5T), per [mothenjoyer69/bc250-documentation](https://github.com/mothenjoyer69/bc250-documentation/blob/main/hardware.md#j4003). The NCT6686D SuperIO chip "supports control for the main fan and any others that have their PWM/tach signal connected via J4003" and, "assuming that the nct6687d module is loaded, you can control the individual fans with something like CoolerControl" (essdee4336, 26/05/2026). Note: the connector is not a standard 3-4 pin header and is missing the +12V pin, so fans need 12V from elsewhere (danielemorr, 06/02/2026); BIOS fan numbering maps to Linux differently (BIOS 1-5 -> Linux 2,3,4,5,1).
 
+**Burnt CPU fan pin — recovery path (Sep 2026):** the burnt fan-header trace carries 12V; failure mode is "Either you chained way too much fans, or you shorted that for too long" (caredil_bg, 30/09/2026) [confirmed: @caredil_bg, 30/09/2026]. Fix: route all fans' PWM/tach through **J4003** (5 independent pairs) and feed the fans 12V directly from the PSU — "you don't really care about the burnt trace" — and insulate the lifted trace so it cannot touch the backplate (caredil_bg, 30/09–01/10/2026, help-thread/CPU Fan Pin Damaged:35,50,66).
+
 ---
 
 ## Recommended Setup (TL;DR)
@@ -324,8 +329,16 @@ iamdarkyoshi (17 Mar 2026) tested adding thermal pads between the heatsink and P
 
 Sources: elektricM cooling.md (Backplate VRAM Cooling Solutions), iamdarkyoshi (17 Mar 2026)
 
+**Oct 2026 quantified results:**
+- **Pads bridging VRAM → CPU heatsink:** "Down from ~75C to 60C idle, and down from ~95C to ~82C loaded" by adding thermal path from the rear VRAM chips into the CPU heatsink (dan2wik, 08/10/2026, chat:23732) [confirmed: @dan2wik, 08/10/2026].
+- **Warning from a failure case:** after a full 8c/40CU unlock, "PUT A HEATSINK ON THE BACK OF THE BOARD … a lot of extra heat gets dumped that way where there's only a metal plate for passive cooling" (holde, 26/09/2026) — random no-repower crashes were traced to this class of problem (eniv thread, same day).
+- **Heatsink retention:** sideways/back-facing heatsinks fall off on pad adhesive alone — bolt them on or use thermal epoxy/glue (dizzey0709/caredil_bg, 08/10/2026, chat:23714-23718).
+- **VRM strip heatsinks:** replacing the small individual 7×7 mm sinks with **11 mm and 14 mm wide strips** (100 mm length, AliExpress) gave "~10-15c cooler, no longer going past 100c in furmark at high voltages" — more thermal mass and heat spreading across chokes/VRMs (hexxeh, 05/10/2026, chat:19148) [confirmed: @hexxeh, 05/10/2026].
+- **Cooler note (AIO camp):** ThermalRight **AXP-120-X67 / AXP-90-X47** "has exactly the same mounting as my AIO solutions so it's a strait swap" (paul_lionking, 25/09/2026, project-forums/Hello guys:30); ThermalRight **MC-2** RAM cooler proposed for flanking an AIO for VRM cooling (hogermusic, 26/09/2026, thread:72) — unverified.
+- **Second fan?** On the open-fins question: "it's generally a waste because of the turbulence directly over the APU" — but "a side [fan] running across the board, getting the back side too, is generally helpful" (hashtagoctothorp, 01/10/2026, help-thread/Double or Single Fan:16,20) [confirmed: @hashtagoctothorp, 01/10/2026]. Matches the earlier reddit measurement (u/HTWingNut, 05/07/2026, no thermal benefit from dual on the stock cooler). Counterpoint for high-TDP configs: "One fan will give you 80% of the performance, but a 8 core 40 CU BC-250 probably needs two" (holde, 26/09/2026, chat:3428 area). No published head-to-head on the BC-250 specifically — open question.
+
 ### GDDR6 Per-Chip Temperature Monitoring (Pointer)
 
 Per-chip GDDR6 temperature monitoring is now available via SMU/UMC MR3 reading (8 chips + hotspot/average, P3.00 BIOS only) — see canonical details in [02-BIOS & Firmware → GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3)](02-bios-and-firmware.md#gddr6-per-chip-temperature-reading-via-smuumc-mr3-sep-2026) (pan_rijovich, 12/09/2026). The reading is integrated as opt-in in [BC250-Telemetry v0.3](../03-power-supply-guide.md#vrm-telemetry-via-i2c-pmbus--web-dashboard) (`--memory-temp`; punsh1734, 13/09/2026). Use it to validate backplate cooling — e.g., chip #3 can run ~10 °C above others at idle (_fanoush_, 13/09/2026); GPU at 88 °C while most RAM chips run lower is expected (dmooney65, 12/09/2026).
 
-**Last verified: 2026-09-14**
+**Last verified: 2026-10-09**

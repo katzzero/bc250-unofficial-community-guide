@@ -66,6 +66,11 @@
 
 **FSR 4 forks and the mesh driver (Sep 2026):** [daniel-h-0/bc250-fsr4-fork](https://github.com/daniel-h-0/bc250-fsr4-fork) (branch `v4`) is a community FSR 4 fork (capt.cat_13, 16/09/2026) [confirmed: @capt.cat_13, 16/09/2026]. For games that require native mesh/task shaders, [luckiskind/bc250-radv-r2](https://github.com/luckiskind/bc250-radv-r2) packages an experimental RADV R2 path (baseline credit: lonewolf0622) — in a scene-by-scene test it landed ~84 FPS versus ~94 FPS for the standard FSR3 fallback, so it is only worth it for the few games that need true mesh shaders (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026].
 
+**Oct 2026 upscaler landscape — HelixSR takes over:**
+- **HelixSR** ([lonewolf0622/HelixSR](https://github.com/lonewolf0622/HelixSR)) — "a hybrid neural upscaler that combines DLSS neural reconstruction with FSR 3.1's interface and temporal inputs" (D3D12 games only; Vulkan/D3D11 unsupported/untested as of 05/10/2026). Since 05/10 it is the **default upscaler in all three CachyOS bc250 Proton packages** (`proton-cachyos-native-bc250`, `proton-cachyos-slr-bc250`, `protonge-latest-bc250`) — "one package, nothing to set up by hand"; `PROTON_USE_OPTISCALER=helixsr` / `=fsr411f` switches between HelixSR and the old FSR4 default (_mastag, 05–09/10/2026) [confirmed: @_mastag, 05/10/2026]. Author's BC-250 numbers at 2000 MHz: ~1.4 ms/frame at 1080p Quality, ~4.4 ms at 4K Performance; HelixSR 1.4.1 QSSM Light 1.80 ms, QSSM Ultra 2.00 ms at 1080p (_mastag, 09/10/2026). Field results: CP2077 High preset Quality ~94 fps "within a maximum of 2fps of FSR3 but better image quality" (dmooney65, 05/10/2026); Black Myth: Wukong "nice uplift compared to fsr4r11" (hojnikb, 05/10/2026) — "fsr4 got obsoleted with helix" (hojnikb, 05/10/2026). Known early issue: Diablo IV reported "Not using FSR Upscaling" because Prism expects 15 required / 48 optional resources while 1.0.2 reported 7/24 — addressed in subsequent releases (Snk B / lonewolf0622x, 05/10/2026). A Bazzite GUI frontend automating HelixSR + OptiScaler setup exists: [RobertoTorino/bc250-bazzite-helixsr-gui](https://github.com/RobertoTorino/bc250-bazzite-helixsr-gui) (07/10/2026).
+- **DirectMesh on by default:** Mesh/task-shader support ([lonewolf0622/bc250meshtaskwork](https://github.com/lonewolf0622/bc250meshtaskwork), DirectMesh v1.3 — indexed mesh draws 1.5–1.8× faster for meshlets ≥96 vertices) ships in CachyOS `mesa`/`mesa-git` and since **DirectMesh 1.3.1 (09/10/2026) is on by default whenever a BC-250 is detected** — `RADV_DIRECTMESH=1` no longer needed (`RADV_DIRECTMESH=0` opts out). v1.3.1 fixes the 4K GPU hang (23,000 frames clean), moves index-route storage VRAM→GTT (stops filling the 512 MiB carve-out), passes Mesh CTS 1,902/1,902, and is within ~1% of v1.3 in all 44 benchmark cases (_mastag, 09/10/2026) [confirmed: @_mastag, 09/10/2026]. The old workaround `RADV_BC250_MESH_IDXPASS=0` can be removed.
+- **XeFG/XeMFG frame-gen:** Intel XeSS frame-gen enabled and BC-250-accelerated for DX12 games on Linux/Proton (GE-Proton 11-6/11-7 verified) — Cyberpunk 2077 2× = "+22% over Intel's shaders, +48% over no FG", 3×/4× sit at a 120 Hz ceiling (40 CU @ 1850 MHz, 1440p High, RT off); pre-verified settings for 19 games (~750 more via OptiScaler wiki). **Discord-only distribution — no GitHub** — because of restrictive XeFG modification TOS (iamastrangeloop, 29/09–01/10/2026) [confirmed: @iamastrangeloop, 29/09/2026].
+
 **Tips:** Enable FSR Quality for a significant boost. DLSS/FSR Frame Generation works well. (elektricM docs)
 
 **Sep 2026 benchmarks (40 CU, 8 cores):**
@@ -86,6 +91,8 @@
 **Source:** Old Lamer YouTube benchmark (40CU BC-250 vs RX6700 & RX7600). The BC-250 at 40 CU slightly edges the RX 6700 in this title. See [11-community-and-resources](11-community-and-resources.md) for link.
 
 **Sep 2026 FSR4 evaluation (hojnikb, 08–10/09/2026, CachyOS mastaG 7.2 kernel + Mesa, FSR3 V3 patch, 40 CU @ 2100 MHz 8c @ 3.8 GHz):** purpose was to evaluate FSR4 in this title — **FSR4 360p→1440p matches FSR3 908p→1440p, not worth it**; V4 patch adds ~13% uplift at 1440p (hojnikb, 08–09/09/2026); retest with Proton + FSR4 4.1.1b no real difference (hojnikb, 10/09/2026) [confirmed: @hojnikb, 08/09/2026].
+
+**Oct 2026 HelixSR retest (hojnikb, 05/10/2026):** re-ran the benchmark with HelixSR 1.0.3 Performance — "nice uplift compared to fsr4r11, retested here" [confirmed: @hojnikb, 05/10/2026] — the community verdict in-thread became "fsr4 got obsoleted with helix" (hojnikb, 05/10/2026). See the upscaler section below.
 
 ---
 
@@ -117,6 +124,8 @@
 **8-core 40CU RDR2 (dbkretro, Jul 30 2026):** 1080p, decent quality settings — near 60 FPS with main dip during snow scenes. GPU bound in most scenarios but less stutter in city areas with extra cores.
 
 **8-core 38CU RDR2 benchmark (sho.ta, Aug 13 2026):** ~65 FPS in benchmark, 55–85 real FPS, High-Ultra 1080p on Bazzite with **0.5/15.5 memory split** (38 CU @ 1900 MHz 900 mV, 8 cores @ 3.85 GHz 1150 mV). "Timegraph is smooth most of the time" — FPS drops significantly in Saint Denis (~40–45 FPS) with spiky timegraph due to poor CPU performance.
+
+**VRAM split doubles 1440p performance (Sep 2026):** jamdoggie's 40 CU/8c CachyOS board ran "40 fps in most areas of rdr2 at 1440p native" with ~30–40% GPU utilization; switching the BIOS split to **512 MB dynamic** produced 80–90 fps in the benchmark with full GPU utilization (25/09/2026) [confirmed: @jamdoggie, 25/09/2026]. big_trov's explanation: the default 8/8 fixed split lets the game map up to 12 GB, starving system RAM and forcing swap; the 512 MB setting caps GPU use at ~8 GB and leaves RAM for the OS (25/09/2026) — see [02 → VRAM Allocation Options](02-bios-and-firmware.md#vram-allocation-options).
 
 **Sep 2026 update (38 CU, 8 cores, 2000 MHz, 3.9 GHz):** 1080p Ultra **70–80 FPS** at 67–70 °C after 1h without crash, MangoHud overlay ~70 FPS average; benchmark peak ~70–80 FPS under 70 °C (shibly_91236, 04/09/2026 and 07/09/2026, Proton GE) [confirmed: @shibly_91236, 04/09/2026].
 
@@ -336,7 +345,7 @@ Expected: Technical challenges — anti-cheat may have issues on Linux (elektric
 | The Blood of the Dawnwalker (1.0.4–1.0.5) | 60 FPS locked | 1080p High FSR Quality, 40 CU 8c 1500/3500 MHz, dynamic UMA 512 MB, CachyOS RC + Proton 11, zswap active — 60 locked with dips (lovelifetrustfaith, 10/09/2026); 1750/3700 MHz + undervolt smoother but stutter in towns persists; GPU throttling 80 °C, barely 75 °C (12/09/2026) [confirmed: @lovelifetrustfaith, 10/09/2026] |
 | Bodycam | 40–55 FPS | With ini tweaks (settings + 2 .ini edits): consistent 40 FPS, 50–55 at 60 cap, 60+ some instances — smooth after tweaks; without: 25–30 FPS with stuttering (zerosumpr, 06/09/2026) [confirmed: @zerosumpr, 06/09/2026] |
 | Dead Space Remastered | Stutters 5–10s | Runs but significant stutters/freezes 5–10s while moving, all resolutions 1080p–4K; shadows/post/global illumination to low helps (cubehacker8107, 03/09/2026); ~65–70 °C (05/09/2026) [confirmed: @cubehacker8107, 03/09/2026] |
-| Control Resonant (Remedy) | 1080p FSR Quality, runs well | 40 CU, 8c @ 3.5 GHz, GPU 2000 MHz; scene comparison: fallback FSR3 ~94 FPS vs experimental mesh driver ~84 FPS — mesh path only helps games requiring native mesh/task shaders (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026]; another user runs it out of the box at 1080p FSR Quality (mahmudnaqi, 25/09/2026); one report of crash right after the Remedy logo on a fresh CachyOS 8c/40CU install (methisfaction, 25/09/2026) |
+| Control Resonant (Remedy) | 1080p FSR Quality, runs well | 40 CU, 8c @ 3.5 GHz, GPU 2000 MHz; scene comparison: fallback FSR3 ~94 FPS vs experimental mesh driver ~84 FPS — mesh path only helps games requiring native mesh/task shaders (nonu0038, 24/09/2026) [confirmed: @nonu0038, 24/09/2026]; another user runs it out of the box at 1080p FSR Quality (mahmudnaqi, 25/09/2026); one report of crash right after the Remedy logo on a fresh CachyOS 8c/40CU install (methisfaction, 25/09/2026); **XeMFG frame-gen:** 2k, FSR4 Performance, everything Ultra / RT Medium — "60 FPS x3, 80 FPS x4" (dmoraza, 25/09/2026) [confirmed: @dmoraza, 25/09/2026] |
 | A Plague Tale: Requiem | ~75 FPS FSR4 Quality | dmooney65, 13/09/2026 [confirmed: @dmooney65, 13/09/2026] |
 
 ### S.T.A.L.K.E.R. 2 (May 2026)
@@ -489,6 +498,19 @@ pijuli. tested a 38/40 CU board (2 harvested in SE1 SH0). At 1900 MHz with 38 CU
 
 ---
 
+## New Benchmark Data (Sep 26 – Oct 9 2026)
+
+| Game | Config | Result | Source |
+|------|--------|--------|--------|
+| Star Wars Galactic Racer | 2100 MHz GPU, 40 CU, 8c @ 3.9 GHz | 1440p Medium: "mostly locked 60fps with minor dips into the mid 50's"; 1800p High + FSR Perf ≈ same; 4K High = 30 fps lock | (_wesk, 06/10/2026, benchmarks/Star wars galactic racer:11) [confirmed: @_wesk, 06/10/2026] |
+| The Witcher 3: Wild Hunt Remastered | see note | RT Ultra preset + FSR4 Quality, dynamic scaling off: "Rarely goes below 60fps in 1080p… FSR4 mod helps a lot with RT. Looks better than native too" (dmooney65, 30/09/2026) [confirmed: @dmooney65, 30/09/2026]. Reference rig from the thread's benchmark video: 36 CU 2 GHz @ 960 mV, 8c 3.8 GHz @ 1170 mV, stock heatsink + Arctic P12 Pro with PTM7950, Mean Well 280 W brick | (benchmarks/Witcher III:35; config chat:12739-12745, 30/09/2026) |
+| Clair Obscur: Expedition 33 | 40 CU 1850 MHz, 8c @ 3.85 GHz | FSR4 High 1080p, no frame-gen: 68–75 fps; battle minimum 56 fps ("Oh just tested in battle now the lowest it dropped to is 56fps"); another user sees battle drops into the 40s with heavy effects | (mavcom + zerosumpr, 27/09/2026, benchmarks/Clair Obscur:8-24) [confirmed: @mavcom, 27/09/2026] |
+| NTE: Neverness to Everness | High preset, FSR3 Quality | 1080p: 50–55 fps DX11; 40–50 fps DX12 with stutters | (shanty_339, 01/10/2026, benchmarks/NTE:18) [confirmed: @shanty_339, 01/10/2026] |
+| Arc Raiders | 4K, mix High/Medium + FSR | "With a bit of tweaking I got the game running at 4k 60. Some small drops" | (cubehacker8107, 05/10/2026, benchmarks/Arc Raiders:8) [confirmed: @cubehacker8107, 05/10/2026] |
+| Furmark (Vulkan, 1080p) | 40 CU | 139 fps @ 1850 MHz; 151 fps @ 2150 MHz (2150 @ 1030 mV); "3.8cpu with 1850-2000gpu, games fine anyway… the sweet spot for my board" | (vvaaron, 28/09/2026, benchmarks/Furmark:10-34) [confirmed: @vvaaron, 28/09/2026] |
+
+---
+
 ## Superposition Leaderboard (Extreme, 1080p)
 
 ### 24 CU (Stock, Unharvest Disabled)
@@ -512,15 +534,16 @@ nexgen3d runs liquid cooling (MSI AIO), CachyOS, SMU governor. 24 CU community t
 
 | Rank | User | Score | GPU Clock | CPU Clock | mV | Notes | Date |
 |------|------|-------|-----------|-----------|-----|-------|------|
-| 1 | gennro | ~5900 | — | — | — | — | May 2026 |
-| 2 | big_trov | 5759 | 2300 MHz | 3500 MHz UV | — | — | May 2026 |
-| 3 | codyrainy | ~5400 | 2100 MHz | 4000 MHz | 1020 | 40 CU | May 2026 |
-| 4 | cralant | ~5400 | 2150 MHz | 3800 MHz -15 | 1035 | 40 CU | May 2026 |
-| 5 | pm_me_kitsunemimi | 5320 | 2250 MHz | 4000 MHz | — | 36 CU, 8 cores, Bazzite, OpenGL; "76 max iirc" | Aug 2026 |
-| 6 | dznuts | 5300 | 2270 MHz | 4000 MHz | — | 38 CU | May 2026 |
-| 7 | dznuts | 5300 | 2200 MHz | — | 1060 | 38 CU, CachyOS | May 2026 |
-| 8 | mitchthepreacher | 5150 | — | — | — | Redux case; "Temps are 75 but its a jet engine" | Aug 2026 |
-| 9 | land_and_air | — | 2000 MHz | stock | — | — | May 2026 |
+| 1 | nhoj0176 | **5865** | 2350 MHz | 2500 MHz | 1000 (GPU) | 40 CU, Linux/CachyOS; confirmed as the record in-thread by big_trov: "I think Nonu has the record, and it was still on the Linux version… 5865… He says 2350" (07/10/2026) [confirmed: @big_trov, 07/10/2026] | Oct 2026 |
+| 2 | gennro | ~5900 | — | — | — | — | May 2026. ⚠️ Disputed: big_trov's in-thread record checks (Aug 12 + Oct 07) both put the record at "5800 something", not ~5900 — treat this row as unverified (need confirmation) | May 2026 |
+| 3 | big_trov | 5759 | 2300 MHz | 3500 MHz UV | — | — | May 2026 |
+| 4 | codyrainy | ~5400 | 2100 MHz | 4000 MHz | 1020 | 40 CU | May 2026 |
+| 5 | cralant | ~5400 | 2150 MHz | 3800 MHz -15 | 1035 | 40 CU | May 2026 |
+| 6 | pm_me_kitsunemimi | 5320 | 2250 MHz | 4000 MHz | — | 36 CU, 8 cores, Bazzite, OpenGL; "76 max iirc" | Aug 2026 |
+| 7 | dznuts | 5300 | 2270 MHz | 4000 MHz | — | 38 CU | May 2026 |
+| 8 | dznuts | 5300 | 2200 MHz | — | 1060 | 38 CU, CachyOS | May 2026 |
+| 9 | mitchthepreacher | 5150 | — | — | — | Redux case; "Temps are 75 but its a jet engine" | Aug 2026 |
+| 10 | land_and_air | — | 2000 MHz | stock | — | — | May 2026 |
 
 40 CU Extreme already surpasses the 24 CU record (4713) by 22%+ at lower clocks (2300 vs 2530 MHz). Theoretically should reach ~6500+ at equivalent clocks. More scores expected as community adopts the unlock. Post your results in the Discord `#benchmarks` channel.
 
@@ -528,7 +551,12 @@ nexgen3d runs liquid cooling (MSI AIO), CachyOS, SMU governor. 24 CU community t
 
 **Sep 2026 updates:** vvaaron averaging ~4900 at 2300 MHz GPU / 4.0 GHz CPU on full 40 CU + 8 cores, Bazzite (08/09/2026); expected score at 2300 MHz is ~5700 — "plenty of people cant get much past 2200 MHz" and VRMs shut off with reset button dead (big_trov, 08/09/2026) [confirmed: @vvaaron, 08/09/2026]. dbkretro 40 CU 8c @ 2000 MHz 960 mV Bazzite stock clocks/paste (06/09/2026); .lordantares 2230 MHz @ 1030 mV on Mesa 26.2 / CachyOS 7.2.2 (06–07/09/2026), noting 2300 MHz artifacts unless fans 100% and >70 °C triggers black screen [confirmed: @.lordantares, 07/09/2026]. nhoj0176 record **2350 MHz @ 1000 mV** (2500 MHz CPU @ 800 mV) — temps 66 °C at 2100 MHz, 60 °C at 1900 MHz in Superposition; Bykski Icedragon fan, PTM7950 die + thermal putty front, 2.0 mm pads on VRAM (12–13/09/2026) [confirmed: @nhoj0176, 12/09/2026].
 
-**38 CU = 36 CU (Aug 12 2026):** a "38 CU" config is effectively 36 CU — the Shader Engines (SE0/SE1) must have symmetric WGP counts. fforduck: "You have 36 unlocked 😉 SE0 and SE01 need the same amount. If you have disabled one in SE0 it will automatically disable one in SE1" — and per hashtagoctothorp, disabling another WGP in SE1 gives the *same* score. The only meaningful CU counts are 24/28/32/36/40 (counting full pairs); the dznuts "38 CU" runs above are the same silicon configuration as 36 CU.
+**38 CU = 36 CU (Aug 12 2026):** a "38 CU" config is effectively 36 CU — the Shader Engines (SE0/SE1) must have symmetric WGP counts. fforduck: "You have 36 unlocked 😉 SE0 and SE01 need the same amount. If you have disabled one in SE0 it will automatically disable one in SE1" — and per hashtagoctothorp, disabling another WGP in SE1 gives the *same* score. The only meaningful CU counts are 24/28/32/36/40 (counting full pairs); the dznuts "38 CU" runs above are the same silicon configuration as 36 CU. Confirmed again in-thread (dreamtheduk/jackjt8, 04/10/2026): with 38 enabled "the 37th and 38th dont contribute work… but they do use power".
+
+**Oct 2026 updates:**
+- **Record 5865 confirmed** by big_trov in `#benchmarks` (07/10/2026, config above). .lordantares posted a 2350 MHz run on 05/10 that did not beat it ("Not even close… The record is above 5800" — .lordantares, 07/10/2026); zerosumpr at the same clock "got almost 100pts less" — hojnikb: "you gotta optimize cpu and gddr clocks/latencies" (07/10/2026). The community target is now "reaching that 6000 milestone on superposition 1080p extreme" (vvaaron, 05/10/2026).
+- **PTM7950 lift:** dominic61 measured "My Superposition benchmark also went up by almost 10%" after PTM7950 repaste (with idle 48.6 → 44 °C, CPU capped at 81 °C) (04/10/2026) [confirmed: @dominic61, 04/10/2026] — thermal headroom converts directly into sustained clocks (see [04](04-cooling-guide.md)).
+- **Geekbench 6 Vulkan (40 CU):** 1900 → 2000 MHz lifted one board from 88,000 to 93,000; 95,000 peak reported same week (halil_iboo, 26/09/2026) [confirmed: @halil_iboo, 26/09/2026].
 
 **Max clock findings:** 2400 MHz at 40 CU causes hard OCP lockup requiring power cable pull (reset/power buttons unresponsive) across multiple boards (big_trov, codyrainy, cralant). 2100-2300 MHz is the stable range for most boards. Trimming CUs for higher clocks is not advantageous: big_trov's 32CU @ 2400 MHz scored worse than 40CU @ 2300 MHz, with similar power draw (~270W).
 
@@ -584,4 +612,4 @@ Games with verified community mentions but limited sample size — use with caut
 | Stardew Valley | Runs fine at 4K 60 FPS | |
 | Hollow Knight | 4K playable (lighter game) | |
 | Star Wars Battlefront II | 80-85 → 120-130 FPS after SMU governor + kernel patch (juancarlos24691, Aug 2025) | |
-**Last verified: 2026-09-26**
+**Last verified: 2026-10-09**

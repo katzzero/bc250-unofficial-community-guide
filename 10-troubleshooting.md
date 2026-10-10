@@ -127,7 +127,7 @@ Pass: `failed` = 0 on every core and spread within ~1% of the median. **Fail:** 
 
 | Cause | Fix |
 |-------|------|
-| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.2.x is current (`0001` telemetry patch needed on 8-core), 6.19.x recommended stable, 6.18 LTS fallback |
+| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.2.x is current (`0001` telemetry patch needed on 8-core), 6.19.x recommended stable, 6.18 LTS fallback |
 | Bad GPU frequency | Boot with `nomodeset`, install governor, remove nomodeset (source: boot.md) |
 | IOMMU enabled | Disable IOMMU in BIOS (source: boot.md, display.md, stability.md) |
 | Green screen (CPU instability) | Try better PSU, different SSD, proper DP cable -- (community report — cause not confirmed; green screen only documented in the ACPI context in stability.md) |
@@ -560,7 +560,7 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 
 **Status (May 2026):** Sleep does not work on BC-250 (pops1cl). Hibernate was working on Bazzite in December 2025 but is broken on CachyOS as of May 2026 — kernel bug suspected (essdee4336, pops1cl). Even swap file/partition approaches fail; system doesn't shut down properly for hibernate.
 
-**Root cause (Jul 2026):** The SMU (System Management Unit) on the BC-250 is a PS5-customized variant, not the standard AMD SMU. Sleep/suspend is handled entirely by the SMU, and Sony customized the sleep commands for PS5 — the BC-250 doesn't have the hardware or firmware to respond to standard AMD sleep commands (ded811, Jul 2026). See [02-BIOS & Firmware](02-bios-and-firmware.md) for SMU reverse engineering progress.
+**Root cause (Jul 2026):** The SMU (System Management Unit) on the BC-250 is a PS5-customized variant, not the standard AMD SMU. Sleep/suspend is handled entirely by the SMU, and Sony customized the sleep commands for PS5 — the BC-250 doesn't have the hardware or firmware to respond to standard AMD sleep commands (ded811, Jul 2026). See [02-BIOS & Firmware](02-bios-and-firmware.md) for SMU reverse engineering progress. **Confirmed again (Oct 2026):** "The BC-250 does not support S3/S4 sleep, that will just crash the machine" (holde, 26/09/2026) [confirmed: @holde, 26/09/2026].
 
 **Workaround:**
 - Use shutdown/reboot instead of suspend/hibernate
@@ -598,6 +598,16 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 
 ---
 
+## VCN Still Not Working
+
+**Symptoms:** `ffmpeg`/VA-API hardware encoding unavailable; Sunshine/Moonlight stream with heavy CPU load or fall back to software.
+
+**Status:** the VCN 2.0.3 block is present but power-gated and never initialized by stock firmware — there is **no public working enablement as of 2026-10-09**. A private H.264 demo exists (holde, 04/10/2026: self-signed driver + tweaked BIOS, janky, doesn't survive reboot, H.265 broken) but is not published. Research state lives in [02 → VCN Hardware Video Decode](02-bios-and-firmware.md#vcn-hardware-video-decode).
+
+**What to use today:** the Vulkan-compute encode stopgap ([Shalasere/bc250-vulkan-encode-stopgap](https://github.com/Shalasere/bc250-vulkan-encode-stopgap) / simpmix variant) for H.264/HEVC streaming — it taxes the GPU, not the VCN; expect modest gains over software encode (see 02 for the measured caveats). Pyrowave/Solarflare is the alternative streaming path (_wesk: "Well pyrowave has all but alleviated my need for the VCN", 26/09/2026, chat:3314).
+
+---
+
 ## Flash Failed -- Board Won't POST
 
 **Recovery (source: boot.md):**
@@ -630,6 +640,76 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 **Cause:** Variable Rate Shading (VRS) commands are not supported on Cyan Skillfish GPU, causing the Vulkan driver to crash. Specific shaders/instructions in some games can trigger bad CUs that pass synthetic benchmarks — e.g., Dinkum crashes above 1700 MHz at 40 CU (mikecmp, May 2026).
 
 **Fix:** Use the Vulkan_NullVRS layer by bangstk (see [08-Display & Audio](08-display-and-audio.md) for install).
+
+---
+
+## Games Report "Not Enough VRAM" (e.g. The Last of Us Part I) — `radv_enable_unified_heap_on_apu`
+
+**Symptoms:** TLOU Part I refuses settings / reports not enough VRAM and RAM even with 12 GB+ available; VRAM shows ~7.5 GB max (jorisfort, 26/09–03/10/2026).
+
+**Cause:** Setting the RADV environment variable `radv_enable_unified_heap_on_apu` breaks VRAM reporting to games on the BC-250 — "Turns out the problem was that I set: radv_enable_unified_heap_on_apu" (jorisfort, 03/10/2026). The same variable previously made Cyberpunk 2077 fail to launch at all (see the gfxhub page-fault entry above, line 466). **Fix:** remove the variable. TLOU additionally gates settings behind *detected* VRAM, so at the 512 MB BIOS split it sees only ~1.3 GB — no workaround found yet (open question) [confirmed: @jorisfort, 03/10/2026]. Related kernel-side signature of under-allocated VRAM: games crash with `Failed to pin framebuffer with error -12` in dmesg (RE Requiem, three crash logs — demoxtm, 04/10/2026); raising the split or removing an over-large fixed carve-out fixes it (same -12 = out of memory class as above).
+
+---
+
+## Game Mode Crashes / Steam Restarts on D3D12 Games (Gamescope)
+
+**Symptoms:** Games crash Steam/Game Mode and restart it; the same games run fine from the desktop session (tirantrex, 05/10/2026).
+
+**Cause:** D3D12/vkd3d path fails under the gamescope session on some Mesa/driver combinations.
+
+**Workaround:** Launch affected titles with `-dx11` (confirmed for Ratchet & Clank: Rift Apart, Lego Batman, Doom: The Dark Ages — "works in game mode if using -dx11 flag"); or revert mesa/Vulkan packages to the distro defaults (tirantrex, 05/10/2026) [confirmed: @tirantrex, 05/10/2026].
+
+---
+
+## Green Screen / Crash at Idle with Very Low Governor Floors
+
+**Symptoms:** Idle green screen, or GPU hang at startup, after setting minimum GPU frequency/voltage too low in the governor.
+
+**Cause:** Silicon-dependent P-state floor. One board idled green until the 350 MHz floor was raised to 760 mV (dominic61, 04/10/2026); another never stabilized 500 MHz @ 700 mV and fell back to a 700 MHz floor (yrouel86, 06/10/2026). Do not set minimum voltage below 700 mV (froginasock., 25/09/2026) — see [06 → Voltage floor](06-gpu-governor.md#known-stable-frequency--voltage-points). If a bad floor is already set, the board still recovers to safe min clock/voltage on reboot for most configs, but a crash loop may require disabling the governor for one boot (froginasock., 25/09/2026).
+
+---
+
+## "Texture Streaming" Errors / Blurries After Unlocking 40 CU
+
+**Symptoms:** Massive texture-streaming issues in games after enabling 40 CU (overkilllabs, 28/09/2026).
+
+**Cause:** Unlocked CUs without per-CU stability testing — artifacts and streamer failures come from marginal CU pairs, not the streamer.
+
+**Fix:** Drop clocks and/or disable 2 CUs (test 36 vs 40); one user fixed red-light artifacts in Cairn by going "to 32 and then it just stopped" (ryanplugs, 07/10/2026) — see Artifact Hunting (binary search) above. TTM at 12 GB + zswap can help borderline VRAM cases (overkilllabs thread, 28/09/2026).
+
+---
+
+## Board "Dead" After Thermal-Paste Rework — Check Internal Connectors First
+
+**Symptoms:** Board worked before a repaste; now nothing boots (luanemerenciano, 27/09–01/10/2026).
+
+**Cause:** Not necessarily death by paste: the culprit was a **dislodged CMOS-battery pin cap** on the board — "the CMS pins cap was not there… I ended up using the one that's in the auto turn on pins" (27/09/2026).
+
+**Fix:** Before anything else, re-inspect every small connector/pin disturbed during the rework (CMOS pins, fan pins, auto-power-on jumper) and reseat or bridge as needed [confirmed: @luanemerenciano, 27/09/2026]. If a fan pin header is burnt, see 04 → fan-power alternatives (J4003 breakout).
+
+---
+
+## CPU Jumps 50 → 95 °C in One Second (Throttle + Cooler Stays Cold)
+
+**Symptoms:** "Mine goes from 50c, to 95c in about one second, immediately throttles down to 3ghz. The heatsink never even gets warm" (wraithxt1, 29/09/2026).
+
+**Cause:** Bad thermal contact — the interface is not moving heat to the heatsink (missing/mis-seated pressure washer, uneven paste, or warped mounting). Instant spikes with a cold heatsink always mean interface failure, not a tuning problem.
+
+**Fix:** Re-seat the cooler with the 4 nylon washers (see README warnings / 04); verify even mounting pressure; repaste. Cross-check with VRM/VRAM telemetry modules (04 → Temperature Reference).
+
+---
+
+## bc250-encoding-decoding-fix Fails on Bazzite 44 (Immutable)
+
+**Symptoms:** Build/run fails: "Missing GPU node permissions: Your user account cannot access /dev/dri/renderD128" plus missing x265 (mix2.6, 02/10/2026).
+
+**Fix:** `sudo usermod -aG render,video $USER` then `newgrp render`; install deps with `sudo dnf install x265-libs libva-utils`; or run the repo's `./tools/setup_bazzite.sh` / `./build_and_install.sh` as root (mix2.6, 02/10/2026) [confirmed: @mix2.6, 02/10/2026]. Reminder: this project is a **stopgap** and its bundled `bc250-audio-fix` DKMS module is deprecated — remove it (`sudo dkms remove bc250-audio-fix/0.4.0 --all`); it races the in-tree audio driver (_mastag, 25/09/2026).
+
+---
+
+## BIOS Flash Recovery Notes (Oct 2026)
+
+A board that lights up and spins but shows no POST after a bad flash is **not dead**: "It shouldn't be bricked, you just need a reflash" (dmooney65, 02/10/2026). Options beyond the CH341A/Pico list in the FAQ: `flashrom` has a native Windows build (rocksalt_, 02/10/2026); [nofeletru/UsbAsp-flash](https://github.com/nofeletru/UsbAsp-flash) supports CH341/CH347 programmers (dmooney65, 02/10/2026). If a **modded** BIOS (Forbidden-Darkness DXE images) loops at the cold-boot helper after flashing, enter the BIOS and enable core unlock + ACPI injection (kgmtl, 29/09/2026). Note dumping/sharing stock BIOS images has legal gray zones in community discussion ("I'm unfamiliar with the legalities" — faithy2386, 25/09/2026); prefer clean community images (elektricM flashing docs).
 
 ---
 
@@ -680,5 +760,5 @@ glxinfo | grep "OpenGL renderer"
 - Always clear CMOS after BIOS flash (source: boot.md, display.md, quick-reference.md)
 - Always disable IOMMU in BIOS (source: boot.md, display.md, stability.md, quick-reference.md)
 - Always use passive DP-to-HDMI for audio (source: display.md)
-- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-09-26): CachyOS 7.2.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
-**Last verified: 2026-09-26**
+- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09): CachyOS 7.2.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
+**Last verified: 2026-10-09**

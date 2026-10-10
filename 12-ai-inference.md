@@ -115,6 +115,13 @@ From the official llama.cpp Vulkan benchmark thread (llama.cpp issue #10879, ggm
 
 The BC-250's generation speed is comparable to an RTX 3070 Mobile (63.64 tok/s) and GTX 1080 Ti (64.63 tok/s) on the same benchmark.
 
+### Multi-Board Clusters & Distro (Sep 26 – Oct 9 2026)
+
+- **2-board rack node (printsc, 27/09/2026):** printed 5U rack running llama.cpp Vulkan/RPC — TPS chart for "three nodes running Qwen 3.8 27B q_4_k_m and q_4 KV cache on a 1GBe backbone"; conclusion: "really shows how a third node doesnt really help for 27B models with pipeline parallelism" [confirmed: @printsc, 27/09/2026]. Host setup scripts: [wdonega/bc250-llm-setup](https://github.com/wdonega/bc250-llm-setup); Ansible automation: [4claps/bc250-llama-cluster](https://github.com/4claps/bc250-llama-cluster) (goricito.thevulpix, 07/10/2026).
+- **6-board field report (u/Ok-Breadfruit-3523, 03/10/2026, reddit):** "the best speed to intelligence balance is 4 40cu boards running qwen flash next 3.8 Iq_XS at 26 tok/s" with 100k context; 2-board pairs ran Qwen3.6-35B at ~60 tok/s; networking via "USB 3.0 with a 2.5gb Ethernet adapter"; recommends 2 micro-fit power cables per board. Cluster adds **VRAM capacity**, not per-token speed — consistent with printsc's pipeline-parallelism finding.
+- **Moraine — Alpine-based inference distro:** [hojnikb/moraine](https://github.com/hojnikb/moraine) strips the desktop to free memory: "about 1.5-2GB more vram to play with than regular desktop distros like cachy or bazzite"; v0.2.1 (03/10/2026) "Up to 137MiB more memory available. Now idles at sub 200MB"; push a Qwen 3.8 27B IQ3_S to 100k context with "~14.5-14.7GB for the model+context" (hojnikb, 25/09–03/10/2026) [confirmed: @hojnikb, 03/10/2026]. Fast boot, basic web UI, model profiles; "Performance is about the same as with any other recent distro. The juice is in the free memory".
+- **Idle power of inference boxes:** GDDR6 alone draws ~25–35 W continuously (no dynamic clock switching); setting memory P-state 0 instead of 3 halves wall idle (~60→30 W) at a bandwidth cost; power-rail breakdown at idle: ~31 W CPU+GPU vs ~62 W rest-of-card (dan2wik, 06/10/2026) — see [06 → SMU Performance Profile Tuning](06-gpu-governor.md#smu-performance-profile-tuning-power-savings).
+
 ### ROCm vs Vulkan Comparison
 
 hammercoral's benchmarks on a single BC-250 (Discord):
@@ -244,3 +251,5 @@ The BC-250 ships with 24 of 40 RDNA2 CUs active (16 harvested). These can be re-
 *Sources: elektricM radv.md (primary), Discord bc250-chat (hammercoral, __nightfox, xseol, _fanoush_, steinbeks, deathstalkerjr, adaptive__manipulator, birdetta, machinezer0, neoney), llama.cpp GitHub benchmark thread #10879, Ollama issue #15601, ROCm/TheRock SUPPORTED_GPUS.md, Phoronix coverage.*
 
 Last modified: 2026-09-03
+
+**Last verified: 2026-10-09**
