@@ -144,6 +144,7 @@ Community reports are mixed but lean toward comparable performance:
 - SteamOS + toolkit: "Ran the SteamOS Real Toolkit and unlocked to 8c 40cu at 3.85 and 2000 respectively. Runs cyberpunk at around 102 average fps high preset" (concerned_c1t1zen, 31/08/2026)
 
 ### Known Issues
+- **Immutable-partition overflow via Flatpaks (SteamOS):** `/var/lib/flatpak` runtimes can fill the small rootfs/overlay; at 100% the system freezes into write-protection and even `flatpak uninstall`/`du` fail — cache clearing didn't recover it and the user ended with a clean install (u/Available_Sea_8142, 09/10/2026, reddit — reported on a Deck image, same layout applies to BC-250 SteamOS installs; prevention: watch `df -h /var` after bulk flatpak installs) (need confirmation of an in-place recovery recipe).
 
 - **GPU governor not starting on boot:** systemd kills the service on some installs. Restart manually with `sudo systemctl start cyan-skillfish-governor-smu` — it persists until next reboot ([land_and_air, 24/08/2026, help-thread]).
 - **DP→HDMI signal loss on mode switch:** Active DP adapters (e.g. UGREEN) may lose signal when switching between Game Mode and Desktop Mode. Workaround: force-DisplayPort systemd service ([yrouel86, 25/08/2026, Yet Another SteamOS Toolkit]). On kernel 7.2 this is partially fixed.
@@ -259,6 +260,7 @@ rpm-ostree rebase ostree-image-signed:docker://ghcr.io/vietsman/bazzite-deck-pat
 ### Bazzite Tips
 - Install EmuDeck for emulation: use the Bazzite portal
 - Update with `ujust update` (or `rpm-ostree upgrade` + `flatpak update`)
+- **`ujust update` failing in loops on Bazzite 44 (Oct 2026):** one user's update repeatedly re-downloaded ~10 GB and errored with the skillfish governor layering as the failing external command; running the update from Desktop Mode (not Game Mode) and reinstalling the governor after is the community workaround so far (.strykur/zerosumpr, 02/10/2026, help-thread/Bazzite 44 ujust) — not a confirmed fix (open question).
 - Rollback broken updates with `rpm-ostree rollback`
 - **VRR:** Testing branch includes VRR support natively. Stable branch does not.
 - **Audio:** DP audio fix in kernel 6.19.10+. Bazzite stable (6.17.7) does NOT include it. Testing branch does.

@@ -185,6 +185,11 @@ ROCm on gfx1013 (Cyan Skillfish) is **partial and has known regressions**:
 - RDNA1 architectures gfx1010/gfx1011 are build-passing in TheRock but gfx1013 is absent (ROCm/TheRock SUPPORTED_GPUS.md).
 - Community sentiment: "The last person who had ROCm working promised a guide then disappeared forever" (Discord).
 - `HSA_OVERRIDE_GFX_VERSION=10.3.0` may enable partial ROCm stack support but comes with risks and no guarantees.
+- **Full GPU *training* now demonstrated (u/redfoxkiller, 04/10/2026, reddit — "Training is a go!"):** recurrent PPO on a Digimon world on BC-250. Stack: Ubuntu 24.04.1, patched kernel `7.0.0-38-generic`, custom amdgpu memory/compute-stability patches, ROCm 6.4 installed **`--no-dkms`** (keeps the patched driver), custom-built rocBLAS with **80 native gfx1013 Tensile code objects** (modified arch detection/device IDs/Tensile loading), custom-compiled PyTorch 2.9.1 for gfx1013. Passed: matmul, native SGEMM, fwd/bwd, Adam, 500-step stability, real multi-wave PPO (40/40 optimizer updates). Key gotchas he documented:
+  - The breakthrough was enabling a then-*disabled* patched-driver option: `amdgpu.bc250_flush_by_runlist=1` (GRUB) — "addresses stale GPU memory translations that can cause serious compute failures" — plus `amdgpu.gpu_recovery=0`. This independently confirms the August `hipFree`/TLB-invalidation root cause found by gabriwar (above) in a new workload class: RL *training*.
+  - PyTorch GPU boolean advanced-indexing crashes PPO with `HIP error: invalid device function` → replaced with tensor slicing/concat (same math).
+  - He deliberately stayed on stock **24 CU** (no 40-CU unlock) for training stability; "even getting a basic HIP program to return a number initially caused hard system locks" before the patches.
+  - Whole image snapshotted so the setup is reproducible ("so I NEVER have to do this again"); details in-thread. Verified claim set — not yet reproduced by others (open question).
 
 For most users, **Vulkan is the recommended backend** for all AI inference workloads on the BC-250 (elektricM radv.md).
 
@@ -206,7 +211,8 @@ For best performance, use standalone llama.cpp directly instead of Ollama.
 Stable Diffusion runs via stablediffusion.cpp with the Vulkan backend (Discord community):
 - One community member reported 2x performance vs an RX 6600 on the same workload.
 - Video/latent models are very slow on a single board.
-- The main limitation is the lack of PyTorch ROCm support, which blocks ComfyUI and similar tools.
+- PyTorch/ROCm (previously the blocker for ComfyUI) now works with the custom stack below — ComfyUI is no longer blocked.
+- **ComfyUI Z-Image Turbo on native ROCm (gabriwar, 11/08/2026, bc250-resources/ComfyUi Z-Image Turbo):** "Running native ROCm. No emulation, no architecture override" — 25 s sampling at 3.23 s/step (8 steps), z-image-turbo Q5_K_S GGUF 4.9 GB + Qwen3-4B encoder, peak VRAM 8602/12288 MB, GPU locked 2000 MHz at 78.2 W / 56 °C, fp32 forced ("this silicon has no bf16, and fp16 saturates to a flat image"); GGUF disk load ~79 s once per session. Same thread (12/08/2026): gabriwar found swapping the Cyan Skillfish SMU firmware for the navi12 one makes SDMA work in 2-lane mode ("in kernel x sdma works fine, kernel x+1 dont" — identified via bisection, no downsides observed by him; MastaG merged some of these patches into the bc250 kernel repo 14/08/2026).
 
 ---
 

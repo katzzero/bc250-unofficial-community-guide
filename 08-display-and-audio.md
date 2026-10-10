@@ -50,6 +50,8 @@ Audio is transmitted natively through DisplayPort. If your monitor has speakers 
 - **Passive DP-to-HDMI (generic):** Limited to HDMI 1.4 (1080p60 / 1440p60, no 120Hz). Audio works fine.
 - **Note:** Some Bazzite users still report pitch-shifted audio via DP→HDMI even on recent kernels (nataliezaki, May 2026). Native DP connection avoids all audio issues.
 
+**TV handshake / flicker (Oct 2026):** board fine on all monitors but flashing black/white/gray screens on a TV via adapters — plain **DP→HDMI cable, no adapter dongle** fixed it for multiple users: "I've had the best luck without using adapters, just a plain DP to HDMI cable. Everything from multiple TVs, good PC monitors and cheap portable [screens]" (u/jordanka161, corroborated by u/Chemical_Reaction69, 08/10/2026, reddit). If you must use an adapter, see the EDID/DSC notes above.
+
 ### Option 2: USB Sound Card (Most Reliable Fix)
 
 If audio over DP isn't working, use a USB audio adapter:

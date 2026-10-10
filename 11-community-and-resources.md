@@ -134,6 +134,8 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [huzhekun/bt-dongle-with-pc-wake](https://github.com/huzhekun/bt-dongle-with-pc-wake) | Pi Pico 2W as BT dongle with controller wake (Linux, early stage) |
 | [mosfetparty/bc250-psu-adapter](https://github.com/mosfetparty/bc250-psu-adapter) | ATX PSU control adapter (pilimmm) — plug-and-play PS_ON board for FSP500 + 24-pin ATX, [mosfet.party](https://mosfet.party) |
 | [PetteriLah/BC-250-PC-Remote-Control](https://github.com/PetteriLah/BC-250-PC-Remote-Control) | ESP32 remote PSU controller — PS5 DualSense BLE wake, web interface (wisserbasser) |
+| [GreatApo/BC250_ESP32_ATX_PSU](https://github.com/GreatApo/BC250_ESP32_ATX_PSU) | ESP32 ATX power-on bridge — "built 3 of these and they have worked 100% every time no matter how long it just sits" (u/jordanka161, 07/10/2026, reddit) |
+| [Thunkar/bc250-esp32-switch](https://github.com/Thunkar/bc250-esp32-switch) | ESP32 DualSense wake — originally ESP32-C3; a user ported it to the original ESP32 because "the dual sense is Bluetooth classic only", pairs by MAC address + push-button fallback (u/Stormbringer1225, 07/10/2026, reddit). Wiring pattern from the same thread: case momentary button drives an optocoupler that bridges PS_ON to ground (u/rufiohProbably, 07/10/2026) |
 | [suapapa/rusty-bc250-atx](https://github.com/suapapa/rusty-bc250-atx) | ATX PSU power control (Rust) |
 | [Thunkar/bc250-esp32-switch](https://github.com/Thunkar/bc250-esp32-switch) | ESP32-C3 power switch — BLE controller wake, WiFi config portal, boot watchdog (ATX PSU) |
 
@@ -173,7 +175,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | Repository | Description |
 |------------|-------------|
 | [akandr/bc250](https://github.com/akandr/bc250) | Ollama + Vulkan inference guide for BC-250 |
-| [GabriWar/bc250-rocm-working](https://github.com/GabriWar/bc250-rocm-working) | Stable Diffusion on BC-250 via ROCm/HIP — kernel patches, rocBLAS gfx1013 kernels, runlist TLB flush fix, full investigation (Aug 2026) |
+| [GabriWar/bc250-rocm-working](https://github.com/GabriWar/bc250-rocm-working) | Stable Diffusion on BC-250 via ROCm/HIP — kernel patches, rocBLAS gfx1013 kernels, runlist TLB flush fix — the `amdgpu.bc250_flush_by_runlist=1` module option later credited with fixing PPO-training GPU faults (u/redfoxkiller, 04/10/2026, reddit), full investigation (Aug 2026) |
 | [JustVugg/colibri](https://github.com/JustVugg/colibri) | Run GLM-5.2 (744B MoE) on 25GB-RAM machine — pure C, zero deps, experts streamed from disk |
 | [LaurentZuijdwijk/llama.cpp](https://github.com/LaurentZuijdwijk/llama.cpp) | llama.cpp with adaptive speculative decoding (`--spec-draft-adaptive`) + Vulkan backend tuned for AMD Strix Halo — 4.7x on structured output, 1.9x mainline prefill on MoE (Aug 2026) |
 | [TechMakesArt/llama.cpp-bc250](https://github.com/TechMakesArt/llama.cpp-bc250) | llama.cpp fork tuned for the BC-250 (Aug 2026) |
@@ -214,7 +216,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 
 Note: mkdocs.yml contains a different invite code (`discord.com/invite/uDvkhNpxRQ`) -- the README link is used here as the primary source.
 
-**Server notes (Oct 2026):** staff moderation — "I'd like everyone to refrain from discussing the ps5 compatibility layers and to refrain from posting any ps5 reverse engineering material here" (realderyn, 05/10/2026, announcements); plus a general "don't break the law here" reminder (realderyn, 04/10/2026). Expect PS5-adjacent VCN material to be scarce on the server; a benchmark thread was renamed "[removed by staff]" after an NSFW post got its author banned (biohazardv2.0 note, 08/10/2026).
+**Server notes (Oct 2026):** staff moderation — "I'd like everyone to refrain from discussing the ps5 compatibility layers and to refrain from posting any ps5 reverse engineering material here" (realderyn, 05/10/2026, announcements); plus a general "don't break the law here" reminder (realderyn, 04/10/2026). Expect PS5-adjacent VCN material to be scarce on the server; a benchmark thread was renamed "[removed by staff]" after an NSFW post got its author banned (biohazardv2.0 note, 08/10/2026). Community culture: a "Heroes of BC250" thread was opened where capt.cat_13 tagged the long list of tool authors (filippor, Humvee55, _mastag, Forbidden-Darkness, rescuemei/The Mei™, rw-r-r-0644, mrfrakes, movacx, dmoraza, fish, gennro, punsh, lonewolf0622x…) and proposed coordinated **testing contributions for Control Center** — "Control Center is not appearing out of nowhere. Most of its functionality is based on work that already exists" (01/10/2026, project-forums/Heroes of BC250:10-32).
 
 ---
 
@@ -282,6 +284,8 @@ When searching for help, try these identifiers:
 | Creator | Period | Notes |
 |---------|--------|-------|
 | Budget Builds Official | Oct 2025 | First major coverage -- prices started climbing [confirmed: @cliff_86, 29/11/2025] |
+| **Digital Foundry — Direct Weekly #284** | 05/10/2026 | Covered the BC-250 and its FSR 4 capability — second mainstream-press attention wave; longevity/price discussion followed (u/BdogMcCool1, 05/10/2026, reddit) |
+| Old Lamer — HelixSR vs FSR4-r11 comparison | 06/10/2026 | Fresh head-to-head video after HelixSR landed; community verdict: "might replace all of my games with DLSS 3.7 instead" (u/Sudowoodo-Official, 06/10/2026, reddit) |
 | oldlamer | Late 2025 | Most technically accurate guides [confirmed: @Discord] |
 | CraftComputing | Late 2025 | Early coverage, some buggy results [confirmed: @Discord] |
 | ToastyBros | Dec 2025 | Criticized for not using governor/OC [confirmed: @selectivelygood_16010, 03/01/2026]

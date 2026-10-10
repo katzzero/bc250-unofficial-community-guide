@@ -141,6 +141,25 @@ Pass: `failed` = 0 on every core and spread within ~1% of the median. **Fail:** 
 
 ---
 
+## Games Crash to Black Screen Mid-Play (GPU Dies First)
+
+**Symptoms:** after 30 min–hours, game freezes → screen black → logging stops seconds later (GPU crashes before the OS notices); no journal entry; hard reset required; synthetic stability tests (memtest_vulkan, Furmark, OCCT, gravitymark) all pass (u/ProEntomologist, 05/10/2026, reddit — 36 CU 2 GHz 980 mV, 8c 3.6 GHz, Bazzite, meimei BIOS).
+
+**What worked for people in the same class of crash (05/10/2026, reddit):**
+- +10 mV steps on the GPU rail (Elaba83 — "I had the same"; log via CoolerControl)
+- Drop GPU OC to 1600–1800 MHz — "much past 1800 and memory bandwidth reduces real gains while voltage increases push power and thermals" (Ice3yes)
+- CPU side: try `nosmt` and 3.5 GHz — "dynamic loading can be an issue even when the system is rock solid under load" (Ice3yes)
+- VRAM allocation: mid-game black screens can be a VRAM/swap exhaustion issue at the 512 MB dynamic setting in intense scenes — test a fixed 10/6 or 8/8 split (bushinthebrush; ProEntomologist confirmed the "intense scenes / moving fast / spinning camera" pattern — see [02 → VRAM Allocation](02-bios-and-firmware.md#vram-allocation-options))
+- If nothing helps, start from stock clocks with cores locked, then re-add OC piecewise (Elaba83)
+
+## Dropped into GRUB Shell at Boot (`grub>` prompt)
+
+**Symptoms:** board boots to a text `grub>` shell (or "stuck on this screen") instead of the OS; `exit` returns to BIOS; ESC during boot doesn't help (u/DriftLurqe, 08/10/2026, reddit — Bazzite).
+
+**Cause:** bootloader can't find its config — "usually the result of a failed OS install. The bootloader can't find the grub configuration files so it drops you into the grub shell" (u/pja); OS corruption after a hard power-cut during operation is the other common trigger (u/IrrelevantTale).
+
+**Fix:** reinstall/re-create the boot entry (the reporter resolved with a fresh install); if it appeared after killing power mid-run, check filesystem first from a live USB before reinstalling.
+
 ## Black Screen During OS Installation
 
 **Bazzite specific:**
@@ -595,6 +614,7 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 - If hard lock occurs at moderate settings, reduce max frequency or voltage further
 - Higher CPU overclock lowers GPU hard lock threshold — undervolt CPU when pushing GPU (big_trov, hojnikb)
 - No workaround for the secondary power limit yet; shunt mod may be required (big_trov)
+- **Oct 2026 refinement:** the hard-lock class now has a measurable signature — wall draw collapses below ~30 W (all main rails shut off, unlike low-voltage crashes which keep drawing and respond to reset), and a *successful* 2300 MHz run measured only 270 W at the wall while 330 W+ Furmark runs never triggered it → it's per-rail OCP on the shared ISL69247 controller, not total power. Read-only NVRAM variables `VRM_CURRENT_LIMIT` (TDC 65 A) / `VRM_MAXIMUM_CURRENT_LIMIT` (EDC 95 A) for VDDCR_VDD exist in the AmdSetup store — candidate lever for a future patch. Full detail: [02 → VRM / Power-Limit Constraints](02-bios-and-firmware.md#vrm--power-limit-constraints-oct-2026) (big_trov et al., 05/10/2026).
 
 ---
 
@@ -666,6 +686,53 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 **Symptoms:** Idle green screen, or GPU hang at startup, after setting minimum GPU frequency/voltage too low in the governor.
 
 **Cause:** Silicon-dependent P-state floor. One board idled green until the 350 MHz floor was raised to 760 mV (dominic61, 04/10/2026); another never stabilized 500 MHz @ 700 mV and fell back to a 700 MHz floor (yrouel86, 06/10/2026). Do not set minimum voltage below 700 mV (froginasock., 25/09/2026) — see [06 → Voltage floor](06-gpu-governor.md#known-stable-frequency--voltage-points). If a bad floor is already set, the board still recovers to safe min clock/voltage on reboot for most configs, but a crash loop may require disabling the governor for one boot (froginasock., 25/09/2026).
+
+**Related in-thread fixes (Sep–Oct 2026):**
+- Black screen on launching 3D games (SteamOS + CachyOS) with the governor's default config: raising the lowest safe-point from 350 MHz @ 700 mV to 350 MHz @ 800 mV stopped the crash-to-black/hard-reset pattern (chickey, 26/09/2026, help-thread/Black Screen Crash — single report, still being tested by the reporter) [confirmed: @chickey, 26/09/2026].
+- Green screens while downloading in Game Mode on a stock board: disabling the Game Mode performance overlay stopped it for one user (kzathan, 06/10/2026); another user's green screens ended after **disabling the ACPI fix** (killingtpaz90765, 07/10/2026 — contradicts the general recommendation, isolated report (open question)); two users fixed recurring green screens by raising undervolted voltages (thefemiurge/davesmitt_, 07/10/2026) — same low-floor root cause as above.
+
+---
+
+## Long Power-On / Boot Delay (minutes)
+
+**Symptoms:** Board takes 5+ minutes to come on; once up, everything works (davesmitt_, 03/10/2026).
+
+**Known causes & fixes:**
+1. A USB device stalling enumeration — "try to disconnect all USB devices. I have a wifi adapter that causes a similar problem" (filippor, 04/10/2026); one user's TP-Link nano adapter froze the whole display when behind a case USB hub — fixed by moving it to a rear port (kitectrl, 04/10/2026).
+2. If hardware enumeration is fine, it's a userspace hang: `sudo systemd-analyze blame` to find the culprit service (rocksalt_, 04/10/2026).
+
+---
+
+## USB Ports Dead Even in BIOS
+
+**Symptoms:** Board POSTs to BIOS but no keyboard/mouse anywhere, boot USBs ignored, LAN fine; persists across BIOS 2.0→3.00 (flashed via Pico serprog) and CMOS clears (bichi1, 07/10/2026).
+
+**Cause/fix:** USB needs the 5V rail — "Is your USB voltage 5v? If not you need to repair 5v on the motherboard or use a powered USB hub"; broken data lines need PCB repair (masterbonk_, 09/10/2026) [confirmed: @masterbonk_, 09/10/2026]. Workaround while repairing: powered self-modified USB hub. Note: a working board boots fine after this failure mode was *ruled out* by the hub test — verify 5V before declaring the SuperIO dead.
+
+---
+
+## No Display After Heatsink Mod / Putty Job
+
+**Symptoms:** Board lights up, fan spins, but no POST output, no keyboard LED, after a heatsink/fin mod (hantushapantus, 07/10/2026 — post fin-cutting + putty + PTM).
+
+**Diagnostic order (dominic61, 07/10/2026):** 1) blow out/re-check for metal shavings — "Yes it could fry something"; 2) test the PSU under load — "You could just plug the PCIe over into [a desktop]... to see if you just fried your power supply"; "you could be getting some voltage [ LEDs on], the theory is that this drops as soon as there's a load" — multimeter the 8-pin under load, not just the pins; 3) only then suspect the board. (Matches the debris warning in [04](04-cooling-guide.md#heatsink-modification).)
+
+---
+
+## Toolkit Can't Apply the 8-Core EFI Patch (Redbeard, CachyOS)
+
+**Symptoms:** `redbeard1083/bc250-toolkit` EFI core-unlock entry fails / shows nothing.
+
+**Cause:** the cloned `bc250-efi-core-unlock` checkout is missing its submodule files (`bc250-smu-unlock/bc250_smu/patches.hex`).
+
+**Fix (datguybarney, 01/10/2026):**
+```bash
+sudo find / -type d -name "bc250-efi-core-unlock" 2>/dev/null   # locate the clone, cd into it
+sudo git config --global --add safe.directory "*"
+sudo git submodule update --init --recursive
+ls -la bc250-smu-unlock/bc250_smu/patches.hex                   # should exist (~1.3k)
+```
+Re-run the toolkit, apply, reboot. "Only do this if you verified that all 8 cpu cores worked" (01/10/2026) [confirmed: @datguybarney, 01/10/2026]. Same thread caveat: even with SMU patch, that board's *CPU* temp still misreports — monitor GPU temp meanwhile (open question).
 
 ---
 

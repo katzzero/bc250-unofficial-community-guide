@@ -413,7 +413,7 @@ Confirmed working on kernel 6.19.8. Both tables loaded via initrd override. See 
 **Oct 2026 tooling around the ACPI fix:**
 - **Persistent, no-BIOS-flash variant:** [RobertoTorino/bc250-persistent-acpi](https://github.com/RobertoTorino/bc250-persistent-acpi) — "a **persistent** ACPI fix … that gives the board CPU C-states (idle) and frequency scaling (800 MHz – 3.2 GHz, 8 steps) on Linux — without a modded BIOS", only tested on Bazzite so far (game_play267_84989, 06/10/2026) [confirmed: @game_play267_84989, 06/10/2026]. Acknowledges [e-tho/bc250-acpi-fix](https://github.com/e-tho/bc250-acpi-fix) (maintained tables), shinf1x/bc250-collective (original tables), rw-r-r-0644 (idle-table diagnosis), mendesrr (8-core extension).
 - **e-tho/bc250-acpi-fix v1.1.1:** fixes C3 idle-state freezes (e_tho, 05/10/2026). Performance impact is within noise — Superposition 1080p high 10312 vs 10182 stock; 1080p medium 12465 vs 12251 (big_trov, 05/10/2026).
-- **Governor config conflict:** mixing BC250 Control Center and a hand-edited governor `config.toml` produced a duplicate-key TOML error ("Cannot overwrite a value at line 9, column 18") — keep one writer of the file (brian_aniki, 27/09/2026).
+- **Governor config conflict:** mixing BC250 Control Center and a hand-edited governor `config.toml` produced a duplicate-key TOML error ("Cannot overwrite a value at line 9, column 18") — keep one writer of the file (brian_aniki, 27/09/2026). To undo Control Center changes (e.g. audio stutter after a batch of edits), it has per-area "restore to default" buttons — check each section rather than rolling back the OS (chubbywubbypr, 30/09/2026).
 
 ---
 

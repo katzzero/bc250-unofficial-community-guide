@@ -51,6 +51,9 @@ Server PSUs offer excellent value but require a breakout board (~$10-20) and wir
 |-------|---------|---------|-------|-------|
 | **HP DPS-800GB** | 800W | Works | Cheap (secondhand) | Very loud, requires breakout board |
 | **Delta DPS-750RB** | 750W | Works | Cheap (secondhand) | Very loud |
+| **HPE HSTNS-PL14** | 460W | Works | Cheap (secondhand) | "I have an HSTNS PL14 (460W) and it works fine on my side so far" (.strongpotato, 25/09/2026). **Buy the PL14 (common slot), not the PC40** — PC40 uses the flex-slot connector typical breakouts don't support, and lacks a documented 12VSB rail (serverror/snoop05/_fanoush_, 25–26/09/2026) |
+| **HPE HSTNS-PC40** | 500W | ⚠️ Flex-slot — avoid | Cheap | "People lament buying flex slot without realizing the difference and then not being able to use typical resources… unless you have a really good reason, get the PL14" (serverror, 25/09/2026) |
+| **Dell D750E-S7 (Titanium)** | 750W | ❌ Does NOT work standalone | Dirt cheap | Needs more than PS_ON+PS_KILL low: greens for ~10 s then kills outputs and blinks amber, even with the BC-250 as load — "requires some advanced 'OK' signal from the actual server" (two units behave identically) (hecto_77113, 28/09/2026) [confirmed: @hecto_77113, 28/09/2026]. HP 750 W works fine as the practical substitute (same user) |
 | **Bitmain APW3++** | ~2000W | Works | Cheap (secondhand) | 220W idle draw! Not recommended for single board |
 
 ### Breakout Board Sources
