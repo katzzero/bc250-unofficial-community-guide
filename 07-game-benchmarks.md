@@ -410,6 +410,8 @@ Runs on CachyOS with Proton Experimental, 40 CU, lower settings (biohazardv2.0).
 | Expedition 33 (Clair Obscur) — 40 CU | 35 → 60 FPS | "40cu boosted my expedition 33 35 fps to 60" [confirmed: @josuee34, 14/08/2026] |
 | Palia | Crashes without workaround (swap may help) (dillydilly_91, 23/02/2026) | Community report |
 
+**EAC / Epic note (Oct 2026):** Epic Games shipped a **native-Linux launcher preview** with upgraded EAC (GamingOnLinux, 14/10/2026 — u/A7XFAN1998, reddit); Fortnite for Linux was announced alongside. However the launcher preview requires **Secure Boot + TPM 2.0 + IOMMU**, which the BC-250's platform does not provide in a stock BIOS — treat "Fortnite soon on BC-250" as an (open question), not a working path (u/Jakdaw1, 14/10/2026, reddit).
+
 ---
 
 ## Launch Options & Tweaks (Quick Reference)

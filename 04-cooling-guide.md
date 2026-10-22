@@ -254,6 +254,7 @@ Board orientation is widely suspected to matter for the **stock heat-pipe heatsi
 - **Counter-examples:** _wesk and vvaaron report *zero* discernable difference upright vs upside-down-flat on their (aftermarket-cooled) boards; vvaaron attributes most thermal spread to per-board voltage, not orientation (13/10/2026).
 - snoop05: heatsink revisions differ (the "two stripes / hole-in-fins" variant has its heatpipe wide/narrow ends swapped), and stock VF tables vary by up to ~100 mV between boards — both confound any orientation A/B.
 
+- **Independent reddit confirmation:** a builder rotating 180° to fit a standard mATX case saw +10 °C on the same game/settings; removing the case's mesh panel didn't recover it, and going back to the case's original design orientation did — attributed to the stock heatsink's heat-pipe wick orientation (u/Sudowoodo-Official, 19/10/2026, reddit).
 **Practical takeaway:** if you use the stock cooler and run hot, try connectors-UP before buying anything; with a direct-contact AIO the orientation effect appears to vanish. (open question — needs a controlled same-case, same-airflow test.)
 
 ### With Liquid Cooling (240mm AIO)

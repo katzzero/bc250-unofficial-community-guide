@@ -20,6 +20,13 @@
 >
 > **Tip:** WiFi/BT combo dongles often cause BT disconnections on USB 3.0 ports. Use separate dongles for WiFi and BT, or plug the BT dongle into a USB 2.0 hub (Italian sub-thread, verified with kernel 6.19+). This applies to all combo adapters.
 
+### 2.4 GHz interference from USB 3.0 (PSA)
+
+The USB 3.0 ports on the BC-250's rear I/O emit RF noise in the 2.4 GHz band that **jams wireless dongles** plugged directly into them (Bluetooth latency, disconnects, controller jitter, degraded WiFi). This is a general USB 3.0 issue, not BC-250-specific (Intel documents it in a dedicated white paper), but the board's metal chassis and unshielded rear I/O make it worse.
+- **Fix:** plug the WiFi/BT dongle into a **USB 2.0 port** if the case exposes one, or route it through a **short USB extension cable / unpowered hub** to keep the dongle away from the board's I/O cluster. A **M.2 Key-E WiFi module on a NVMe→M.2 bifurcation riser** avoids the problem entirely (u/Melodic_Ad_5097 PSA + corroboration u/User5281, 19/10/2026, reddit).
+- Some 802.11ax dongles misbehave badly under this noise while an 802.11b/g fallback works fine (u/ProEntomologist, 19/10/2026, reddit).
+- Reference: Intel "USB 3.0 Radio Frequency Interference Impact on 2.4 GHz Wireless Devices" white paper (linked by u/Melodic_Ad_5097).
+
 ### ⚠️ Budget / Limited Support
 
 | Adapter | Verdict | Notes |
@@ -118,4 +125,4 @@ The BC-250 ships without a power button header. Source: [elektricM specification
 | Rubber Washers / Standoffs | Any | For vibration dampening |
 
 > For the complete case catalog (145 documented designs as of elektricM docs): [elektricM Case Gallery](https://elektricm.github.io/amd-bc250-docs/community/cases/) — designs with PSU type, dimensions, and build notes. Source: [elektricM cases](https://elektricm.github.io/amd-bc250-docs/community/cases/).
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**

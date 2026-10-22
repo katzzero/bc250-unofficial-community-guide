@@ -20,6 +20,16 @@ Discord export: 99 channels (`--after 2026-10-08`), messages through 22/10/2026;
 - **macOS** (11,12): jwagnervaz "all issues resolved, audio working" separate release coming (djaykay, 08/10) — unreleased (open question); MLX/Metal not faster than Linux/Vulkan for inference, ~10–11 GiB usable vs ~14.7 GiB on Moraine (hojnikb, 17/10); Moraine v0.2.1 figures already logged.
 - **11 repos/coverage:** D-Ogi/amdgpu-wddm, kalpakprod/bc250-vcn-psp-findings, daniel-h-0/freefg; Digital Foundry already logged; new Old Lamer Nagi video.
 
+### 5. Reddit sweep — new posts 10–22/10/2026 (11,09,13,07,04,README)
+- **BC250DB** (https://bc250db.com) — community game-compat / benchmark / config platform, PT-BR + EN, open beta (u/Daivit_Charles, 13/10/2026) → 11 Primary Documentation.
+- **bc250-ha-bridge** ([phiiaz/bc250-ha-bridge](https://github.com/phiiaz/bc250-ha-bridge)) — Home Assistant ↔ BC-250 MQTT bridge; sensors + sleep/reboot/desktop-switch/WoL; GPU clock control via the governor's runtime D-Bus (default ceiling 2200 MHz, voltage/CU read-only) (u/Affectionate_Bid5696, 15/10/2026) → 11 Governor/Monitoring.
+- **USB 3.0 → 2.4 GHz interference PSA** — rear USB 3.0 ports jam BT/WiFi dongles; fix = USB 2.0 / extension / M.2 Key-E riser (u/Melodic_Ad_5097 + ProEntomologist + User5281, 19/10/2026) → 09.
+- **Price spike (Oct 12–20)** — AliExpress listing briefly off-site, Canada ~$400 (was $250), EU eBay €400–450, community "$500 soon"; cause = YouTube/LTT coverage + finite used stock. Also: pja's note that the GPU is "a weird mix of two different RDNA generations" → why no existing Windows driver was tweakable (→ 11 Windows Drivers). Price-history table + README mirror updated.
+- **Epic native-Linux launcher preview** + upgraded EAC / Fortnite-for-Linux (u/A7XFAN1998, 14/10/2026) — but requires Secure Boot+TPM2.0+IOMMU, not a BC-250 path today (open question) → 07 Games That Don't Work.
+- **Orientation** independent reddit confirmation: +10 °C on stock heatsink when rotated for an mATX case (u/Sudowoodo-Official, 19/10/2026) → 04.
+- **Animaltech Cub family** — Cub Ice remake (10/10) + Cub Ice V2 / Project 5 / Cub Twin teased for MakerWorld (14/10) → 13.
+- **Emoji-policy fix:** a stray warning glyph used in prose in the previous `f4b5bb9` commit (06 idle bullet) converted to plain "Caveat:" — DOC_STANDARDS §8 (status glyphs allowed only inside table columns).
+
 ### Verification notes
 - Superposition record **unchanged at 5865** — hexxeh couldn't reach 5800s at similar clocks (10/10), "this is the record"; seb.gauge/leandrosalvas runs were images without beats (not logged).
 - Deliberately excluded: "game that defeated the bc250" (nataliezaki, 21/10 — no config), vague "no vram leaking" meme, PS5/RE material (staff restriction), Steam-Deck-only flatpak thread already covered.

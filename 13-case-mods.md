@@ -54,6 +54,7 @@ Sources: __sapoperro__, 11 Mar 2026. cakewalk_, 5 Dec 2025. froginasock, 3 Nov 2
 | **ATX PSU Bazzite Box** | gennro | [Printables](https://www.printables.com/model/1550729-bc-250-atx-psu-bazzite-box) | Full ATX PSU. Compact layout |
 | **BC-250 Case w/ Full ATX PSU + Tower Cooler** | safwyl | [GitHub](https://github.com/safwyls/BC-250_ATXCase) | Full ATX PSU. Peerless Assassin 120mm tower cooler. ~63-70C with PTM7950. 2x120mm intake |
 | **Obelisk Case** | ivanin3d | Thread only (project-forums, WIP) | SFX PSU (Corsair SF600). Toolless. 2-fan layout. Vertical obelisk aesthetic |
+| **Animaltech Cub family (Cub Ice V2 / Project 5 / Cub Twin)** | u/AnimaltechBc250 (Animaltech) | Reddit showcase + MakerWorld imminent | Cub Ice remake 10/10/2026; three new cases teased 14/10/2026 — Cub Ice V2, Project 5 and "Cub Twin" — "three new cases on MakerWorld this weekend, get those printers ready". Cub Twin is the family's dual-board variant (u/AnimaltechBc250, 10–14/10/2026, reddit) |
 | **BC-250 Minimalistic SFX Case V2** | methisfaction | [Reddit showcase](https://www.reddit.com/r/BC250Gaming/comments/1wr6xrh/bc250_monolithic_custom_case_magnetic_panels/) / [MakerWorld profiles](https://discord.com/channels/1315924807128449065/1532326338759757967) | "Monolithic custom case, magnetic panels, multiple cooling configs" (26/09/2026). V2-flex cut for 220-class beds (P1S). Print guidance: use the MakerWorld profile as-is, support blockers active at screw holes, base in PETG, panels PLA-visible-side-down no supports (methisfaction, 03/10/2026) [confirmed: @methisfaction, 03/10/2026] |
 | **Quiet BC-Case (redesign, Oct 2026)** | seb.gauge | Thread only (project-forums) | Fully re-sized around top-down coolers: JF13K "now famous", Thermalright AXP120-X67, SI-100, Peerless Assassin 90 SE. Prints on 220³ beds; **Flex AND SFX** + ATX-breakout mount + front USB hub; backplate side fits 80mm fan or 20 mm heatsink; slide-in panels with rear brackets, minimal visible screws. JF13K horizontal clamping-pressure fix pending — 6.5/6.75 mm AM5 adapter brackets being tested (seb.gauge, 01–04/10/2026) [confirmed: @seb.gauge, 01/10/2026] |
 
@@ -118,4 +119,4 @@ This addendum only covers the most notable / heavily-discussed designs from the 
 
 All case designs listed here were created by community members and shared freely or commercially. Links were verified against Discord exports (project-forums channel, 2025-11-01 to 2026-09-14). If your design is missing or a link is outdated, please open an issue or PR on the [guide repository](https://github.com/katzzero/bc250-unofficial-community-guide).
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**

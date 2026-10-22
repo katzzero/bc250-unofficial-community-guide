@@ -78,7 +78,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 | **SSD** | Any M.2 NVMe (PCIe 2.0 x2 — cheap drives saturate the bus) | ~$25 |
 | | **Total (approx)** | **~$150–275** |
 
-**Board price history** (community data): Dec 2025 ~$62–125 (new $125, used $65, some $62 — gadgetgeek., 29/11–19/12/2025) → Dec 2025 ~$175 (gennro, 28/12/2025) → Jan 2026 settled at **$150–200** (iambryan_x1, 24/01/2026; predicted $200–250 new / $150 used — vicomte.me, 10/01/2026) → Apr 2026 still under $150 (essdee4336, 23/04/2026) → Aug 2026 back down to ~$100–125 (strykur, 03/08/2026). Prices are volatile — verify current listings before buying.
+**Board price history** (community data): Dec 2025 ~$62–125 (new $125, used $65, some $62 — gadgetgeek., 29/11–19/12/2025) → Dec 2025 ~$175 (gennro, 28/12/2025) → Jan 2026 settled at **$150–200** (iambryan_x1, 24/01/2026; predicted $200–250 new / $150 used — vicomte.me, 10/01/2026) → Apr 2026 still under $150 (essdee4336, 23/04/2026) → Aug 2026 back down to ~$100–125 (strykur, 03/08/2026) → **Mid–Late Oct 2026: spike** — AliExpress main listing briefly went off-site (10/12), Canada boards reported near $400 (was $250 two months earlier), EU eBay 400–450 €, with the community openly discussing a $500 target (u/Sudowoodo-Official / u/redfoxkiller / u/fabulot, 12–20/10/2026, reddit). Prices are volatile — verify current listings before buying.
 
 ---
 
@@ -154,6 +154,7 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 - **macOS:** jwagnervaz says a separate release resolves all issues incl. audio (08/10); MLX/Metal is *not* faster than Linux/Vulkan for inference ([11](11-community-and-resources.md), [12](12-ai-inference.md)).
 - **Cooling (open question):** board-orientation study — heat-pipe gravity may swing up to ~20 °C on some stock-heatsink boards, zero on others ([04](04-cooling-guide.md)).
 - New repos / coverage: `kalpakprod/bc250-vcn-psp-findings`, Digital Foundry + Old Lamer "Nagi vs Linux"; Moraine v0.2.1 (~14.7 GiB usable for inference).
+- **Reddit sweep adds:** [BC250DB](https://bc250db.com) community compatibility/benchmark platform (open beta, 13/10); [phiiaz/bc250-ha-bridge](https://github.com/phiiaz/bc250-ha-bridge) — Home Assistant MQTT integration (temps, GPU clock, WoL; drives the governor's D-Bus); PSA — **USB 3.0 rear-I/O noise jams 2.4 GHz dongles**, use USB 2.0 / extension / M.2 Key-E (19/10); independent Reddit orientation confirmation (+10 °C on stock heatsink when rotated to fit an mATX case, 19/10); Epic Games native-Linux launcher preview (14/10, requires Secure Boot+TPM2+IOMMU — not a BC-250 path today); Animaltech **Cub Ice V2 / Project 5 / Cub Twin** cases teased (14/10, 13-case-mods.md).
 
 **October 2026 (Sep 26–Oct 9, 142 channels):**
 - **VCN breakthrough:** holde got the actual VCN block doing H.264 (~4 ms encode at 1080p) with a self-signed driver + tweaked BIOS — janky, not reboot-persistent, H.265 still broken, unpublished; VCPU never fetches under stock firmware because the KDB lacks the usage-6 entry and the harvest latch is firmware-written, **not fused** (04/10/2026, [02 → VCN](02-bios-and-firmware.md#vcn-hardware-video-decode))
