@@ -2,7 +2,7 @@
 
 > **Turn a $100-175 mining board into a Linux gaming PC.** The BC-250 carries a cut-down PS5 "Oberon" APU — 6 Zen 2 cores (up to 8 unlockable), 24 RDNA 2 CUs (up to 40 unlockable), 16 GB GDDR6. Performance: RX 6600–RX 6700 level with CU/core unlocks (see price history below). Total build: **~$150-275**.
 >
-> **Linux is the recommended target.** An open Windows 11 driver now exists (`amdgpu-wddm` / "Nagi" — desktop, D3D12 with RT, and Vulkan on the GPU) but it is experimental and test-signed (no anticheat games); still expect Linux for a smooth experience (see [11 — Community & Resources](11-community-and-resources.md)).
+> **Linux is the recommended target.** An open Windows 11 driver now exists ([D-Ogi/amdgpu-wddm](https://github.com/D-Ogi/amdgpu-wddm) / "Nagi" — desktop, D3D12 with RT, and Vulkan on the GPU) but it is experimental and test-signed (no anticheat games); still expect Linux for a smooth experience (see [11 — Community & Resources](11-community-and-resources.md)).
 >
 > [Discord](https://discord.gg/8eZfFWhczz) · [Wiki](https://github.com/katzzero/bc250-unofficial-community-guide/wiki) · [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md)
 
@@ -146,7 +146,7 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 ## What's New
 
 **October 2026 (Oct 9–22, Discord + Reddit):**
-- **Windows 11 now works for real:** D-Ogi's **`amdgpu-wddm` ("Nagi")** driver runs the desktop, D3D12 with ray tracing and Vulkan on the BC-250 (Mesa RADV/ACO + DXVK/vkd3d underneath) — "It's operational already" (13/10). Experimental/test-signed, no anticheat yet, 23H2 recommended ([11](11-community-and-resources.md)).
+- **Windows 11 now works for real:** **[D-Ogi/amdgpu-wddm](https://github.com/D-Ogi/amdgpu-wddm)** ("Nagi") driver runs the desktop, D3D12 with ray tracing and Vulkan on the BC-250 (Mesa RADV/ACO + DXVK/vkd3d underneath) — "It's operational already" (13/10). Experimental/test-signed, no anticheat yet, 23H2 recommended ([11](11-community-and-resources.md)).
 - **VCN enters drivers, with a hard caveat:** the ps5-linux power-on patch is packaged opt-in in `linux-cachyos-rc-bc250` (`bc250-vcn-fw`), but the PSP still refuses the firmware and **only ~40% of chips physically have a functional VCN block** (holde); H.265's failure cause is now known (per-codec register init) ([02](02-bios-and-firmware.md#vcn-hardware-video-decode)).
 - **Upscaler default shifted:** **HelixSR Scaler** (OptiScaler + HelixSR) is now the Proton default — runs NVIDIA **DLSS Model E** as D3D12 compute plus experimental **DLSS Frame Generation** on the BC-250; **HelixSR 2.0.0 + Scaler 1.1.0** (19/10) and opt-in **FreeFG** Intel XeSS frame-gen (`PROTON_USE_OPTISCALER=freefg`) ([07](07-game-benchmarks.md)).
 - **UGREEN adapter firmware:** `bc250-ch7218-fw` — UGREEN 07.00.69 + patched `tmds` images restore **VRR** (needs `amdgpu.bc250_ch7218_vrr=1` + power-cycle) ([08](08-display-and-audio.md)).
