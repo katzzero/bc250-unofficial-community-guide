@@ -246,12 +246,15 @@ Source: elektricM cooling.md (Safe Operating Temperatures table)
 | 90-96C | High - check paste and airflow |
 | 108C | Extreme OC without adequate cooling |
 
-### Orientation Considerations (May 2026)
+### Orientation Considerations (May–Oct 2026) — open question
 
-Board orientation affects cooling performance:
-- "If you can sit it on its side while it's on the bench, it cools better like that" (nexgen3d, 23/12/2025)
-- No quantitative community consensus on orientation differences exists yet
-- Test your specific board and mounting orientation for optimal thermals
+Board orientation is widely suspected to matter for the **stock heat-pipe heatsink**, but there is still **no consensus**. The leading hypothesis (capt.cat_13, 13/10/2026) is gravity-dependent heat-pipe return: power connectors UP or backplate-DOWN flat run cooler, connectors DOWN run hotter, with some users rotating a running board 180° and watching temps move in real time (~10 °C reported).
+- Controlled-ish test on an **untouched stock heatsink** (dominic61, 13/10/2026, Superposition Extreme): upside-down 5256 / 61 °C and 5222 / 61 °C vs right-side-up 5168 / **83 °C** (≈20 °C swing, scores near-identical); a second board later showed "5227 Max temp 63 (84 right side up)" (dominic61, 16/10/2026).
+- Confounds: case vent geometry and airflow direction move with orientation, so part of the delta is convection, not the heat pipes.
+- **Counter-examples:** _wesk and vvaaron report *zero* discernable difference upright vs upside-down-flat on their (aftermarket-cooled) boards; vvaaron attributes most thermal spread to per-board voltage, not orientation (13/10/2026).
+- snoop05: heatsink revisions differ (the "two stripes / hole-in-fins" variant has its heatpipe wide/narrow ends swapped), and stock VF tables vary by up to ~100 mV between boards — both confound any orientation A/B.
+
+**Practical takeaway:** if you use the stock cooler and run hot, try connectors-UP before buying anything; with a direct-contact AIO the orientation effect appears to vanish. (open question — needs a controlled same-case, same-airflow test.)
 
 ### With Liquid Cooling (240mm AIO)
 
@@ -342,4 +345,4 @@ Sources: elektricM cooling.md (Backplate VRAM Cooling Solutions), iamdarkyoshi (
 
 Per-chip GDDR6 temperature monitoring is now available via SMU/UMC MR3 reading (8 chips + hotspot/average, P3.00 BIOS only) — see canonical details in [02-BIOS & Firmware → GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3)](02-bios-and-firmware.md#gddr6-per-chip-temperature-reading-via-smuumc-mr3-sep-2026) (pan_rijovich, 12/09/2026). The reading is integrated as opt-in in [BC250-Telemetry v0.3](../03-power-supply-guide.md#vrm-telemetry-via-i2c-pmbus--web-dashboard) (`--memory-temp`; punsh1734, 13/09/2026). Use it to validate backplate cooling — e.g., chip #3 can run ~10 °C above others at idle (_fanoush_, 13/09/2026); GPU at 88 °C while most RAM chips run lower is expected (dmooney65, 12/09/2026).
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**

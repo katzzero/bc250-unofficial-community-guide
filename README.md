@@ -2,7 +2,7 @@
 
 > **Turn a $100-175 mining board into a Linux gaming PC.** The BC-250 carries a cut-down PS5 "Oberon" APU — 6 Zen 2 cores (up to 8 unlockable), 24 RDNA 2 CUs (up to 40 unlockable), 16 GB GDDR6. Performance: RX 6600–RX 6700 level with CU/core unlocks (see price history below). Total build: **~$150-275**.
 >
-> **Linux only** — no Windows GPU drivers exist; only experimental WIP projects (see [11 — Community & Resources](11-community-and-resources.md)).
+> **Linux is the recommended target.** An open Windows 11 driver now exists (`amdgpu-wddm` / "Nagi" — desktop, D3D12 with RT, and Vulkan on the GPU) but it is experimental and test-signed (no anticheat games); still expect Linux for a smooth experience (see [11 — Community & Resources](11-community-and-resources.md)).
 >
 > [Discord](https://discord.gg/8eZfFWhczz) · [Wiki](https://github.com/katzzero/bc250-unofficial-community-guide/wiki) · [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md)
 
@@ -21,7 +21,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 ## Is This Guide for You?
 
 - **Yes, if** you're comfortable in Linux (or willing to learn) and want maximum performance per dollar on a tinkering project.
-- **No, if** you need Windows, plug-and-play setup, or warranty support — this is niche, community-maintained hardware.
+- **No, if** you need a polished plug-and-play Windows experience, or warranty support — the community Windows driver is experimental and this is niche, community-maintained hardware.
 
 ---
 
@@ -84,7 +84,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 
 ## Important Warnings
 
-1. **Linux only** — no Windows GPU drivers exist
+1. **Linux-first** — a functional-but-experimental Windows 11 driver (`amdgpu-wddm`/Nagi) exists, test-signed with no anticheat support
 2. **Always clear CMOS** after BIOS flash — settings won't stick otherwise
 3. **Disable IOMMU** in BIOS — broken, causes display failures
 4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09)
@@ -93,7 +93,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 7. **Never use Smokeless_UMAF** — can permanently damage the board
 8. **Don't lose the 4 nylon washers** under heatsink screws — missing = 90–100°C idle
 9. **VRAM has no temperature sensor** — must cool backplate actively
-10. **No working hardware video encode/decode today** — VCN 2.0.3 present but power-gated; a private H.264 demo exists (Oct 2026, unpublished, reboot-fragile) but nothing usable is public — [02 VCN research](02-bios-and-firmware.md#vcn-hardware-video-decode), [10](10-troubleshooting.md#vcn-still-not-working)
+10. **No usable hardware video encode/decode today** — VCN 2.0.3 present but power-gated; an opt-in RC-kernel firmware path (`bc250-vcn-fw`) is emerging but the PSP still rejects the blob and **only ~40% of chips have a functional VCN block**. A private H.264 demo exists but is reboot-fragile — [02 VCN research](02-bios-and-firmware.md#vcn-hardware-video-decode), [10](10-troubleshooting.md#vcn-still-not-working)
 11. **CPU core voltage ("Vid") must never exceed 1.325 V** — exceeding it can permanently brick the board (yrouel86, 07/10/2026)
 
 ---
@@ -144,6 +144,16 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 ---
 
 ## What's New
+
+**October 2026 (Oct 9–22, Discord + Reddit):**
+- **Windows 11 now works for real:** D-Ogi's **`amdgpu-wddm` ("Nagi")** driver runs the desktop, D3D12 with ray tracing and Vulkan on the BC-250 (Mesa RADV/ACO + DXVK/vkd3d underneath) — "It's operational already" (13/10). Experimental/test-signed, no anticheat yet, 23H2 recommended ([11](11-community-and-resources.md)).
+- **VCN enters drivers, with a hard caveat:** the ps5-linux power-on patch is packaged opt-in in `linux-cachyos-rc-bc250` (`bc250-vcn-fw`), but the PSP still refuses the firmware and **only ~40% of chips physically have a functional VCN block** (holde); H.265's failure cause is now known (per-codec register init) ([02](02-bios-and-firmware.md#vcn-hardware-video-decode)).
+- **Upscaler default shifted:** **HelixSR Scaler** (OptiScaler + HelixSR) is now the Proton default — runs NVIDIA **DLSS Model E** as D3D12 compute plus experimental **DLSS Frame Generation** on the BC-250; **HelixSR 2.0.0 + Scaler 1.1.0** (19/10) and opt-in **FreeFG** Intel XeSS frame-gen (`PROTON_USE_OPTISCALER=freefg`) ([07](07-game-benchmarks.md)).
+- **UGREEN adapter firmware:** `bc250-ch7218-fw` — UGREEN 07.00.69 + patched `tmds` images restore **VRR** (needs `amdgpu.bc250_ch7218_vrr=1` + power-cycle) ([08](08-display-and-audio.md)).
+- **Idle power sub-50 W:** a filippor governor branch that also governs memory+fabric reaches 44–49 W at wall (P-state cycling not yet stable) ([06](06-gpu-governor.md)).
+- **macOS:** jwagnervaz says a separate release resolves all issues incl. audio (08/10); MLX/Metal is *not* faster than Linux/Vulkan for inference ([11](11-community-and-resources.md), [12](12-ai-inference.md)).
+- **Cooling (open question):** board-orientation study — heat-pipe gravity may swing up to ~20 °C on some stock-heatsink boards, zero on others ([04](04-cooling-guide.md)).
+- New repos / coverage: `kalpakprod/bc250-vcn-psp-findings`, Digital Foundry + Old Lamer "Nagi vs Linux"; Moraine v0.2.1 (~14.7 GiB usable for inference).
 
 **October 2026 (Sep 26–Oct 9, 142 channels):**
 - **VCN breakthrough:** holde got the actual VCN block doing H.264 (~4 ms encode at 1080p) with a self-signed driver + tweaked BIOS — janky, not reboot-persistent, H.265 still broken, unpublished; VCPU never fetches under stock firmware because the KDB lacks the usage-6 entry and the harvest latch is firmware-written, **not fused** (04/10/2026, [02 → VCN](02-bios-and-firmware.md#vcn-hardware-video-decode))
@@ -233,4 +243,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**

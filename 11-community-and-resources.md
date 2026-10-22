@@ -119,7 +119,7 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [pnbarbeito/bc250-arch](https://github.com/pnbarbeito/bc250-arch) | Arch Linux setup with governor + 40 CU unlock |
 | [redbeard1083/bc250-toolkit](https://github.com/redbeard1083/bc250-toolkit) | CachyOS setup toolkit |
 | [TesseractCat/bc250-nixos](https://github.com/TesseractCat/bc250-nixos) | NixOS configuration for BC-250 — reported working 100% first boot combined with Jovian-NixOS on stock BIOS ("now I have another remotely manageable NixOS machine with a fully declarative system config") (stephen.judkins, 04/10/2026) [confirmed: @stephen.judkins, 04/10/2026] |
-| [amethyst8118/BC-250-Hackintosh-OpenCore](https://github.com/amethyst8118/BC-250-Hackintosh-OpenCore) | macOS Tahoe 26.7.1 on BC-250 via OpenCore — "Everything mostly works, with CPU, GPU OC and CU+core unlock" (tier3retard, 01/10/2026). Companion GPU patch kext [amethyst8118/MetalCyan](https://github.com/amethyst8118/MetalCyan) gives Metal 3 acceleration (board recognized as RX 5700 by PID rename); **VCN stubbed out on macOS** (tier3retard, 01/10/2026, VCN thread:3301-3305) [confirmed: @tier3retard, 01/10/2026] |
+| [amethyst8118/BC-250-Hackintosh-OpenCore](https://github.com/amethyst8118/BC-250-Hackintosh-OpenCore) | macOS Tahoe 26.7.1 on BC-250 via OpenCore — "Everything mostly works, with CPU, GPU OC and CU+core unlock" (tier3retard, 01/10/2026). Companion GPU patch kext [amethyst8118/MetalCyan](https://github.com/amethyst8118/MetalCyan) gives Metal 3 acceleration (board recognized as RX 5700 by PID rename); **VCN stubbed out on macOS** (tier3retard, 01/10/2026, VCN thread:3301-3305) [confirmed: @tier3retard, 01/10/2026]. **Update 08/10/2026:** jwagnervaz has a separate release coming and "says all issues are resolved. Audio working etc." (djaykay, 08/10/2026) — not yet published/reproduced (open question). MLX/Metal is **not** a faster inference path than Linux/Vulkan here (see [12](12-ai-inference.md)) |
 | [rpf16rj/bc250-steamos-real-toolkit](https://github.com/rpf16rj/bc250-steamos-real-toolkit) | Real SteamOS toolkit — 40 CU + 8-core unlock surviving cold boot and SteamOS updates without a BIOS flash. **v1.3.0** adds Dolby Digital 5.1 via HDMI/eARC (option 13, Aug 2026). **v1.9.x (Sep–Oct 2026):** DSC credits + patch replacement + FSR4 SLR Proton variant (v1.9.1), 4K120 cold-boot fix + sticky DSC debugfs override (v1.9.6, 20/09/2026); integrates VA-API h264/hevc encode+decode + pwm fan control + Decky plugin — encode path "tested, not ready for release" (toolkit thread, 29–30/09/2026) |
 | [tmghd272/bc250-batocera-tools](https://github.com/tmghd272/bc250-batocera-tools) | Batocera Linux tools for BC-250 |
 | [tmghd272/bc250-toolkit-lite](https://github.com/tmghd272/bc250-toolkit-lite) | Lighter toolkit variant |
@@ -193,7 +193,11 @@ Grouped by purpose (one entry per repo). Alphabetical within each group.
 | [onemorecap/bc-250-sleeve-adapter](https://github.com/onemorecap/bc-250-sleeve-adapter) | 120mm fan adapter for stock heatsink |
 | [safwyls/BC-250_ATXCase](https://github.com/safwyls/BC-250_ATXCase) | ATX case design for BC-250 |
 
-### Windows Driver Experiments (WIP)
+### Windows Drivers
+
+**[D-Ogi/amdgpu-wddm](https://github.com/D-Ogi/amdgpu-wddm) ("Nagi") is functional, not just a stub** — an open Windows 11 x64 driver where the desktop, **Direct3D 12 with ray tracing, and Vulkan** run on the BC-250 GPU (gfx1013). Underneath it reuses Mesa RADV + the ACO compiler, and DX12 games go through DXVK/vkd3d-proton inside the driver. "It's operational already" as of 13/10/2026; what's still being fixed is third-party hardware compat (DP→HDMI adapters) and broader game coverage. Practical notes: **Windows 23H2 recommended** (the newer VidMm in 24H2/25H2/26H2 has a mapping-object regression; 26H2 is being added for WHQL/HLK certification); the **Nagi Control App** switches VRAM between 8/8 and 12/4 and ships a small debloater; a fixed 512 MB carve-out is too small (Windows caps dynamic GPU memory at 50% of system RAM). Tester builds `0.7.216.100-tester.29/.30`; known quirks include install-time Code 43 (workaround `bcdedit /set {globalsettings} highestmode on`) and a blank output on 2560×1440 panels pending a fix. **Drivers are test-signed, so anticheat games stay blocked until a signed release** (project-forums/Nagi devlog, 12–13/10/2026) [confirmed: @dogi013495, 13/10/2026].
+
+Earlier community experiments (all WIP/untested, superseded by Nagi):
 
 | Repository | Description |
 |------------|-------------|
@@ -286,6 +290,7 @@ When searching for help, try these identifiers:
 | Budget Builds Official | Oct 2025 | First major coverage -- prices started climbing [confirmed: @cliff_86, 29/11/2025] |
 | **Digital Foundry — Direct Weekly #284** | 05/10/2026 | Covered the BC-250 and its FSR 4 capability — second mainstream-press attention wave; longevity/price discussion followed (u/BdogMcCool1, 05/10/2026, reddit) |
 | Old Lamer — HelixSR vs FSR4-r11 comparison | 06/10/2026 | Fresh head-to-head video after HelixSR landed; community verdict: "might replace all of my games with DLSS 3.7 instead" (u/Sudowoodo-Official, 06/10/2026, reddit) |
+| Old Lamer — Windows 11 Gaming on BC-250?! Nagi Driver vs Linux | 19/10/2026 | Independent install/compat/performance test of the amdgpu-wddm (Nagi) Windows driver vs Linux — "promising progress, but there's still a long way to go" (shared by capt.cat_13, 19/10/2026) |
 | oldlamer | Late 2025 | Most technically accurate guides [confirmed: @Discord] |
 | CraftComputing | Late 2025 | Early coverage, some buggy results [confirmed: @Discord] |
 | ToastyBros | Dec 2025 | Criticized for not using governor/OC [confirmed: @selectivelygood_16010, 03/01/2026]
@@ -331,4 +336,4 @@ Found a solution to a problem? Help others by adding it to the documentation.
 
 *This revised documentation was compiled from the original resume files, 9,716 Discord messages (elektricM docs), the elektricM/amd-bc250-docs repository (commit/star counts not re-verified — community report), and verified against current internet sources (March 2026). All errors from the original documents have been corrected.*
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**
