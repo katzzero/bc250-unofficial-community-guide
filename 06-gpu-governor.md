@@ -234,7 +234,7 @@ Unlocking all 8 CPU cores breaks GPU clock reporting (`pp_dpm_sclk` shows nonsen
    fix-metrics = true
    fix-freq = true
    ```
-   Now available in a tagged release: **v0.4.12** — release notes list "add fix-freq option for 8 core reporting problem (be9537f)" (filippor/cyan-skillfish-governor releases, referenced by jmexp, 16/08/2026).
+   Now available in a tagged release: **v0.4.12** — release notes list "add fix-freq option for 8 core reporting problem (be9537f)" (filippor/cyan-skillfish-governor releases, referenced by jmexp, 16/08/2026). Latest tagged release is **v0.4.14** (03/10/2026); the repo tags frequently — check the releases page rather than pinning.
    ⚠️ Arch repo version may lag behind — if `fix-freq` isn't available, build from the `filippor/cyan-skillfish-governor` repo directly (e.g. `yay -S --editmenu cyan-skillfish-governor-smu`, update version/URL, stub b2sums with SKIP — hexxeh, Aug 2026).
 2. **Kernel patch** (keroppl_wizard) — see [02-bios-and-firmware.md](02-bios-and-firmware.md) 8-core metrics fix options.
 
