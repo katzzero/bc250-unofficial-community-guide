@@ -84,7 +84,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 
 ## Important Warnings
 
-1. **Linux-first** — a functional-but-experimental Windows 11 driver (`amdgpu-wddm`/Nagi) exists, test-signed with no anticheat support
+1. **Linux-first** — a functional-but-experimental Windows 11 driver (`amdgpu-wddm`/Nagi) exists, test-signed with no anticheat support — see [05 → Windows 11 (Experimental)](05-os-installation.md#windows-11-experimental)
 2. **Always clear CMOS** after BIOS flash — settings won't stick otherwise
 3. **Disable IOMMU** in BIOS — broken, causes display failures
 4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09)
