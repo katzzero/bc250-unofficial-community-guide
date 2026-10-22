@@ -30,6 +30,8 @@ Discord export: 99 channels (`--after 2026-10-08`), messages through 22/10/2026;
 - **Animaltech Cub family** — Cub Ice remake (10/10) + Cub Ice V2 / Project 5 / Cub Twin teased for MakerWorld (14/10) → 13.
 - **Emoji-policy fix:** a stray warning glyph used in prose in the previous `f4b5bb9` commit (06 idle bullet) converted to plain "Caveat:" — DOC_STANDARDS §8 (status glyphs allowed only inside table columns).
 
+### 6. Doc-architecture: Windows 11 pointer in 05 (05, README cross-link)
+- Added a **Windows 11 (Experimental)** row to the Distribution Comparison table and a short subsection (heading `#windows-11-experimental`) — **decision-table row + gotchas only**, install steps left upstream in the D-Ogi repo to avoid drift (DOC_STANDARDS §1). BC-250-specific gotchas: 23H2 recommended, fixed VRAM 8/8 or 12/4, Code 43 → `bcdedit /set {globalsettings} highestmode on`, 2560×1440 blank-output bug, RADV/ACO+DXVK/vkd3d underneath, and the "weird mix of two RDNA generations" reason no existing Windows driver was tweakable (u/pja, 20/10/2026, reddit). Marked (unverified) — not reproduced by us end-to-end.
 ### Verification notes
 - Superposition record **unchanged at 5865** — hexxeh couldn't reach 5800s at similar clocks (10/10), "this is the record"; seb.gauge/leandrosalvas runs were images without beats (not logged).
 - Deliberately excluded: "game that defeated the bc250" (nataliezaki, 21/10 — no config), vague "no vram leaking" meme, PS5/RE material (staff restriction), Steam-Deck-only flatpak thread already covered.

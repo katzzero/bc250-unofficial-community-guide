@@ -34,6 +34,7 @@ After kernel updates, if you get a blank screen, boot the previous kernel from t
 | **Debian / PikaOS** | Stability, low power | Intermediate | Requires newer Mesa repos |
 | **Ubuntu 26.04+** | Familiar Ubuntu experience | Easy | Needs Mesa PPA |
 | **Manjaro** | User-friendly Arch | Easy | GNOME recommended over KDE for stability |
+| **Windows 11** | Native-DX / non-anticheat gaming (experimental) | Advanced | No official AMD driver. Community `amdgpu-wddm` ("Nagi") now runs desktop + D3D12 RT + Vulkan, but is test-signed and evolving weekly — anticheat games stay blocked. See [Windows 11 (Experimental)](#windows-11-experimental) and [11 — Windows Drivers](11-community-and-resources.md) |
 
 ### Bazzite vs CachyOS — Direct Comparison
 
@@ -53,6 +54,23 @@ CachyOS has become the community default as of July 2026 due to Bazzite's stable
 | **Best for** | Console experience with fully working Game Mode — IF on testing branch. Good for users willing to rebase. | Raw performance, stability, tuners, desktop use, AI/LLM. Community default. |
 
 **Community consensus (July 2026):** CachyOS is the de-facto recommendation — "definitly CashyOs is better in terms of stability and features" (rpf16rj, 04/07/2026); "5 days. No crashes... Cachyos has been great" after switching from Bazzite (evo9899, 04/07/2026); "a bunch of people here moved from Bazzite to CachyOS" (pops1cl, 10/06/2026). Bazzite stable (kernel 6.17.7) is **not recommended** for 40 CU builds — rebase to the testing branch first if you want Bazzite. For non-technical users who want a console experience: Bazzite desktop testing branch or CachyOS Handheld Edition. The performance gap is real: Bazzite stable's old kernel causes tangible issues with 40 CU, governor, and audio.
+
+
+## Windows 11 (Experimental)
+
+> **Status: functional but experimental — as of 2026-10-22.** There is **no official AMD Windows driver** for the BC-250. The open-source **`amdgpu-wddm` ("Nagi")** by D-Ogi now runs the Windows 11 desktop, Direct3D 12 with ray tracing, and Vulkan on the GPU. "It's operational already" (13/10/2026), but it is **test-signed, changes weekly, and anticheat games stay blocked until a signed release** [confirmed: @dogi013495, 13/10/2026]. For a plug-and-play experience, **Linux is still the recommended target** — see the Distribution Comparison above.
+
+**The canonical install steps stay upstream** (we deliberately do not mirror them here, to avoid drift): D-Ogi's repo → *amdgpu-wddm* "Installation" guide. Driver status + repo details: [11 — Windows Drivers](11-community-and-resources.md).
+
+BC-250-specific gotchas (not in the generic guide):
+- **Use Windows 23H2** — the newer VidMm in 24H2/25H2/26H2 has a VRAM-mapping regression; 26H2 support is pending WHQL/HLK certification.
+- **Fixed VRAM allocation, 8/8 or 12/4 via the Nagi Control App** — a 512 MB carve-out is too small because Windows has no dynamic VRAM (it caps GPU memory at 50% of system RAM).
+- **Install can drop to Device-Manager Code 43** on some boards; workaround `bcdedit /set {globalsettings} highestmode on` (admin prompt) → reboot → Repair in setup.
+- **Blank output on 2560×1440 panels** pending a driver fix (tester.30).
+- Under the hood the driver reuses Mesa RADV + ACO and runs DX games through DXVK/vkd3d-proton, so shader-compile behaviour mirrors Linux.
+- Why this isn't just a tweaked AMD driver: the chip is "a weird mix of two different RDNA generations," so no existing Windows driver could be adapted (u/pja, 20/10/2026, reddit).
+
+(unverified) — the guide maintainers have not run a Windows install end-to-end on BC-250 hardware; treat the gotchas above as a lead, not a tested procedure.
 
 ---
 
@@ -601,4 +619,4 @@ uname -r
 | **Fedora Media Writer** | All | Fedora's recommended tool |
 | **Rufus** | Windows | Use UEFI / FAT32 mode |
 | **dd** | Linux CLI | `sudo dd if=image.iso of=/dev/sdX status=progress && sync` |
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-22**
