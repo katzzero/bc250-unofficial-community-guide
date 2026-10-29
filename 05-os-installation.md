@@ -4,15 +4,16 @@
 > **BIOS must be flashed first** - see [02-BIOS](02-bios-and-firmware.md).
 > 40 CU unlock no longer requires a kernel patch — use `bc250-cu-live-manager` on stock kernel. **Mesa 26** is current with significant RT and performance improvements.
 
-## Kernel Support Matrix (canonical — as of 2026-10-09)
+## Kernel Support Matrix (canonical — as of 2026-10-29)
 
 This table is the **single source of truth** for kernel recommendations. Other files link here instead of restating it.
 
 | Kernel line | Status | Notes |
 |-------------|--------|-------|
-| **CachyOS standard (7.2.x)** | ✅ Current default | e.g. 7.2.8-1.219 / 7.2.9 (with Mesa **26.2.4** in the bc250 repo). On 8-core boards the CachyOS kernel needs the `0001` telemetry patch from the MastaG repo — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. Same applies to *any* OS: enabling 8 cores without an SMU firmware patch makes telemetry "read as garbage" (_mastag, 25/09/2026). `bc250_hdmi21` is enabled by default (no kernel parameter needed) (_mastag, 20/09/2026). The DP audio clock fix (wrong DCN refclk) landed in the 7.2 line (patch by Trov, merged per _mastag, 25/09/2026). Known regression: audio over cheap UGREEN DP→HDMI adapters broke on `linux-cachyos-bc250` 7.2 for at least one user (keiser1080, 25/09/2026) — works on standard CachyOS 7.2 and 7.3-rc4. |
+| **CachyOS standard (7.3.x)** | ✅ Current default | `linux-cachyos-bc250`, `linux-cachyos-bore-bc250` and `linux-cachyos-rc-bc250` are built against **Linux 7.3 stable** since 22/10/2026, with **Mesa 26.2.5** in the bc250 repo (_mastag, 22/10/2026) [confirmed: @_mastag, 22/10/2026]. CachyOS also plans an **EAC-signed kernel** so Fortnite-class anticheat titles can run (_mastag, 29/10/2026). |
+| **CachyOS 7.2.x** | ✅ Previous default | e.g. 7.2.8-1.219 / 7.2.9 (with Mesa **26.2.4**). On 8-core boards the CachyOS kernel needs the `0001` telemetry patch from the MastaG repo — without it the stock kernel assumes a 6-core SMU layout and reports broken telemetry / no GPU activity (_mastag, 15–16/09/2026) [confirmed: @_mastag, 16/09/2026]. Same applies to *any* OS: enabling 8 cores without an SMU firmware patch makes telemetry "read as garbage" (_mastag, 25/09/2026). `bc250_hdmi21` is enabled by default (no kernel parameter needed) (_mastag, 20/09/2026). The DP audio clock fix (wrong DCN refclk) landed in the 7.2 line (patch by Trov, merged per _mastag, 25/09/2026). Known regression: audio over cheap UGREEN DP→HDMI adapters broke on `linux-cachyos-bc250` 7.2 for at least one user (keiser1080, 25/09/2026) — works on standard CachyOS 7.2 and 7.3-rc4. |
 | **7.1.x (CachyOS)** | ✅ Previous default | e.g. 7.1.8-1. DP audio spread-spectrum disable landed in the 7.1 stable line (big_trov, 20/08/2026). |
-| **7.3-rc (CachyOS)** | ⚠️ Testing | 7.3-rc4 in use; fixes the UGREEN DP→HDMI audio regression seen on the bc250-patched 7.2 (keiser1080, 25/09/2026) and carries the same upstream DP-audio desync root-fix (see [08](08-display-and-audio.md)). |
+| **7.3-rc (CachyOS)** | ✅ Superseded by 7.3 stable | 7.3-rc4 fixed the UGREEN DP→HDMI audio regression seen on the bc250-patched 7.2 (keiser1080, 25/09/2026) and carries the upstream DP-audio desync root-fix (see [08](08-display-and-audio.md)). The 7.3 stable line replaced it on 22/10/2026. |
 | **6.19.x** | ✅ Recommended stable | VRR + DP audio fixes (TheFloW patch, 6.19.10+). |
 | **6.18 LTS** (6.18.42-1-cachyos-lts) | ✅ Stable fallback | Also what SteamOS 3.8.28 ships (6.18.50). |
 | **6.15.0–6.15.6 and 6.17.8–6.17.10** | ❌ Broken — avoid | GPU initialization failures / kernel panics. |
@@ -87,6 +88,7 @@ BC-250-specific gotchas (not in the generic guide):
 | Version | Kernel | Mesa | Status | Notes |
 |---------|--------|------|--------|-------|
 | **3.8.x** | 6.18 (valve) | 26.1.x | Stable | Base version. Audio fix + EDID patch required. **3.8.28** (image 20260922.1) on kernel 6.18.50: "a lot of wifi dongles will work out of the box" + the ethernet-only-initial-setup block removed (yrouel86, 25/09/2026) [confirmed: @yrouel86, 25/09/2026]. |
+| **3.9.5** | 7.2 (valve) | 26.1.x | Released 24/10/2026 | SteamOS 3.9.5 is the current 3.9 release (yrouel86, 24/10/2026) [confirmed: @yrouel86, 24/10/2026]. |
 | **3.9 Preview** | 7.2 (valve) | 26.1.99 | Preview channel | Major update — kernel 7.2 fixes display/audio sync. EDID patch no longer needed. |
 | **3.10 Main** | 7.2 (valve) | 26.1.99 | Main channel | Same kernel as 3.9 preview. Toolkit v1.8.0+ required. |
 
@@ -368,7 +370,7 @@ sudo systemctl enable --now cyan-skillfish-governor-smu.service
 
 **Note (Jul 2026):** CachyOS ships with kernel 6.19+ and Mesa 26 — everything needed for 40 CU, VRR, and DP audio works out of the box. No kernel patching or rebase needed.
 
-**Upcoming:** CachyOS RC kernels 7.1 and 7.2 (`linux-cachyos-rc`) include significant amdgpu driver optimizations and bug fixes. Worth testing when available for improved stability (gennro, Jul 2026).
+**Current:** the bc250 repo tracks **Linux 7.3 stable** (7.3.0) with Mesa 26.2.5 since 22/10/2026; `pacman -Syu` picks it up (_mastag, 22/10/2026) [confirmed: @_mastag, 22/10/2026].
 
 ### Standard Method (Recommended)
 
@@ -623,4 +625,4 @@ uname -r
 | **Fedora Media Writer** | All | Fedora's recommended tool |
 | **Rufus** | Windows | Use UEFI / FAT32 mode |
 | **dd** | Linux CLI | `sudo dd if=image.iso of=/dev/sdX status=progress && sync` |
-**Last verified: 2026-10-22**
+**Last verified: 2026-10-29**

@@ -87,7 +87,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 1. **Linux-first** — a functional-but-experimental Windows 11 driver (`amdgpu-wddm`/Nagi) exists, test-signed with no anticheat support — see [05 → Windows 11 (Experimental)](05-os-installation.md#windows-11-experimental)
 2. **Always clear CMOS** after BIOS flash — settings won't stick otherwise
 3. **Disable IOMMU** in BIOS — broken, causes display failures
-4. **Use kernel 7.2.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Sep 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09)
+4. **Use kernel 7.3.x (current CachyOS standard) or 6.18 LTS** — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; on 8-core boards the CachyOS kernel needs its `0001` telemetry patch; roll back via boot menu if an update breaks display (Oct 2026). Canonical table: [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29)
 5. **Governor voltage: minimum 700 mV** — below that GPU locks to 1500 MHz
 6. **Never use 6-pin to 8-pin PCIe adapters** — fire hazard
 7. **Never use Smokeless_UMAF** — can permanently damage the board
@@ -145,6 +145,17 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 
 ## What's New
 
+**October 2026 (Oct 22–29, Discord + Reddit):**
+- **Linux 7.3 + Mesa 26.2.5 land in the bc250 repo** (`pacman -Syu`), and the three Proton packages move to **FreeFG + HelixSR** as the default pair with a per-game upscaler menu; **HelixSR 3.1.0 → 3.2.0** brings **HLX FSR 4** (a faster FSR-4 path) and FreeFG reaches 1.1.4 with optional generated-frame scaling ([05](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29), [11](11-community-and-resources.md)).
+- **Space Marine 2 numbers are in** — addresses GitHub issue #1: 40–45 FPS at 1080p (75–80 with frame gen), 15 → 25–30 FPS in the campaign's rippers section with 8 cores + 3.95 GHz, and no gain from dropping every setting to Low ([07](07-game-benchmarks.md#space-marine-2)).
+- **PS5 games run with native GPU execution:** a Kyty fork feeds game command buffers straight to amdgpu — Astro Bot 45–55 FPS, GT7 40–60 FPS (u/Several-System1535, u/icepatfork) ([07 → Emulation](07-game-benchmarks.md#emulation)).
+- **PSVR2 works** after patching DSC wiring into DCN 2.0.1: full SteamVR, both Sense controllers, VRChat 40–55 FPS per eye (u/Neat-Significance275, 29/10) ([08](08-display-and-audio.md#dsc-display-stream-compression--4k120-and-pcvr-sep-2026)).
+- **Custom BIOS V3.1 in progress** (rescuemei): CU unlock, in-SMU governor, CPU OC, SMU reporting + ACPI patches all set from the firmware, with temperature-based voltage tables and an 8-point fan table; separately, jwagnervaz has **S3/hibernation and Secure Boot CA 2023 working at BIOS level** ([02](02-bios-and-firmware.md#custom-bios--unlocks-moving-into-firmware-oct-2026)).
+- **Cooling specifics:** one long VRM sink across the chokes ≈ −15 °C, plus a 60 mm fan ≈ another −20 °C; VRAM backside putty holds ~75 °C ([04](04-cooling-guide.md)).
+- **QuarkStar (q36)** beats llama.cpp with MTP on 27B — 30+ tok/s at 40 CU/1850 MHz, MoE 80+ tok/s without MTP; Moraine v0.4 released ([12](12-ai-inference.md)).
+- **Prices cooled off** to ~$200–240 tested on eBay (with $70–150 outliers) while AliExpress sits ~$207–209 before coupons ([11](11-community-and-resources.md#price-history-bc-250-board), [14](14-reddit.md)).
+- **Never trust an AliExpress "350 W" flex PSU:** one flashed and burned out after an hour of stress testing — half the advertised wattage is the rule of thumb ([03](03-power-supply-guide.md#problematic-psus)).
+
 **October 2026 (Oct 9–22, Discord + Reddit):**
 - **Windows 11 now works for real:** **[D-Ogi/amdgpu-wddm](https://github.com/D-Ogi/amdgpu-wddm)** ("Nagi") driver runs the desktop, D3D12 with ray tracing and Vulkan on the BC-250 (Mesa RADV/ACO + DXVK/vkd3d underneath) — "It's operational already" (13/10). Experimental/test-signed, no anticheat yet, 23H2 recommended ([11](11-community-and-resources.md)).
 - **VCN enters drivers, with a hard caveat:** the ps5-linux power-on patch is packaged opt-in in `linux-cachyos-rc-bc250` (`bc250-vcn-fw`), but the PSP still refuses the firmware and **only ~40% of chips physically have a functional VCN block** (holde); H.265's failure cause is now known (per-codec register init) ([02](02-bios-and-firmware.md#vcn-hardware-video-decode)).
@@ -160,7 +171,7 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 - **VCN breakthrough:** holde got the actual VCN block doing H.264 (~4 ms encode at 1080p) with a self-signed driver + tweaked BIOS — janky, not reboot-persistent, H.265 still broken, unpublished; VCPU never fetches under stock firmware because the KDB lacks the usage-6 entry and the harvest latch is firmware-written, **not fused** (04/10/2026, [02 → VCN](02-bios-and-firmware.md#vcn-hardware-video-decode))
 - **In-SMU GPU governor works** in dev BIOS builds: 500 MHz idle without any software governor, AVFS at SMU SRAM `0x18760`, proposed defaults 350–2000 MHz; planned for the next community BIOS patch menu (rescuemei/punsh1734, 04–07/10/2026, [02](02-bios-and-firmware.md#smu-governor--injectable-dxe-driver-sep-2026))
 - **DirectMesh 1.3.1 default-on** in CachyOS Mesa (no `RADV_DIRECTMESH=1`; fixes 4K hang); **HelixSR is now the default upscaler** in the bc250 Proton packages (1.4.1) — "fsr4 got obsoleted with helix" (_mastag/hojnikb, 05–09/10/2026); XeFG/XeMFG frame-gen: CP2077 2× = +48% over no FG, Discord-only, no GitHub (iamastrangeloop)
-- **Kernel matrix updated**: 7.2.8/7.2.9 + Mesa 26.2.4 in the bc250 repo; DP audio clock fix merged in 7.2; UGREEN-DP→HDMI audio regression on the patched 7.2 kernel (fixed in 7.3-rc4); SteamOS 3.8.28 → 6.18.50 with OOTB wifi dongles ([05](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09))
+- **Kernel matrix updated**: 7.2.8/7.2.9 + Mesa 26.2.4 in the bc250 repo; DP audio clock fix merged in 7.2; UGREEN-DP→HDMI audio regression on the patched 7.2 kernel (fixed in 7.3-rc4); SteamOS 3.8.28 → 6.18.50 with OOTB wifi dongles ([05](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29))
 - **Superposition 40 CU record 5865** @ 2350 MHz (nhoj0176, confirmed big_trov 07/10/2026); new benchmarks: Star Wars Galactic Racer (1440p locked 60), Witcher 3 RT Ultra + FSR4 (60+ 1080p), Clair Obscur (68–75), Control Resonant w/ XeMFG x4 (80 fps), Geekbench Vulkan 93k–95k ([07](07-game-benchmarks.md))
 - **P5 experimental BIOS caveat:** disables EFI-script changes; ReBAR is only a BIOS option on P5 ([02](02-bios-and-firmware.md#recommended-modded-bios)); "official 5.00 BIOS + runtime unlock" claimed for the upcoming Bazzite suite — unconfirmed
 - Troubleshooting added: `radv_enable_unified_heap_on_apu` breaks VRAM reporting (TLOU), Game Mode D3D12 crashes → `-dx11`, encoding-fix perms on Bazzite 44, repaste "dead board" = dislodged CMOS pins, CPU 50→95 °C spike = TIM/pressure failure, VRM no power-limit only thermal (119 °C trip) + overcurrent, 8-pin connector melts past ~250 W ([10](10-troubleshooting.md), [03](03-power-supply-guide.md))
@@ -244,4 +255,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-10-22**
+**Last verified: 2026-10-29**

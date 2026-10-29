@@ -127,7 +127,7 @@ Pass: `failed` = 0 on every core and spread within ~1% of the median. **Fail:** 
 
 | Cause | Fix |
 |-------|------|
-| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.2.x is current (`0001` telemetry patch needed on 8-core), 6.19.x recommended stable, 6.18 LTS fallback |
+| Wrong kernel version | Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29): avoid 6.15.0–6.15.6 and 6.17.8–6.17.10; CachyOS 7.3.x is current (`0001` telemetry patch needed on 8-core), 6.19.x recommended stable, 6.18 LTS fallback |
 | Bad GPU frequency | Boot with `nomodeset`, install governor, remove nomodeset (source: boot.md) |
 | IOMMU enabled | Disable IOMMU in BIOS (source: boot.md, display.md, stability.md) |
 | Green screen (CPU instability) | Try better PSU, different SSD, proper DP cable -- (community report — cause not confirmed; green screen only documented in the ACPI context in stability.md) |
@@ -703,6 +703,14 @@ Does not break VRAM or temperature readings. No MangoHud config changes needed.
 
 ---
 
+## USB Storage Disconnects Under Load (2.5" HDD / USB-SATA)
+
+**Symptom:** an internally mounted USB→SATA disk drops out when other USB devices share the rear I/O, or logs `USB disconnect on usb 7` followed by the device returning as a different `/dev/sdX`.
+
+- **Power path:** rear USB 3.0 ports are specced for 5 W total, so a 2.5" HDD plus a dongle over-draws them. Feeding the drive from a **SATA/12 V rail on the PSU** through a barrel jack fixed the brown-out (dominic61, 21–22/10/2026).
+- **If it still drops:** Linux auto-recovers the port so fast that the old `/dev` node looks busy and the disk re-appears under a new letter. Set autosuspend off for that port: `echo on | sudo tee /sys/bus/usb/devices/usb7/power/control` (default is `auto`) — "so far so good, no USB disconnects" (dominic61, 22/10/2026) [confirmed: @dominic61, 22/10/2026].
+- 2.4 GHz interference from the same ports is a separate issue — see [09 → USB 3.0 interference](09-wifi-and-peripherals.md).
+
 ## USB Ports Dead Even in BIOS
 
 **Symptoms:** Board POSTs to BIOS but no keyboard/mouse anywhere, boot USBs ignored, LAN fine; persists across BIOS 2.0→3.00 (flashed via Pico serprog) and CMOS clears (bichi1, 07/10/2026).
@@ -827,5 +835,5 @@ glxinfo | grep "OpenGL renderer"
 - Always clear CMOS after BIOS flash (source: boot.md, display.md, quick-reference.md)
 - Always disable IOMMU in BIOS (source: boot.md, display.md, stability.md, quick-reference.md)
 - Always use passive DP-to-HDMI for audio (source: display.md)
-- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09): CachyOS 7.2.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
-**Last verified: 2026-10-09**
+- Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29): CachyOS 7.3.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
+**Last verified: 2026-10-29**

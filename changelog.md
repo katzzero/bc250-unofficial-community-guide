@@ -1,3 +1,45 @@
+## October 29, 2026 — Oct 22–29 export cycle: Linux 7.3 + Mesa 26.2.5, HelixSR 3.x/HLX FSR 4, KytyPS5-native + PSVR2, BIOS V3.1 in progress, issue #1 fixed (02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 14, README)
+
+Discord export: 63 channels (`--after 2026-10-21`, guild export incl. threads), 3,278 messages through 29/10 16:15; cursor 2026-10-22 → **2026-10-29** (set manually — the script's cursor scan did not advance, known bug). Reddit: +82 posts / +803 comments rendered (cursor 2026-10-29). `export/new/` emptied (one exFAT ghost entry needed `unlink`). Extraction by targeted greps + message-block digests in the main context (no subagents).
+
+### 1. Issue #1 — Space Marine 2 measured FPS (07)
+GitHub issue [katzzero/bc250-unofficial-community-guide#1](https://github.com/katzzero/bc250-unofficial-community-guide/issues/1) (Evansch0, 26/10/2026): the section listed only "~2x vs 6 cores". Added **40–45 FPS** at 1080p High/Medium on Heroic + GE-Proton 10-29 with frame gen 75–80 (tomioka.en.tanguitas, 05/02/2026); **15 → 25–30 FPS** in the campaign rippers section with 8 cores + 3.95 GHz, the origin of the old "almost double" claim (smcelrea, 27/08/2026); **≤40–45 FPS** at 1080p native with every setting on Low (soulygenius, 27/08/2026). Added the still-CPU-bound verdict, first-run notes (Retail executable, `winetricks vcrun2022`) and PS5 60 FPS-mode context (cubehacker8107, 27/08/2026).
+
+### 2. Kernel / Mesa / Proton (05, 07, 11)
+- **Linux 7.3 stable + Mesa 26.2.5** in the bc250 repo since 22/10; all three kernels (`linux-cachyos-bc250`, `-bore-`, `-rc-`) rebuilt; DirectMesh 1.3.1 rebased for `mesa-git` the same day (_mastag, 22/10/2026) [confirmed: @_mastag, 22/10/2026]. 7.2.x demoted to "previous default", 7.3-rc row marked superseded. SteamOS **3.9.5** release logged (yrouel86, 24/10/2026). CachyOS **EAC-signed kernel** for Fortnite-class anticheat announced (_mastag, 29/10/2026).
+- **Upscaler stack churn:** per-game upscaler menu with **FreeFG + HelixSR as default** (27/10); **HelixSR Scaler 2.1.0 + HelixSR 3.1.0** starting on **HLX FSR 4** (28/10), **3.2.0** pre-release (29/10); FreeFG 1.1.0→1.1.4 (pacing fix for 3×/4×, generated-frame scaling back) (iamastrangeloop, 21–27/10/2026). GPU spoofing now defaults to auto and breaks some titles — GTA V Enhanced needs `BC250_FSR4_IGNORE_ANTICHEAT=1`, Monster Hunter Wilds hard-crashes if DLSS is selected without FreeFG (hexxeh/_nk10, 25–28/10/2026).
+- **FSR 4.1.2 Lite BC-250 build** (lonewolf0622x, 23/10/2026): drop-in DLL, menu shows "4.1.2 Lite BC250 own", 1–1.09 ms @1080p / 1.60–1.80 @1440p / 3.7–4 ms @4K, trained against Model E; TLOU2 4K Balanced 67 FPS vs 43 with FSR4 RC11 (youcef03012, 23/10/2026); "the fsr4 dll can just replace fsr3 now" (29/10). RC11 shader-family oversight fixed in the fork (iamastrangeloop, 24/10).
+- **HelixSR/GoT regression explained and fixed:** forced frame-gen on every launch caused 84–93 → 50 FPS in Ghost of Tsushima; Proton wrapper no longer rewrites the ini (MastaG, 22/10); HelixSR was also using FSR inputs and now uses DLSS inputs (lonewolf0622x, 23/10). Spiderman 2 / Lego Batman artifacts under FSR mode resolve under DLSS mode (fforduck, 26/10).
+
+### 3. Custom BIOS + platform plumbing (02)
+- **V3.1 in progress** (rescuemei, 21–29/10/2026): CU unlock, in-SMU governor, CPU OC, SMU reporting patch, ACPI patch and an optional power limit all set from firmware; **temperature-based voltage tables** found (userspace governors bypassed them — the likely cause of top-end instability); AVFS top-entry bug fixed (2100 MHz @ 985–990 mV, 2200 @ 1060–1090 mV on his boards); IMC fan table has **8 setpoints** and fan control may follow max(CPU,GPU). 8-core unlocks still revert on **cold** power cycles with runtime tools (u/Single-Order-8611 + u/apeto86, 27/10/2026, reddit).
+- **jwagnervaz (Oct 2026):** ACPI/SSDT/**Secure Boot CA 2023**/FPDT/IOMMU fixed at BIOS level, Windows boot 35→25 s, **S3 + hibernation working on Windows and CachyOS without OS patches**, fTPM ported; APU PCI-ID rename attempt fails with error 43 (22–28/10/2026).
+- **UART input hang** root-caused: RX IRQ never acknowledged; fix flips SuperIO UART from quiet to continuous mode (bangstk PR #28 mothenjoyer69/bc250-documentation; essdee4338/big_trov, 26/10/2026) — must be off by default if it ships.
+
+### 4. VCN research (02)
+- VCN is a **stripped VCN2 relabelled 2.02** (holde, 23/10) vs "functionally VCN 2.0.3" (dan2wik, 23/10); the "most boards are defective" narrative is contested by thelamer/big_trov (27/10) — the ~40 % figure stays a field observation, marked open question.
+- **New target MP2/3/4** (TEE, A53, fusion hub): A53 accepts clocks/writes unlike VCN (dan2wik, 27/10) — possible SSD/DirectStorage offload. Keys catalogued: KDB root RSA-4096, VCN fw key RSA-2048 (punsh1734, 24/10).
+
+### 5. Cooling / power / peripherals (03, 04, 08, 09, 10)
+- **VRM:** one long sink across the chokes ≈ −15 °C, a 60 mm fan ≈ −20 °C more; GPU peaks ~90 °C at 1020 mV (hexxeh, 22–28/10); uncooled GPU-VRM ~100 °C in Furmark (caredil_bg, 28/10). **VRAM backside putty** holds ~75 °C (dan2wik/brammmmmmmmm, 23/10). Genuine PTM7950 is grey; pink is older/third-party material, Feihonda green performs close (d0c, 27/10).
+- **PSU:** AliExpress "350 W" flex (`1005009193510613`) **burned out** after an hour of stress testing; board survived; "half the advertised wattage" (tiktak6359, 24/10) — added as a negative catalog entry.
+- **PSVR2 works:** five-line DSC wiring patch for DCN 2.0.1; 4000×2040 @ 10 bpp over 2×HBR3, SteamVR + both Sense controllers, VRChat 40–55 FPS at 1520×1548/eye (u/Neat-Significance275, 29/10/2026, reddit). 08's "not yet functional" line replaced.
+- **Washed-out colours → turn HDR off** (u/toomanypubes, 28/10); **CEC** via UGREEN adapter + Bazzite Portal, TV-dependent (u/Nova2127u, 25/10).
+- **WiFi:** Game/Desktop mode drops fixed by matching the "Force WPA Supplicant backend" setting; AIC8800 "AX900" works via `aic8800d80-dkms`, MastaG sent a 7.3 fix upstream (yrouel86 28/10; _mastag 25/10).
+- **USB storage:** rear USB 3.0's 5 W budget browns out 2.5" HDDs; feed from PSU 12 V and set `/sys/bus/usb/devices/usbX/power/control=on` to stop re-enumeration (dominic61, 21–22/10) — new 10 section.
+- **CP2077 v2.5 patch (22/10)** removed FSR 3 upscaling, keeps FSR 2.1/FSR 4/FSR 3.1 FG; small regression reports (43→67 FPS notes, 1080p max 59 on 8c/3.9 GHz + 40 CU) (halil_iboo/mahmudnaqi/_kierownik, 23/10).
+- **Idle:** 66 W/board with SMU governor + 50 MHz idle (cyberfrank1990, 27/10) alongside the existing 44–49 W reports.
+
+### 6. Emulation, VR, inference, prices (07, 11, 12, 14)
+- **KytyPS5-native** (superkeka/KytyPS5-bc250): Astro Bot 45–55 FPS, GT7 40–60 FPS with native GPU execution (u/Several-System1535 26/10, u/icepatfork 28/10, reddit) — new Emulation rows in 07 + tool entries in 11/14.
+- **QuarkStar (Ninnix/q36)** beats llama.cpp with MTP: 30+ tok/s on Qwen3.8-27B IQ3_s (40 CU/1850 MHz), 80+ tok/s on the 35B-A3B MoE without MTP; Moraine v0.4 released and QuarkStar integration planned (nicolodeva/hojnikb/oldbog, 21–25/10) — 12 updated.
+- **Prices cooled:** eBay tested boards **$200–240**, one >10-unit seller at $207, outliers $70/$148/$150-no-BIOS; AliExpress ~$207–209 pre-coupon; PS5 (~$220 used) now the standard comparison (xerxes3rd/zerosumpr/mintchoc0, 22–27/10) — 11 price table + 14.
+- **Telemetry caveat (06):** kernel driver "reads the clock states backwards" (big_trov, 26/10).
+
+### Verification notes
+- Deliberately excluded: general-offtopic/voice chatter, case-gallery posts with no new design (24/25/26/27/10), "is it worth it" price debate without listings, PS5 reverse-engineering material (staff moderation 05/10 still in force), Kyty videos without measurements.
+- No docs claim was taken from an unattributed source; reddit items cite `u/name, date, reddit`.
+
 ## October 22, 2026 — Oct 9–22 export cycle: Windows Nagi driver works, VCN firmware packaged (+ ~40% hardware caveat), HelixSR Scaler/2.0.0 + FreeFG, UGREEN CH7218 VRR fix, sub-50W idle (02, 04, 06, 07, 08, 11, 12, README)
 
 Discord export: 99 channels (`--after 2026-10-08`), messages through 22/10/2026; cursor 2026-10-09 → **2026-10-22** (fixed manually — exporter bug recurred). Reddit: +172 posts / +2,311 comments (cursor 2026-10-22). `export/new/` emptied. Extraction done with targeted greps in the main context (no subagents, per maintainer directive); every claim re-verified against `export/project-forums`, `export/bc250-resources`, `export/benchmarks`, main chat and `export/reddit/posts`.

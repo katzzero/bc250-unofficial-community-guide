@@ -265,7 +265,7 @@ Boot → Boot Mode:
 
 | Distro | Difficulty | Verdict |
 |--------|-----------|---------|
-| **CachyOS** | Intermediate | Community default — best stability + performance, current kernel out of box (7.2.x as of Sep 2026 — see the [kernel matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09)) |
+| **CachyOS** | Intermediate | Community default — best stability + performance, current kernel out of box (7.3.x as of Oct 2026 — see the [kernel matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29)) |
 | **Bazzite** | Easy | Needs testing branch (stable is kernel 6.17.7 — too old for 40 CU). See rebase instructions below. |
 | **Fedora 43+** | Easy | Most documented, Mesa 25.1+ native |
 | **Nobara** | Intermediate | Fedora-based, non-immutable, easy governor setup |
@@ -277,7 +277,7 @@ Boot → Boot Mode:
 
 ### Broken kernels (AVOID)
 
-**6.15.0-6.15.6** and **6.17.8-6.17.10** cause GPU failure. Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09) before installing: as of Sep 2026, CachyOS ships 7.2.x (8-core boards need the `0001` telemetry patch); 6.19.x remains the recommended stable line, 6.18 LTS the fallback.
+**6.15.0-6.15.6** and **6.17.8-6.17.10** cause GPU failure. Check the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29) before installing: as of Oct 2026, CachyOS ships 7.3.x with Mesa 26.2.5 (8-core boards need the `0001` telemetry patch); 6.19.x remains the recommended stable line, 6.18 LTS the fallback.
 
 **Bazzite stable ships 6.17.7** — too old for 40 CU stability. Rebase to the testing branch immediately after install (instructions in section 9 below).
 
@@ -306,7 +306,7 @@ rpm-ostree rebase ostree-image-signed:docker://ghcr.io/ublue-os/bazzite-deck:tes
 3. Normal installation (~10-15 min)
 4. Default password (if asked): `bazzite`
 5. Reboot
-6. After reboot, run the rebase command above to get the current testing kernel + Mesa 26 (Bazzite 44 images are now in wide community use; verify what your stream ships with `uname -r` — canonical kernel guidance: [05 matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-09))
+6. After reboot, run the rebase command above to get the current testing kernel + Mesa 26 (Bazzite 44 images are now in wide community use; verify what your stream ships with `uname -r` — canonical kernel guidance: [05 matrix](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29))
 
 ### CachyOS (recommended — latest kernel out of box)
 

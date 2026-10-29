@@ -81,6 +81,8 @@
 - Default High, 36 CU @ 2 GHz, 8 cores @ 3.85 GHz (Bazzite) — comparable (capt.cat_13, 06/09/2026)
 - **1080p High (RT off) + FSR3 Native AA + FG 3.1:** **90–110 FPS** on 40 CU @ 2000 MHz (peak 1850 due to governor), 3.7 GHz CPU, 6 cores, stock pads/paste, 2x front +1 back P12 Pro — without case (halil_iboo, 06/09/2026). With `mitigations=off` + unlocked frame cap: **85 FPS** rock-solid 60 with cap re-enabled, no frame drops (dbkretro, 07/09/2026) [confirmed: @dbkretro, 07/09/2026].
 
+**Oct 2026 patch (v2.5+, 22/10/2026):** CDPR removed **FSR 3 upscaling** from the in-game menu — FSR 2.1, FSR 4 and FSR 3.1 frame generation remain (.crotch, 22/10/2026) [confirmed: @.crotch, 22/10/2026]. Several users reported a small performance regression after the patch: "lost 2 fps with the new patch" at locked settings (halil_iboo, 23/10/2026), and one 4K60-with-FG setup dropped to "low 50s" (mahmudnaqi, 23/10/2026); a 6-core 4 GHz / 40 CU / 2200 MHz board still reports 1440p mixed High-Medium at 65–75 FPS (zerosumpr, 27/10/2026). With the 8-core 3.9 GHz + 40 CU @ 2000 MHz combination the ceiling was **59 FPS at 1080p** on maximum settings (_kierownik, 23/10/2026) [confirmed: @_kierownik, 23/10/2026].
+
 ---
 
 ### Black Myth: Wukong
@@ -231,9 +233,12 @@
 
 | Settings | FPS | Notes |
 |----------|-----|-------|
-| 8 cores unlocked | ~2x vs 6 cores | smcelrea, Aug 10 2026 — "almost double the perf in space marine 2, in the rippers section of the campaign, with 8 cores unlocked" |
+| 1080p, High default (also tried Medium), Heroic on GE-Proton 10-29 | 40–45 | Frame gen 75–80 FPS; "lowered it to Medium, but the FPS hasn't changed" [confirmed: @tomioka.en.tanguitas, 05/02/2026] |
+| 8 cores unlocked + 3.95 GHz CPU OC, rippers section | 15 → 25–30 | ~2x over 6 cores — "almost double the perf ... with 8 cores unlocked" (10/08/2026) [confirmed: @smcelrea, 27/08/2026] |
+| 1080p native, every setting dropped to Low | ≤40–45 | No gain from lowering settings [confirmed: @soulygenius, 27/08/2026] |
 
-> Severely CPU-bound on this board; the 8-core unlock is the single biggest win for this title.
+> Severely CPU-bound on this board; the 8-core unlock plus a CPU overclock is the single biggest win for this title, and it still cannot hold a solid 60 FPS (smcelrea, 27/08/2026). Frame generation "does seem to work pretty well" here, and one member played through the whole campaign on the BC-250. For context, even the PS5's 60 FPS mode "frequently fluctuates between 35–60 FPS" in large Tyranid swarms (cubehacker8107, 27/08/2026).
+> First-run notes: the regular launcher did not work for one tester — the "Retail" executable did; needs `winetricks vcrun2022` (tomioka.en.tanguitas, 05/02/2026).
 
 ### Pragmata
 
@@ -384,6 +389,9 @@ Runs on CachyOS with Proton Experimental, 40 CU, lower settings (biohazardv2.0).
 | PCSX2 (PS2) | Excellent | elektricM docs |
 | Dolphin (GameCube/Wii) | Excellent | elektricM docs |
 | RPCS3 (PS3) | Good for lighter titles | elektricM docs |
+| **KytyPS5-native (PS5)** — Astro Bot | 45–55 FPS on a heavy level | Community Kyty fork with the Vulkan renderer removed: "the game's own command buffers and shaders go directly to the GPU through amdgpu driver, so the GPU side isn't emulated at all"; CPU side is HLE. (u/Several-System1535, 26/10/2026, reddit) [repos: `superkeka/KytyPS5-bc250`] |
+| **KytyPS5-native (PS5)** — Gran Turismo 7 | 40–60 FPS | "there is still some freeze in GT and lags on Astro Bot when shaders are compiling, but it is very playable" (u/icepatfork, 28/10/2026, reddit); a "KytyPS5-Native" release landing ~60 FPS was announced 29/10/2026 (u/Several-System1535, reddit) |
+| **PSVR2 + SteamVR** | 40–55 FPS at 1520×1548/eye | Requires a DSC wiring patch for DCN 2.0.1 — see [08 → DSC](08-display-and-audio.md#dsc-display-stream-compression--4k120-and-pcvr-sep-2026) (u/Neat-Significance275, 29/10/2026, reddit) |
 
 ---
 
@@ -621,4 +629,4 @@ Games with verified community mentions but limited sample size — use with caut
 | Stardew Valley | Runs fine at 4K 60 FPS | |
 | Hollow Knight | 4K playable (lighter game) | |
 | Star Wars Battlefront II | 80-85 → 120-130 FPS after SMU governor + kernel patch (juancarlos24691, Aug 2025) | |
-**Last verified: 2026-10-22**
+**Last verified: 2026-10-29**

@@ -38,6 +38,10 @@ The USB 3.0 ports on the BC-250's rear I/O emit RF noise in the 2.4 GHz band tha
 
 > **SteamOS 3.8.28 note:** Valve moved the 6.18 series to 6.18.50, after which "a lot of wifi dongles will work out of the box" (yrouel86, 25/09/2026) — relevant if you're on SteamOS rather than CachyOS/Bazzite (see [05 → SteamOS Versions](05-os-installation.md#steamos-versions-on-bc-250)).
 
+**WiFi drops when switching Game Mode ↔ Desktop Mode:** SteamOS/Bazzite swap the Wi-Fi backend between `wpa_supplicant` and `iwd` when the session changes, which deactivates and re-activates the interface. Fix: set Developer → **"Force WPA Supplicant Wi-Fi backend"** to the *same* value in both Game Mode and Desktop Mode — "at the end of that dance it works" but the drop stops with matching backends (yrouel86, 28/10/2026).
+
+**AIC8800 "AX900" dongles on 7.3:** MastaG uses the same dongle and points at the AUR package [aic8800d80-dkms](https://aur.archlinux.org/packages/aic8800d80-dkms); he sent the upstream driver a fix for Linux 7.3 compatibility (25/10/2026) [confirmed: @_mastag, 25/10/2026].
+
 > **Note from elektricM:** Some custom kernel builds (e.g., Bazzite "performance mode") may not include your WiFi adapter's driver. Choose adapters with in-kernel drivers (like RTL8822BU) for best compatibility. If WiFi stops working after a kernel change, connect via Ethernet and reinstall the driver.
 
 ---
@@ -125,4 +129,4 @@ The BC-250 ships without a power button header. Source: [elektricM specification
 | Rubber Washers / Standoffs | Any | For vibration dampening |
 
 > For the complete case catalog (145 documented designs as of elektricM docs): [elektricM Case Gallery](https://elektricm.github.io/amd-bc250-docs/community/cases/) — designs with PSU type, dimensions, and build notes. Source: [elektricM cases](https://elektricm.github.io/amd-bc250-docs/community/cases/).
-**Last verified: 2026-10-22**
+**Last verified: 2026-10-29**

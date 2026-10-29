@@ -70,6 +70,16 @@ See also: [02 — BIOS & Firmware](02-bios-and-firmware.md), [04 — Cooling Gui
 - **CH341A unbrick + pin trick** (u/Thanousin, 05/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wyn7po/unbrick_bc250_with_bc250/), score 58) and **orbital-sander fin removal** (u/Jeblg, 05/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wynr6r/another_heatsink_modification_method/), score 330) — merged into [02](02-bios-and-firmware.md) and [04](04-cooling-guide.md).
 - **Digital Foundry Direct Weekly #284** mentioned the BC-250 and FSR 4 (u/BdogMcCool1, 05/10/2026) — logged in [11 → YouTube Coverage](11-community-and-resources.md#youtube-coverage).
 
+**New this window (Oct 22–29):**
+- **PS5 games running with native GPU execution.** A Kyty fork with the Vulkan renderer removed feeds the game's own command buffers straight to amdgpu: Astro Bot at **45–55 FPS** on a heavy level (u/Several-System1535, 26/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xfjq5w/i_managed_to_run_astro_bot_on_the_bc250_with/), score 147) and GT7 at **40–60 FPS** with shader-compile stutter (u/icepatfork, 28/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xhl0xl/gt7_4060_fps/)). Merged into [07 → Emulation](07-game-benchmarks.md#emulation) and [11](11-community-and-resources.md#emulation--vr).
+- **PSVR2 working on the BC-250** after patching DSC into the DCN 2.0.1 driver — full SteamVR, both Sense controllers, VRChat 40–55 FPS at 1520×1548 per eye (u/Neat-Significance275, 29/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xi8q1o/psvr2_working_on_a_bc250_i_got_dsc_running_on_the/)). Merged into [08 → DSC](08-display-and-audio.md#dsc-display-stream-compression--4k120-and-pcvr-sep-2026).
+- **FSR 4.1.2 INT8 vs Lite in Resident Evil 9:** 42 FPS with the INT8 path, **56 FPS with Lite** (u/BC250-fan-at-work, 24/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xe7ppw/fsr_412_int8_and_lite_on_bc250/)). The Lite DLL is the community build described in [07](07-game-benchmarks.md).
+- **8-core unlock does not survive a cold power cycle** with runtime tooling — warm reboots keep it, a BIOS flash is the permanent fix (u/Single-Order-8611, u/ruggeroo8, u/apeto86, 27/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xgrh9i/bc250_control_center_cpu_unlock/)). Merged into [02](02-bios-and-firmware.md#custom-bios--unlocks-moving-into-firmware-oct-2026).
+- **Washed-out colours are usually HDR on:** "counterintuitively, be sure to turn HDR OFF" with a direct DP cable on CachyOS (u/toomanypubes, 28/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xhec54/washed_out_colors_on_bc250_compared_to_my_other/)). Merged into [08](08-display-and-audio.md).
+- **CEC via the UGREEN adapter on Bazzite**, enabled in the Bazzite Portal app — TV-dependent, worked on a TCL Fire TV (u/Nova2127u, 25/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xen4za/could_this_help_us_with_the_b250/)). Merged into [08](08-display-and-audio.md).
+- **Black screen above ~1700 MHz GPU** under Furmark on an AIO/40-CU board with normal temperatures (u/Character_Lie4, 25/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1xf5pzk/black_screen_when_gpu_oc_1700mhz/)) — same instability class covered in [10](10-troubleshooting.md) and [02 → VRM limits](02-bios-and-firmware.md#vrm--power-limit-constraints-oct-2026).
+- **New setup helper:** [borwtf/bc250-tuner](https://github.com/borwtf/bc250-tuner) — core unlock, governor install, undervolt (u/boR-, 29/10/2026). Logged in [11](11-community-and-resources.md#os-toolkits--install-automation).
+
 ## 4. Community tools & projects
 
 Projects that came up on the subreddit and are worth checking out:
@@ -80,6 +90,8 @@ Projects that came up on the subreddit and are worth checking out:
 | [AMD_BC250_BIOS_Reprogramming_MX25L12872F](https://github.com/Expired-Pasta/AMD_BC250_BIOS_Reprogramming_MX25L12872F) | Step-by-step BIOS-chip recovery with an external programmer | u/v6moto, 04/09/2026 |
 | [bazzite-bc-250-governor](https://github.com/evdokim/bazzite-bc-250-governor) | Governor setup script for Bazzite | u/jerich088, 21/01/2026 |
 | [bc250-performanceprofiles](https://github.com/redbeard1083/bc250-performanceprofiles) | Ready-made performance/overclock profiles | u/redbeard1083, 12/03/2026 |
+| [bc250-tuner](https://github.com/borwtf/bc250-tuner) | Setup helper: extra cores, governor, undervolt | u/boR-, 29/10/2026 |
+| [KytyPS5-bc250](https://github.com/superkeka/KytyPS5-bc250) | PS5 game execution with native GPU path | u/Several-System1535, 26/10/2026 |
 | [USB-WiFi adapter list](https://github.com/morrownr/USB-WiFi) | A maintained list of USB WiFi adapters that work on Linux — the usual answer to "which adapter should I buy?" | u/kopasz7, 08/02/2026; u/Mercer_Sensei, 19/02/2026 |
 
 More community projects are collected in [11 — Community & Resources](11-community-and-resources.md).
@@ -97,6 +109,7 @@ The subreddit is a live deal-tracking channel, and 2026 saw real price swings. A
 | Sep 2026 | UK: "For sale: BC250, £125 + shipping" (private sale) (u/LectureFew3851, [thread](https://www.reddit.com/r/BC250Gaming/comments/1wkwbb0/for_sale_bc250_125_shipping/)) |
 | Oct 2026 | Full price-stack guide: $281.10 AliExpress listing → $40 code (COM40E) → **$47.85 "assuming you purchase a power supply and get the full $200 Cash Back"** via Rakuten; "$47.85 + $55 = $102.85" with PSU (u/Tama47_, 09/10/2026, [thread](https://www.reddit.com/r/BC250Gaming/comments/1x1idxr/get_bc250_for_under_50_200_rakuten_cash_back/)) — cashback tiers vary, treat the floor price as best-case |
 | Oct 2026 | eBay listings "£175+" noted under a private £125 sale (u/LectureFew3851 thread comments). Discord-side asking prices this window are tracked in [11 → Price History](11-community-and-resources.md#price-history-bc-250-board) |
+| Late Oct 2026 | Tested eBay boards **$200–240**; a US seller with >10 units at **$207**; a **$150** no-BIOS unit ($10 programmer assumed); **$148** paid; a **$70** "joined the club" find; AliExpress ~$207–209 before coupons. Sellers reusing photos and hiking after sales reported (u/xerxes3rd, u/mintchoc0, u/brammmmmmmmm, u/Loud-Breadfruit-8950, u/zerosumpr, 22–27/10/2026, [eBay thread](https://www.reddit.com/r/BC250Gaming/comments/1xg5p2v/ebay_troubles/)) |
 
 Prices move week to week — always check current listings before buying. For parts, people also flagged the Arctic P12 Pro 5-pack for **$18** (u/Rys4k, 21/07/2026), a UK source for Micro-Fit power cables for **£6** (u/ProEntomologist, 08/09/2026), and the **£4.69** VRAM backplate heatsink (u/SpungeMonk, 23/09/2026). See the [README price history](README.md) and [03 — Power Supply Guide](03-power-supply-guide.md) for more.
 
@@ -113,6 +126,7 @@ If you hit one of these, you are not alone — each has a fix elsewhere in this 
 ## 7. Still being figured out
 
 - **Video encoding/decoding** — the "stopgap" improves streaming without enabling the hardware VCN block. Since this doc's snapshot, Discord's holde reported H.264 running on the actual VCN block via a self-signed driver + tweaked BIOS (04/10/2026) — unpublished, janky, H.265 still broken; see [02 → VCN Progress (Oct)](02-bios-and-firmware.md#vcn-hardware-video-decode) and [10](10-troubleshooting.md).
+- **PS5 emulation and VR** — native-GPU PS5 titles (Astro Bot, GT7) and PSVR2 both work but depend on unpublished patches and per-kernel rebuilds; expect rough edges (Oct 2026).
 - **BIOS chip variants** — recovery guides cover the MX25L12872F and 25Q128JVSQ; other chip revisions seen on boards are not documented yet.
 - **Overclock persistence** — one owner's "temporary" CPU overclock appeared to persist into a brick. Why is not fully understood (u/Wonderful-Clothes-25, 25/09/2026).
 
@@ -120,4 +134,4 @@ If you hit one of these, you are not alone — each has a fix elsewhere in this 
 
 *Community roundup compiled from public r/BC250Gaming posts. Credits name the original Reddit users; always follow the linked threads for full context.*
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-29**

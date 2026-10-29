@@ -40,6 +40,7 @@
 | Mean Well GST280A24-C6P | Wrong voltage (24V) |
 | Dell DA-2 | 220W — insufficient for stock operation, but can run 40 CU undervolted at ~1700 MHz (hoodyracoon, May 2026). Not recommended for daily use. |
 | Generic no-name Flex PSUs | Hit OCP at ~420W at wall; very inefficient (79-84W idle vs 63W Metalfish); built like "garbage" internally (nexgen3d). Sold under 20+ different word-salad names. Avoid. |
+| AliExpress "350W" flex (item `1005009193510613`) | Failed catastrophically after one hour of BC-250 stress testing: "with a big flash and loud bang, the magic smoke appeared" — the board survived. Owner's rule of thumb afterwards: "to be safe, half the advertised wattage" (tiktak6359, 24/10/2026) [confirmed: @tiktak6359, 24/10/2026]. |
 
 ---
 
@@ -135,7 +136,7 @@ Any quality ATX PSU works when paired with PCIe 8-pin cable:
 | Melting risk is real | right-angle 8-pin connector melted after sustained near-300 W ("guess pushing almost 300W for a good while long did the trick" — hojnikb, 03/10/2026, chat:15760); another user found a right-angle 8-pin "won't boot it does not deliver enough power" (aaron6043, 28/09/2026, chat:6621); mitigations: micro-fit supplemental connectors ("don't wanna burn down my house just yet" — chokunplayz, 03/10/2026) or solder directly to the board (_wesk, 03/10/2026) | see [02 → PSU adapters] and the micro-fit thread in 11 |
 | Wall draw — gaming | typically 240–250 W (OC configs); "Furmark is a major outlier, full blast in gaming it's generally only around 250w" (_wesk, 03/10/2026, chat:15910) | |
 | Wall draw — worst case | "When I execute furmark it takes up to 350w (40CU @2000 + 8Cores @1800)" (alchemy07011976, 06/10/2026, chat:19768) | |
-| Idle floor | GDDR6 draws ~25–35 W constantly — no dynamic clock switching on this board (dan2wik, 06/10/2026); memory P-state 3→0 halves idle (~60 W → ~30 W) at a bandwidth cost — see [06 → SMU Performance Profile Tuning](06-gpu-governor.md#smu-performance-profile-tuning-power-savings); 46 W idle achieved via low-end governor config (irium.io, 08/10/2026, Idle Power Draw:8-12) | |
+| Idle floor | GDDR6 draws ~25–35 W constantly — no dynamic clock switching on this board (dan2wik, 06/10/2026); memory P-state 3→0 halves idle (~60 W → ~30 W) at a bandwidth cost — see [06 → SMU Performance Profile Tuning](06-gpu-governor.md#smu-performance-profile-tuning-power-savings); 46 W idle achieved via low-end governor config (irium.io, 08/10/2026, Idle Power Draw:8-12); 66 W per board with the SMU governor plus a 50 MHz GPU idle clock (cyberfrank1990, 27/10/2026, BIOS modding:839) — the spread is mostly PSU light-load efficiency and fan/pump overhead | |
 
 ### J1000 — PCIe 8-pin (6+2 pin) Pinout
 
@@ -322,4 +323,4 @@ By punsh1734. Monitor per-rail VRM/PMIC voltage, current, power and temperature 
 
 *Sources: elektricM/amd-bc250-docs hardware/power.md (primary), FSP spec sheets (80+ Platinum verified), Mean Well official specs (LOP-400/500/600 datasheets), Discord community (nexgen3d, gennro, essdee4336, big_trov, dznuts, hecto_77113, capt.cat_13, astrocast, cyrixblack, fforduck, .strykur, wisserbasser, .dexik, _nk10, leafjerky, greatapo, pilimmm, victorhu, huzhekun, az4521, djanice1980, awalol, Thunkar, punsh1734, perubb, seb.gauge, hojnikb, pan_rijovich). Discord sources verified from export files Jan-Sep 2026.*
 
-**Last verified: 2026-10-09**
+**Last verified: 2026-10-29**
