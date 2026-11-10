@@ -34,6 +34,7 @@
 
 | Model | Issue |
 |-------|-------|
+| No-brand AliExpress "flex" PSUs (unbranded; blue/gold/yellow/white/red labels) | ⚠️ Irregular 12 V rail — reported to **fry the microfit protection circuit (J2000/J2001)** or make a **custom BIOS flash fail**. If you already own one: use a **single 6-pin only**, do **not** use a microfit adapter, and do **not** flash a custom BIOS (the board's power-profile changes are not tolerated). Some sellers rebrand these as "Enhanced". (u/SomePuddingForYou + u/a_tiger_in_the_woods, 30/10/2026, reddit) |
 | Dell D220P-01 / D250AD-00 | 220W/250W insufficient — "cut out or even break" under gaming load |
 | Metalfish Flex 600W (BD650M) | Protection circuit prevents boot with PCIe 8-pin only |
 | Any 24V PSU | BC-250 requires 12V — will not work |
@@ -323,4 +324,4 @@ By punsh1734. Monitor per-rail VRM/PMIC voltage, current, power and temperature 
 
 *Sources: elektricM/amd-bc250-docs hardware/power.md (primary), FSP spec sheets (80+ Platinum verified), Mean Well official specs (LOP-400/500/600 datasheets), Discord community (nexgen3d, gennro, essdee4336, big_trov, dznuts, hecto_77113, capt.cat_13, astrocast, cyrixblack, fforduck, .strykur, wisserbasser, .dexik, _nk10, leafjerky, greatapo, pilimmm, victorhu, huzhekun, az4521, djanice1980, awalol, Thunkar, punsh1734, perubb, seb.gauge, hojnikb, pan_rijovich). Discord sources verified from export files Jan-Sep 2026.*
 
-**Last verified: 2026-10-29**
+**Last verified: 2026-11-10**

@@ -360,6 +360,21 @@ Failed to quiesce KFD
 
 ---
 
+## SMU Metrics Table Export Hang — `msg_reg: 6` (display freeze, ~1-in-3 boots)
+
+**Symptoms (u/XenoKrysh, 09/11/2026, reddit):** an intermittent GPU hang. About 1 in 3 boots freezes at the spinner / black screen with a cursor while the OS stays alive (SSH works, display dead). It can also hit at runtime — first observed when a GPU-monitoring app (the bc250-control-center dashboard) started.
+
+**Kernel signature (every occurrence):**
+
+```text
+amdgpu: SMU: No response msg_reg: 6 resp_reg: 0
+amdgpu: Failed to export SMU metrics table!
+amdgpu: Fence fallback timer expired on ring sdma0   (repeats, never recovers)
+amdgpu: [drm] *ERROR* [CRTC:65:crtc-0] flip_done timed out
+```
+
+The amdgpu IRQ count stops increasing and all rings show signaled == emitted — the GPU has stopped raising interrupts. This is the SMU metrics-table export path ("table 3") racing under concurrent SMU reads; see the read-concurrency note in [06](06-gpu-governor.md). **Workaround / open question:** the reporter stops triggering it by not launching the polling dashboard; no validated fix yet — treat as (open question).
+
 ## High RAM Usage / OOM Crashes
 
 If games crash with out-of-memory errors, configure memory correctly for the 16 GB board. Full zswap vs zram instructions (and when to choose each) are in [05-OS Installation → Memory Configuration](05-os-installation.md#memory-configuration-zswap-vs-zram).
@@ -836,4 +851,4 @@ glxinfo | grep "OpenGL renderer"
 - Always disable IOMMU in BIOS (source: boot.md, display.md, stability.md, quick-reference.md)
 - Always use passive DP-to-HDMI for audio (source: display.md)
 - Follow the canonical [Kernel Support Matrix (05)](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29): CachyOS 7.3.x current (`0001` telemetry patch for 8-core), 6.19.x recommended stable, 6.18 LTS fallback — avoid 6.15.0–6.15.6 and 6.17.8–6.17.10 (source: boot.md, display.md, performance.md, quick-reference.md)
-**Last verified: 2026-10-29**
+**Last verified: 2026-11-10**

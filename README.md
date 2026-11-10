@@ -95,6 +95,7 @@ Linear walkthrough: purchase → assembly → BIOS flash → OS install → firs
 9. **VRAM has no temperature sensor** — must cool backplate actively
 10. **No usable hardware video encode/decode today** — VCN 2.0.3 present but power-gated; an opt-in RC-kernel firmware path (`bc250-vcn-fw`) is emerging but the PSP still rejects the blob and **only ~40% of chips have a functional VCN block**. A private H.264 demo exists but is reboot-fragile — [02 VCN research](02-bios-and-firmware.md#vcn-hardware-video-decode), [10](10-troubleshooting.md#vcn-still-not-working)
 11. **CPU core voltage ("Vid") must never exceed 1.325 V** — exceeding it can permanently brick the board (yrouel86, 07/10/2026)
+12. **Beware unbranded/rebranded AliExpress "flex" PSUs** — irregular voltage can fry the microfit protection circuit or break a custom BIOS flash; if you own one, single 6-pin only, no microfit adapter, no custom BIOS ([03 → Problematic PSUs](03-power-supply-guide.md#problematic-psus))
 
 ---
 
@@ -144,6 +145,12 @@ Full benchmark suite: [07 — Game Benchmarks](07-game-benchmarks.md) (60+ commu
 ---
 
 ## What's New
+
+**November 2026 (Reddit sweep, Oct 30–Nov 10):**
+- **Console recompiled PC ports now run on the BC-250:** Zelda TotK recomp (`totk-pc-recomp`) ~48–60 FPS, OoT Remake via Eglantine/Lichii emulator ~30 FPS (and the `Hookshot` native recompile ~25 FPS until clock-tuned), Bloodborne (BBport) ~90 FPS @ 1080p no-FG. Switch 2 emulation (Mario Kart World, new Zelda) is still very rough ([07](07-game-benchmarks.md), new repos in [11](11-community-and-resources.md)).
+- **PSU safety:** unbranded/rebranded AliExpress "flex" PSUs can fry the microfit protection circuit or break a custom BIOS flash — single 6-pin, no microfit, no custom BIOS ([03](03-power-supply-guide.md)).
+- **SMU metrics-export hang** (`msg_reg: 6`) — display freeze, ~1-in-3 boots, triggered by polling dashboards ([10](10-troubleshooting.md)).
+- **New game data:** Driveclub PC port 45–60 FPS (artefacts), BeamNG ~50 FPS, DS Remastered 30–45 FPS, Crimson Desert (needs async-compute fix), RE4 area-dips; see [07](07-game-benchmarks.md).
 
 **October 2026 (Oct 22–29, Discord + Reddit):**
 - **Linux 7.3 + Mesa 26.2.5 land in the bc250 repo** (`pacman -Syu`), and the three Proton packages move to **FreeFG + HelixSR** as the default pair with a per-game upscaler menu; **HelixSR 3.1.0 → 3.2.0** brings **HLX FSR 4** (a faster FSR-4 path) and FreeFG reaches 1.1.4 with optional generated-frame scaling ([05](05-os-installation.md#kernel-support-matrix-canonical--as-of-2026-10-29), [11](11-community-and-resources.md)).
@@ -255,4 +262,4 @@ Maintained by **katzzero** from BC-250 Discord community data using a semi-autom
 
 *Unofficial — not endorsed by AMD or any community. Prices change often, verify before buying. [Changelog](changelog.md) · [Contribute](CONTRIBUTING.md) · [Discord](https://discord.gg/8eZfFWhczz)*
 
-**Last verified: 2026-10-29**
+**Last verified: 2026-11-10**

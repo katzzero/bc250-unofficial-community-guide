@@ -69,7 +69,7 @@ BC-250-specific gotchas (not in the generic guide):
 - **Fixed VRAM allocation, 8/8 or 12/4 via the Nagi Control App** — a 512 MB carve-out is too small because Windows has no dynamic VRAM (it caps GPU memory at 50% of system RAM) (devlog, 12/10/2026).
 - **Install can drop to Device-Manager Code 43** on some boards; workaround `bcdedit /set {globalsettings} highestmode on` (admin prompt) → reboot → Repair in setup (reported on tester builds; the repo posts frequent test-signed releases — check the release page / README for the current one).
 - **What works already** (per repo "Status" table): DWM desktop, DP + HDMI via passive adapter, D3D12 FL 12_1 with DXR 1.1 (The Witcher 3 RT), D3D11, D3D9 via D3D9On12, Vulkan with ray tracing (Quake II RTX path-traces), OpenGL 4.6 through Zink for 64-bit programs, auto GPU clocks up to 2000 MHz with fan control + full 40-CU unlock, Vulkan compute (llama.cpp) + an early in-house **HIP runtime**, and **H.264 encoding through Media Foundation**. The repo does not state whether that encode uses the actual VCN block; on the Linux side the VCN is still gated and works on only ~40% of chips ([02 → VCN](02-bios-and-firmware.md#vcn-hardware-video-decode)) — treat "Windows hardware encode" as unconfirmed for the VCN path (open question).
-- **What doesn't yet**: display modes above 300 MHz pixel clock (144 Hz+ at 1440p), resume from hibernation, some GPU hangs (paging engine, 3DMark Time Spy) still stop Windows; full D3D and Vulkan CTS not passed; 32-bit programs fall back to software OpenGL; other AMD GPUs (non–BC-250) not supported.
+- **What doesn't yet**: resume from hibernation and some GPU hangs (paging engine) still stop Windows; DP 120/144/165 Hz link/timing fixes and 3DMark Time Spy landed in the ~v35/36 Nov-2026 devlog (verify on the current tester), so the earlier "modes above 300 MHz / 144 Hz at 1440p" limitation is now resolved; full D3D and Vulkan CTS not passed; 32-bit programs fall back to software OpenGL; other AMD GPUs (non–BC-250) not supported.
 - **License:** PolyForm Noncommercial 1.0.0 — free to use, modify and share non-commercially; **no commercial use, including bundling into hardware or OS images for sale**. Relevant if you are evaluating a preflashed "Windows BC-250" listing.
 - **Pinned sibling repos** used by the driver (each forked at a specific commit, tracked in `tools/release/release-sources.json`): `D-Ogi/mesa-amdgpu-wddm`, `D-Ogi/dxvk`, `D-Ogi/vkd3d-proton`, `D-Ogi/dxil-spirv`, `D-Ogi/dxbc-spirv`.
 - Under the hood the driver imports AMD's own `amdgpu` code and layers Mesa RADV + DXVK + vkd3d-proton behind the standard Windows runtimes, so shader-compile behaviour mirrors Linux.
@@ -625,4 +625,4 @@ uname -r
 | **Fedora Media Writer** | All | Fedora's recommended tool |
 | **Rufus** | Windows | Use UEFI / FAT32 mode |
 | **dd** | Linux CLI | `sudo dd if=image.iso of=/dev/sdX status=progress && sync` |
-**Last verified: 2026-10-29**
+**Last verified: 2026-11-10**

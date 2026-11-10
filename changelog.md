@@ -1,3 +1,34 @@
+## November 10, 2026 — export + Reddit sweep (Oct 30–Nov 10): console PC-recompiles, PSU safety warning, SMU metrics-export hang (03,06,07,10,README)
+
+Exports run: Discord 81 channels (`--after 2026-10-28`, messages through 10/11) — organized into channel folders, `export/new/` left clean (one harmless exFAT ghost); Reddit `export_reddit.py` incremental: **+124 posts / +1,467 comments** (cursor 2026-10-29 → **2026-11-10**). Reddit index re-parsed in Python (avoided the naive `awk` that dumps the whole file) and 122 new posts triaged; claims read from `export/reddit/posts/*.txt`, attributed `u/…` + date, cross-OS (Switch 2/Steam Deck) posts flagged. Discord findings incorporated in sections 4–6 (cursor was stuck at 2026-10-29, fixed manually to 2026-11-10 — exporter bug recurred).
+
+### 1. Console titles via PC recompilation / port projects (07, README)
+New compatibility class — decompiled native-PC recompiles (own game dump, not emulation) running on BC-250: **Zelda: TotK native recomp ~48–60 FPS** (dips ~48 central Hyrule; `valentderah/totk-pc-recomp`; u/TunderMuffins, 02/11/2026, reddit); **Zelda OoT Remake via the Eglantine/Lichii Switch-2 *emulator* ~stable 30 FPS** (u/Melodic_Yard_9797, u/GoodBoyShibe 08/11/2026, reddit) and the **`NotRexed/Hookshot` native OoT recompile ~25 FPS** until clocks tuned ("Green Hat Kid" = euphemism; u/Ordinary_Idea8964 08/11, reddit); **Bloodborne "BBport" 1080p solid ~90 FPS, no frame-gen**, one crash in character-creation (u/Krackar, 31/10/2026, reddit). **Mapping correction vs the first draft:** Eglantine is an emulator (not a recompile) and Hookshot is the OoT recompile — it is NOT "Super Mario World". Switch 2 emulation (Mario Kart World / new Zelda) is very rough — "instant crash, not even compiling shaders" for some (u/Ordinary_Idea8964 31/10, reddit).
+
+- **New game data (Oct 20–Nov 10, reddit):** Driveclub PC port 45–60 FPS w/ artefacts (u/SeaworthinessGreedy8 20/10); BeamNG ~50 FPS FSR3 50% render (u/Existing_Elephant363 21/10); DS Remastered 30–45 FPS v1.004, lighting/magenta glitches (u/Mindless_Term_7587 31/10); Crimson Desert playable only with async-compute fix + HelixSR (u/switchroms 04/11); RE4 120→45 FPS area dips, no throttle, upscaler doesn't recover (u/Royal_Assumption_514 01–02/11). New 07 table.
+
+### 1b. Notable new projects → 11 (verified via GitHub metadata, created/stars)
+Eglantine-Community/Eglantine (5.7k, experimental Switch-2 emulator), valentderah/totk-pc-recomp (6.3k), NotRexed/Hookshot (5.8k, created 05/11), dashdogy/MFG-Unlocker (2.4k, = the "MFG Unlocker 1.7.0" bundled in 07), Snk-B/BC250-Cockpit-Pro (telemetry+HUD+PWA, 05/11), bandlayash/bc250-autotune (MCP server + boot watchdog), RobertoTorino/nexus (Win+Linux app hub), 62fixolab Bazzite-patched-images, thelamer/bc250-vcn, grykom/moonlight-qt-bc250, and two curated lists (kalpakprod/awesome-bc250, nunsie/awesome-bc-250). Kyty/Simpmix/memtest were already catalogued in prior cycles. PS4/PS5 *port* repos (Bloodborne BBport) intentionally NOT linked — copyright gray zone.
+
+### 2. PSU safety warning (03, README)
+Unbranded/rebranded AliExpress "flex" PSUs (blue/gold/yellow/white/red labels) have an irregular 12 V rail reported to **fry the microfit protection circuit (J2000/J2001)** or make a **custom BIOS flash fail** — if you own one, single 6-pin only, no microfit adapter, no custom BIOS; some sellers relabel as "Enhanced" (u/SomePuddingForYou + u/a_tiger_in_the_woods, 30/10/2026, reddit). New Problematic-PSU row + README Important Warnings #12 (safety must appear in both, DOC_STANDARDS §4).
+
+### 3. SMU metrics-table export hang (10)
+`amdgpu: SMU: No response msg_reg: 6` / `Failed to export SMU metrics table!` / `sdma0 fence fallback` — ~1-in-3 boots freeze the display (OS/SSH alive), also runtime-triggered by the bc250-control-center polling dashboard; ties to the SMU "table 3" read-concurrency note (06). Workaround = don't launch the poller; no validated fix (open question) (u/XenoKrysh, 09/11/2026, reddit). New 10-troubleshooting section.
+- **06 corroboration:** a single unresolved reddit report (u/fragment_me, 31/10/2026) of governor-enabled crashes "overclocking or not" via an unlocked PCI-config access race — folded into the existing SMU read-concurrency note, not a new cause.
+
+
+### 4. Upscaler default + DirectMesh version bump (07, 11, 05)
+- **Proton default shifted** HelixSR Scaler → **FreeFG + HLX FSR 4** (_mastag, 07/11/2026): new 6-option `Insert` menu (HLX FSR4 / HLX DLSS Model E / FSR4 RC12 / HLX DLSS Preset K / HLX FSR 4 Full = FSR 4.1.2 / none), AMD FSR fallback = **FSR 4.1.2**, "Use the game's DLSS FG" checkbox, bundled **MFG Unlocker 1.7.0** + **fakenvapi v1.4.1**, FG starts off. OptiScaler fork fragmentation noted (three builds). HelixSR FSR4 upscale ≈ 1.4–1.6 ms.
+- **DirectMesh v1.4 → v1.4.1** (08/11/2026): repo renamed to `lonewolf0622/Mesh-Shaders-for-Rdna-1`; now a **cross-distro `curl … | sh` installer**, no longer CachyOS-mesa-only; the v1.4 "don't update yet" regression is fixed in v1.4.1. Rows updated in 07 and 11.
+### 5. Nagi Windows driver progress (05, 11)
+- Nov-2026 devlog (01–10/11): DP 120/144/165 Hz link + timing fixed (desktop restart-loop gone), 3DMark Time Spy fixed, D3D12 stream-output + ExecuteIndirect >4096 mesh draws, FSR 4.1.2 barrier fix; **driver-level frame generation done but unreleased (~release 34)**; tester v35 flagged buggy, v36 in progress. 05 "What doesn't yet" revised (144 Hz/1440p + Time Spy items now addressed).
+### 6. Cooling orientation (04)
+- vvaaron — earlier a no-difference reporter — logged a personal-best Superposition score with good thermals by flipping the board (29/10–06/11/2026), crediting Old Lamer's orientation investigation. Reinforces the (open question) in 04.
+
+### Excluded (Reddit + Discord, this window)
+Switch 2 emulation (Mario Kart World / new Zelda) kept as a caveat only (not playable); Steam-Deck/PS5-only threads; the governor-crash PSA (u/fragment_me) folded into 06 as corroboration, not a new cause; Nagi cosmetic UI nits (wallpaper/white-window); PS5-side Superposition numbers in benchmarks/Superposition (not BC-250); sales/build/duplicate posts; PS5-RE material (staff restriction).
+
 ## October 29, 2026 — Oct 22–29 export cycle: Linux 7.3 + Mesa 26.2.5, HelixSR 3.x/HLX FSR 4, KytyPS5-native + PSVR2, BIOS V3.1 in progress, issue #1 fixed (02, 03, 04, 05, 06, 07, 08, 09, 10, 11, 12, 14, README)
 
 Discord export: 63 channels (`--after 2026-10-21`, guild export incl. threads), 3,278 messages through 29/10 16:15; cursor 2026-10-22 → **2026-10-29** (set manually — the script's cursor scan did not advance, known bug). Reddit: +82 posts / +803 comments rendered (cursor 2026-10-29). `export/new/` emptied (one exFAT ghost entry needed `unlink`). Extraction by targeted greps + message-block digests in the main context (no subagents).

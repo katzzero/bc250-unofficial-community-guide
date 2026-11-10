@@ -257,6 +257,7 @@ Board orientation is widely suspected to matter for the **stock heat-pipe heatsi
 - snoop05: heatsink revisions differ (the "two stripes / hole-in-fins" variant has its heatpipe wide/narrow ends swapped), and stock VF tables vary by up to ~100 mV between boards — both confound any orientation A/B.
 
 - **Independent reddit confirmation:** a builder rotating 180° to fit a standard mATX case saw +10 °C on the same game/settings; removing the case's mesh panel didn't recover it, and going back to the case's original design orientation did — attributed to the stock heatsink's heat-pipe wick orientation (u/Sudowoodo-Official, 19/10/2026, reddit).
+- **Follow-up (Nov 2026):** vvaaron — earlier a *no-difference* reporter — later logged a **personal-best Superposition score with good thermals by flipping the board**, crediting the Old Lamer–led orientation investigation (29/10–06/11/2026).
 **Practical takeaway:** if you use the stock cooler and run hot, try connectors-UP before buying anything; with a direct-contact AIO the orientation effect appears to vanish. (open question — needs a controlled same-case, same-airflow test.)
 
 ### With Liquid Cooling (240mm AIO)
@@ -350,4 +351,4 @@ Sources: elektricM cooling.md (Backplate VRAM Cooling Solutions), iamdarkyoshi (
 
 Per-chip GDDR6 temperature monitoring is now available via SMU/UMC MR3 reading (8 chips + hotspot/average, P3.00 BIOS only) — see canonical details in [02-BIOS & Firmware → GDDR6 Per-Chip Temperature Reading via SMU/UMC (MR3)](02-bios-and-firmware.md#gddr6-per-chip-temperature-reading-via-smuumc-mr3-sep-2026) (pan_rijovich, 12/09/2026). The reading is integrated as opt-in in [BC250-Telemetry v0.3](../03-power-supply-guide.md#vrm-telemetry-via-i2c-pmbus--web-dashboard) (`--memory-temp`; punsh1734, 13/09/2026). Use it to validate backplate cooling — e.g., chip #3 can run ~10 °C above others at idle (_fanoush_, 13/09/2026); GPU at 88 °C while most RAM chips run lower is expected (dmooney65, 12/09/2026).
 
-**Last verified: 2026-10-29**
+**Last verified: 2026-11-10**
